@@ -1,0 +1,902 @@
+[
+  {
+    "name": "build-your-own-x",
+    "owner": "codecrafters-io",
+    "url": "https://github.com/codecrafters-io/build-your-own-x",
+    "stars": 537504,
+    "releases_count": 0,
+    "pull_requests_count": 734,
+    "issues_count": 942
+  },
+  {
+    "name": "awesome",
+    "owner": "sindresorhus",
+    "url": "https://github.com/sindresorhus/awesome",
+    "stars": 493417,
+    "releases_count": 0,
+    "pull_requests_count": 2503,
+    "issues_count": 368
+  },
+  {
+    "name": "public-apis",
+    "owner": "public-apis",
+    "url": "https://github.com/public-apis/public-apis",
+    "stars": 454961,
+    "releases_count": 0,
+    "pull_requests_count": 5202,
+    "issues_count": 920
+  },
+  {
+    "name": "freeCodeCamp",
+    "owner": "freeCodeCamp",
+    "url": "https://github.com/freeCodeCamp/freeCodeCamp",
+    "stars": 453647,
+    "releases_count": 0,
+    "pull_requests_count": 46421,
+    "issues_count": 22024
+  },
+  {
+    "name": "free-programming-books",
+    "owner": "EbookFoundation",
+    "url": "https://github.com/EbookFoundation/free-programming-books",
+    "stars": 393949,
+    "releases_count": 0,
+    "pull_requests_count": 11759,
+    "issues_count": 1291
+  },
+  {
+    "name": "openclaw",
+    "owner": "openclaw",
+    "url": "https://github.com/openclaw/openclaw",
+    "stars": 385481,
+    "releases_count": 231,
+    "pull_requests_count": 71751,
+    "issues_count": 46245
+  },
+  {
+    "name": "developer-roadmap",
+    "owner": "nilbuild",
+    "url": "https://github.com/nilbuild/developer-roadmap",
+    "stars": 363871,
+    "releases_count": 1,
+    "pull_requests_count": 6233,
+    "issues_count": 3183
+  },
+  {
+    "name": "system-design-primer",
+    "owner": "donnemartin",
+    "url": "https://github.com/donnemartin/system-design-primer",
+    "stars": 362262,
+    "releases_count": 0,
+    "pull_requests_count": 708,
+    "issues_count": 397
+  },
+  {
+    "name": "coding-interview-university",
+    "owner": "jwasham",
+    "url": "https://github.com/jwasham/coding-interview-university",
+    "stars": 358120,
+    "releases_count": 0,
+    "pull_requests_count": 1057,
+    "issues_count": 536
+  },
+  {
+    "name": "awesome-python",
+    "owner": "vinta",
+    "url": "https://github.com/vinta/awesome-python",
+    "stars": 312743,
+    "releases_count": 0,
+    "pull_requests_count": 2552,
+    "issues_count": 0
+  },
+  {
+    "name": "awesome-selfhosted",
+    "owner": "awesome-selfhosted",
+    "url": "https://github.com/awesome-selfhosted/awesome-selfhosted",
+    "stars": 311233,
+    "releases_count": 1,
+    "pull_requests_count": 0,
+    "issues_count": 0
+  },
+  {
+    "name": "project-based-learning",
+    "owner": "practical-tutorials",
+    "url": "https://github.com/practical-tutorials/project-based-learning",
+    "stars": 277196,
+    "releases_count": 0,
+    "pull_requests_count": 576,
+    "issues_count": 239
+  },
+  {
+    "name": "996.ICU",
+    "owner": "996icu",
+    "url": "https://github.com/996icu/996.ICU",
+    "stars": 276569,
+    "releases_count": 0,
+    "pull_requests_count": 2000,
+    "issues_count": 0
+  },
+  {
+    "name": "superpowers",
+    "owner": "obra",
+    "url": "https://github.com/obra/superpowers",
+    "stars": 268724,
+    "releases_count": 11,
+    "pull_requests_count": 1095,
+    "issues_count": 829
+  },
+  {
+    "name": "react",
+    "owner": "react",
+    "url": "https://github.com/react/react",
+    "stars": 247110,
+    "releases_count": 132,
+    "pull_requests_count": 20011,
+    "issues_count": 14605
+  },
+  {
+    "name": "linux",
+    "owner": "torvalds",
+    "url": "https://github.com/torvalds/linux",
+    "stars": 242126,
+    "releases_count": 0,
+    "pull_requests_count": 0,
+    "issues_count": 0
+  },
+  {
+    "name": "ECC",
+    "owner": "affaan-m",
+    "url": "https://github.com/affaan-m/ECC",
+    "stars": 238570,
+    "releases_count": 15,
+    "pull_requests_count": 1900,
+    "issues_count": 691
+  },
+  {
+    "name": "the-book-of-secret-knowledge",
+    "owner": "trimstray",
+    "url": "https://github.com/trimstray/the-book-of-secret-knowledge",
+    "stars": 237214,
+    "releases_count": 0,
+    "pull_requests_count": 407,
+    "issues_count": 0
+  },
+  {
+    "name": "hermes-agent",
+    "owner": "NousResearch",
+    "url": "https://github.com/NousResearch/hermes-agent",
+    "stars": 227074,
+    "releases_count": 24,
+    "pull_requests_count": 60796,
+    "issues_count": 20118
+  },
+  {
+    "name": "Python",
+    "owner": "TheAlgorithms",
+    "url": "https://github.com/TheAlgorithms/Python",
+    "stars": 223558,
+    "releases_count": 0,
+    "pull_requests_count": 12477,
+    "issues_count": 1748
+  },
+  {
+    "name": "vue",
+    "owner": "vuejs",
+    "url": "https://github.com/vuejs/vue",
+    "stars": 210238,
+    "releases_count": 249,
+    "pull_requests_count": 2651,
+    "issues_count": 10035
+  },
+  {
+    "name": "skills",
+    "owner": "mattpocock",
+    "url": "https://github.com/mattpocock/skills",
+    "stars": 208759,
+    "releases_count": 7,
+    "pull_requests_count": 134,
+    "issues_count": 593
+  },
+  {
+    "name": "computer-science",
+    "owner": "ossu",
+    "url": "https://github.com/ossu/computer-science",
+    "stars": 207752,
+    "releases_count": 0,
+    "pull_requests_count": 526,
+    "issues_count": 674
+  },
+  {
+    "name": "andrej-karpathy-skills",
+    "owner": "multica-ai",
+    "url": "https://github.com/multica-ai/andrej-karpathy-skills",
+    "stars": 200523,
+    "releases_count": 0,
+    "pull_requests_count": 151,
+    "issues_count": 0
+  },
+  {
+    "name": "n8n",
+    "owner": "n8n-io",
+    "url": "https://github.com/n8n-io/n8n",
+    "stars": 199736,
+    "releases_count": 754,
+    "pull_requests_count": 25723,
+    "issues_count": 9927
+  },
+  {
+    "name": "tensorflow",
+    "owner": "tensorflow",
+    "url": "https://github.com/tensorflow/tensorflow",
+    "stars": 196908,
+    "releases_count": 222,
+    "pull_requests_count": 79667,
+    "issues_count": 41666
+  },
+  {
+    "name": "javascript-algorithms",
+    "owner": "trekhleb",
+    "url": "https://github.com/trekhleb/javascript-algorithms",
+    "stars": 196410,
+    "releases_count": 0,
+    "pull_requests_count": 861,
+    "issues_count": 373
+  },
+  {
+    "name": "claw-code",
+    "owner": "ultraworkers",
+    "url": "https://github.com/ultraworkers/claw-code",
+    "stars": 195003,
+    "releases_count": 0,
+    "pull_requests_count": 371,
+    "issues_count": 2210
+  },
+  {
+    "name": "opencode",
+    "owner": "anomalyco",
+    "url": "https://github.com/anomalyco/opencode",
+    "stars": 194757,
+    "releases_count": 857,
+    "pull_requests_count": 17590,
+    "issues_count": 22945
+  },
+  {
+    "name": "FreeDomain",
+    "owner": "DigitalPlatDev",
+    "url": "https://github.com/DigitalPlatDev/FreeDomain",
+    "stars": 191548,
+    "releases_count": 0,
+    "pull_requests_count": 0,
+    "issues_count": 0
+  },
+  {
+    "name": "ohmyzsh",
+    "owner": "ohmyzsh",
+    "url": "https://github.com/ohmyzsh/ohmyzsh",
+    "stars": 189081,
+    "releases_count": 0,
+    "pull_requests_count": 8196,
+    "issues_count": 5075
+  },
+  {
+    "name": "vscode",
+    "owner": "microsoft",
+    "url": "https://github.com/microsoft/vscode",
+    "stars": 188486,
+    "releases_count": 231,
+    "pull_requests_count": 63231,
+    "issues_count": 250225
+  },
+  {
+    "name": "Microsoft-Activation-Scripts",
+    "owner": "massgravel",
+    "url": "https://github.com/massgravel/Microsoft-Activation-Scripts",
+    "stars": 186310,
+    "releases_count": 31,
+    "pull_requests_count": 63,
+    "issues_count": 1064
+  },
+  {
+    "name": "AutoGPT",
+    "owner": "Significant-Gravitas",
+    "url": "https://github.com/Significant-Gravitas/AutoGPT",
+    "stars": 186310,
+    "releases_count": 116,
+    "pull_requests_count": 8551,
+    "issues_count": 3937
+  },
+  {
+    "name": "CS-Notes",
+    "owner": "CyC2018",
+    "url": "https://github.com/CyC2018/CS-Notes",
+    "stars": 184972,
+    "releases_count": 0,
+    "pull_requests_count": 628,
+    "issues_count": 579
+  },
+  {
+    "name": "Python-100-Days",
+    "owner": "jackfrued",
+    "url": "https://github.com/jackfrued/Python-100-Days",
+    "stars": 184970,
+    "releases_count": 0,
+    "pull_requests_count": 388,
+    "issues_count": 729
+  },
+  {
+    "name": "You-Dont-Know-JS",
+    "owner": "getify",
+    "url": "https://github.com/getify/You-Dont-Know-JS",
+    "stars": 184643,
+    "releases_count": 0,
+    "pull_requests_count": 899,
+    "issues_count": 947
+  },
+  {
+    "name": "yt-dlp",
+    "owner": "yt-dlp",
+    "url": "https://github.com/yt-dlp/yt-dlp",
+    "stars": 183102,
+    "releases_count": 135,
+    "pull_requests_count": 5081,
+    "issues_count": 11866
+  },
+  {
+    "name": "awesome-go",
+    "owner": "avelino",
+    "url": "https://github.com/avelino/awesome-go",
+    "stars": 180423,
+    "releases_count": 0,
+    "pull_requests_count": 5491,
+    "issues_count": 754
+  },
+  {
+    "name": "flutter",
+    "owner": "flutter",
+    "url": "https://github.com/flutter/flutter",
+    "stars": 178263,
+    "releases_count": 7,
+    "pull_requests_count": 74226,
+    "issues_count": 115042
+  },
+  {
+    "name": "ollama",
+    "owner": "ollama",
+    "url": "https://github.com/ollama/ollama",
+    "stars": 178017,
+    "releases_count": 237,
+    "pull_requests_count": 6313,
+    "issues_count": 10907
+  },
+  {
+    "name": "gitignore",
+    "owner": "github",
+    "url": "https://github.com/github/gitignore",
+    "stars": 175186,
+    "releases_count": 0,
+    "pull_requests_count": 4771,
+    "issues_count": 0
+  },
+  {
+    "name": "bootstrap",
+    "owner": "twbs",
+    "url": "https://github.com/twbs/bootstrap",
+    "stars": 174567,
+    "releases_count": 94,
+    "pull_requests_count": 16461,
+    "issues_count": 22938
+  },
+  {
+    "name": "markitdown",
+    "owner": "microsoft",
+    "url": "https://github.com/microsoft/markitdown",
+    "stars": 172211,
+    "releases_count": 20,
+    "pull_requests_count": 874,
+    "issues_count": 558
+  },
+  {
+    "name": "HelloGitHub",
+    "owner": "521xueweihan",
+    "url": "https://github.com/521xueweihan/HelloGitHub",
+    "stars": 169688,
+    "releases_count": 68,
+    "pull_requests_count": 63,
+    "issues_count": 3283
+  },
+  {
+    "name": "skills",
+    "owner": "anthropics",
+    "url": "https://github.com/anthropics/skills",
+    "stars": 166889,
+    "releases_count": 0,
+    "pull_requests_count": 1070,
+    "issues_count": 358
+  },
+  {
+    "name": "prompts.chat",
+    "owner": "f",
+    "url": "https://github.com/f/prompts.chat",
+    "stars": 166860,
+    "releases_count": 0,
+    "pull_requests_count": 916,
+    "issues_count": 172
+  },
+  {
+    "name": "stable-diffusion-webui",
+    "owner": "AUTOMATIC1111",
+    "url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
+    "stars": 164435,
+    "releases_count": 27,
+    "pull_requests_count": 3360,
+    "issues_count": 7913
+  },
+  {
+    "name": "transformers",
+    "owner": "huggingface",
+    "url": "https://github.com/huggingface/transformers",
+    "stars": 163446,
+    "releases_count": 267,
+    "pull_requests_count": 27821,
+    "issues_count": 19281
+  },
+  {
+    "name": "firecrawl",
+    "owner": "firecrawl",
+    "url": "https://github.com/firecrawl/firecrawl",
+    "stars": 162889,
+    "releases_count": 35,
+    "pull_requests_count": 3195,
+    "issues_count": 942
+  },
+  {
+    "name": "the-art-of-command-line",
+    "owner": "jlevy",
+    "url": "https://github.com/jlevy/the-art-of-command-line",
+    "stars": 162040,
+    "releases_count": 0,
+    "pull_requests_count": 608,
+    "issues_count": 264
+  },
+  {
+    "name": "JavaGuide",
+    "owner": "Snailclimb",
+    "url": "https://github.com/Snailclimb/JavaGuide",
+    "stars": 157608,
+    "releases_count": 0,
+    "pull_requests_count": 1610,
+    "issues_count": 1155
+  },
+  {
+    "name": "langflow",
+    "owner": "langflow-ai",
+    "url": "https://github.com/langflow-ai/langflow",
+    "stars": 152930,
+    "releases_count": 302,
+    "pull_requests_count": 10273,
+    "issues_count": 3412
+  },
+  {
+    "name": "dify",
+    "owner": "langgenius",
+    "url": "https://github.com/langgenius/dify",
+    "stars": 151723,
+    "releases_count": 168,
+    "pull_requests_count": 16633,
+    "issues_count": 18556
+  },
+  {
+    "name": "open-webui",
+    "owner": "open-webui",
+    "url": "https://github.com/open-webui/open-webui",
+    "stars": 148179,
+    "releases_count": 167,
+    "pull_requests_count": 10082,
+    "issues_count": 9282
+  },
+  {
+    "name": "javascript",
+    "owner": "airbnb",
+    "url": "https://github.com/airbnb/javascript",
+    "stars": 148117,
+    "releases_count": 0,
+    "pull_requests_count": 1711,
+    "issues_count": 1415
+  },
+  {
+    "name": "scrcpy",
+    "owner": "Genymobile",
+    "url": "https://github.com/Genymobile/scrcpy",
+    "stars": 147156,
+    "releases_count": 52,
+    "pull_requests_count": 697,
+    "issues_count": 6139
+  },
+  {
+    "name": "langchain",
+    "owner": "langchain-ai",
+    "url": "https://github.com/langchain-ai/langchain",
+    "stars": 143651,
+    "releases_count": 1000,
+    "pull_requests_count": 23804,
+    "issues_count": 9931
+  },
+  {
+    "name": "system-prompts-and-models-of-ai-tools",
+    "owner": "x1xhlol",
+    "url": "https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools",
+    "stars": 142646,
+    "releases_count": 0,
+    "pull_requests_count": 217,
+    "issues_count": 211
+  },
+  {
+    "name": "next.js",
+    "owner": "vercel",
+    "url": "https://github.com/vercel/next.js",
+    "stars": 141681,
+    "releases_count": 1000,
+    "pull_requests_count": 38988,
+    "issues_count": 25103
+  },
+  {
+    "name": "tech-interview-handbook",
+    "owner": "yangshun",
+    "url": "https://github.com/yangshun/tech-interview-handbook",
+    "stars": 141677,
+    "releases_count": 0,
+    "pull_requests_count": 589,
+    "issues_count": 126
+  },
+  {
+    "name": "youtube-dl",
+    "owner": "ytdl-org",
+    "url": "https://github.com/ytdl-org/youtube-dl",
+    "stars": 140893,
+    "releases_count": 341,
+    "pull_requests_count": 5017,
+    "issues_count": 26831
+  },
+  {
+    "name": "claude-code",
+    "owner": "anthropics",
+    "url": "https://github.com/anthropics/claude-code",
+    "stars": 140601,
+    "releases_count": 181,
+    "pull_requests_count": 1260,
+    "issues_count": 82236
+  },
+  {
+    "name": "agency-agents",
+    "owner": "msitarzewski",
+    "url": "https://github.com/msitarzewski/agency-agents",
+    "stars": 139098,
+    "releases_count": 0,
+    "pull_requests_count": 502,
+    "issues_count": 138
+  },
+  {
+    "name": "PowerToys",
+    "owner": "microsoft",
+    "url": "https://github.com/microsoft/PowerToys",
+    "stars": 137554,
+    "releases_count": 134,
+    "pull_requests_count": 8420,
+    "issues_count": 40985
+  },
+  {
+    "name": "clash-verge-rev",
+    "owner": "clash-verge-rev",
+    "url": "https://github.com/clash-verge-rev/clash-verge-rev",
+    "stars": 136161,
+    "releases_count": 67,
+    "pull_requests_count": 1314,
+    "issues_count": 5767
+  },
+  {
+    "name": "go",
+    "owner": "golang",
+    "url": "https://github.com/golang/go",
+    "stars": 135677,
+    "releases_count": 0,
+    "pull_requests_count": 5273,
+    "issues_count": 72741
+  },
+  {
+    "name": "iptv",
+    "owner": "iptv-org",
+    "url": "https://github.com/iptv-org/iptv",
+    "stars": 135357,
+    "releases_count": 0,
+    "pull_requests_count": 8019,
+    "issues_count": 33861
+  },
+  {
+    "name": "fucking-algorithm",
+    "owner": "labuladong",
+    "url": "https://github.com/labuladong/fucking-algorithm",
+    "stars": 135256,
+    "releases_count": 0,
+    "pull_requests_count": 510,
+    "issues_count": 978
+  },
+  {
+    "name": "awesome-llm-apps",
+    "owner": "Shubhamsaboo",
+    "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+    "stars": 131318,
+    "releases_count": 0,
+    "pull_requests_count": 728,
+    "issues_count": 170
+  },
+  {
+    "name": "free-for-dev",
+    "owner": "ripienaar",
+    "url": "https://github.com/ripienaar/free-for-dev",
+    "stars": 131266,
+    "releases_count": 0,
+    "pull_requests_count": 4478,
+    "issues_count": 0
+  },
+  {
+    "name": "hello-algo",
+    "owner": "krahets",
+    "url": "https://github.com/krahets/hello-algo",
+    "stars": 129259,
+    "releases_count": 10,
+    "pull_requests_count": 1271,
+    "issues_count": 290
+  },
+  {
+    "name": "excalidraw",
+    "owner": "excalidraw",
+    "url": "https://github.com/excalidraw/excalidraw",
+    "stars": 129137,
+    "releases_count": 15,
+    "pull_requests_count": 6354,
+    "issues_count": 4902
+  },
+  {
+    "name": "30-seconds-of-code",
+    "owner": "Chalarangelo",
+    "url": "https://github.com/Chalarangelo/30-seconds-of-code",
+    "stars": 128638,
+    "releases_count": 12,
+    "pull_requests_count": 1678,
+    "issues_count": 300
+  },
+  {
+    "name": "gstack",
+    "owner": "garrytan",
+    "url": "https://github.com/garrytan/gstack",
+    "stars": 126806,
+    "releases_count": 0,
+    "pull_requests_count": 1739,
+    "issues_count": 714
+  },
+  {
+    "name": "react-native",
+    "owner": "react",
+    "url": "https://github.com/react/react-native",
+    "stars": 126298,
+    "releases_count": 470,
+    "pull_requests_count": 28063,
+    "issues_count": 27751
+  },
+  {
+    "name": "spec-kit",
+    "owner": "github",
+    "url": "https://github.com/github/spec-kit",
+    "stars": 125783,
+    "releases_count": 209,
+    "pull_requests_count": 2039,
+    "issues_count": 1459
+  },
+  {
+    "name": "cc-switch",
+    "owner": "farion1231",
+    "url": "https://github.com/farion1231/cc-switch",
+    "stars": 125452,
+    "releases_count": 50,
+    "pull_requests_count": 1524,
+    "issues_count": 4490
+  },
+  {
+    "name": "ComfyUI",
+    "owner": "Comfy-Org",
+    "url": "https://github.com/Comfy-Org/ComfyUI",
+    "stars": 124655,
+    "releases_count": 150,
+    "pull_requests_count": 4778,
+    "issues_count": 9023
+  },
+  {
+    "name": "kubernetes",
+    "owner": "kubernetes",
+    "url": "https://github.com/kubernetes/kubernetes",
+    "stars": 124357,
+    "releases_count": 810,
+    "pull_requests_count": 91028,
+    "issues_count": 49487
+  },
+  {
+    "name": "llama.cpp",
+    "owner": "ggml-org",
+    "url": "https://github.com/ggml-org/llama.cpp",
+    "stars": 123023,
+    "releases_count": 1000,
+    "pull_requests_count": 13730,
+    "issues_count": 9321
+  },
+  {
+    "name": "electron",
+    "owner": "electron",
+    "url": "https://github.com/electron/electron",
+    "stars": 122382,
+    "releases_count": 1000,
+    "pull_requests_count": 29957,
+    "issues_count": 21803
+  },
+  {
+    "name": "ui",
+    "owner": "shadcn-ui",
+    "url": "https://github.com/shadcn-ui/ui",
+    "stars": 120786,
+    "releases_count": 114,
+    "pull_requests_count": 4630,
+    "issues_count": 4215
+  },
+  {
+    "name": "rustdesk",
+    "owner": "rustdesk",
+    "url": "https://github.com/rustdesk/rustdesk",
+    "stars": 119858,
+    "releases_count": 39,
+    "pull_requests_count": 5412,
+    "issues_count": 4288
+  },
+  {
+    "name": "node",
+    "owner": "nodejs",
+    "url": "https://github.com/nodejs/node",
+    "stars": 118825,
+    "releases_count": 512,
+    "pull_requests_count": 41812,
+    "issues_count": 20732
+  },
+  {
+    "name": "free-programming-books-zh_CN",
+    "owner": "justjavac",
+    "url": "https://github.com/justjavac/free-programming-books-zh_CN",
+    "stars": 118196,
+    "releases_count": 3,
+    "pull_requests_count": 480,
+    "issues_count": 0
+  },
+  {
+    "name": "Awesome-Hacking",
+    "owner": "Hack-with-Github",
+    "url": "https://github.com/Hack-with-Github/Awesome-Hacking",
+    "stars": 117735,
+    "releases_count": 0,
+    "pull_requests_count": 176,
+    "issues_count": 0
+  },
+  {
+    "name": "generative-ai-for-beginners",
+    "owner": "microsoft",
+    "url": "https://github.com/microsoft/generative-ai-for-beginners",
+    "stars": 116927,
+    "releases_count": 0,
+    "pull_requests_count": 880,
+    "issues_count": 244
+  },
+  {
+    "name": "rust",
+    "owner": "rust-lang",
+    "url": "https://github.com/rust-lang/rust",
+    "stars": 115345,
+    "releases_count": 153,
+    "pull_requests_count": 96693,
+    "issues_count": 63419
+  },
+  {
+    "name": "godot",
+    "owner": "godotengine",
+    "url": "https://github.com/godotengine/godot",
+    "stars": 115323,
+    "releases_count": 71,
+    "pull_requests_count": 57714,
+    "issues_count": 63227
+  },
+  {
+    "name": "ui-ux-pro-max-skill",
+    "owner": "nextlevelbuilder",
+    "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+    "stars": 114487,
+    "releases_count": 39,
+    "pull_requests_count": 259,
+    "issues_count": 172
+  },
+  {
+    "name": "three.js",
+    "owner": "mrdoob",
+    "url": "https://github.com/mrdoob/three.js",
+    "stars": 114350,
+    "releases_count": 177,
+    "pull_requests_count": 20219,
+    "issues_count": 13716
+  },
+  {
+    "name": "d3",
+    "owner": "d3",
+    "url": "https://github.com/d3/d3",
+    "stars": 113389,
+    "releases_count": 194,
+    "pull_requests_count": 1218,
+    "issues_count": 2246
+  },
+  {
+    "name": "v2rayN",
+    "owner": "2dust",
+    "url": "https://github.com/2dust/v2rayN",
+    "stars": 113335,
+    "releases_count": 331,
+    "pull_requests_count": 940,
+    "issues_count": 7105
+  },
+  {
+    "name": "TypeScript",
+    "owner": "microsoft",
+    "url": "https://github.com/microsoft/TypeScript",
+    "stars": 110094,
+    "releases_count": 217,
+    "pull_requests_count": 19248,
+    "issues_count": 43235
+  },
+  {
+    "name": "tauri",
+    "owner": "tauri-apps",
+    "url": "https://github.com/tauri-apps/tauri",
+    "stars": 109998,
+    "releases_count": 0,
+    "pull_requests_count": 6778,
+    "issues_count": 6402
+  },
+  {
+    "name": "immich",
+    "owner": "immich-app",
+    "url": "https://github.com/immich-app/immich",
+    "stars": 109932,
+    "releases_count": 305,
+    "pull_requests_count": 12192,
+    "issues_count": 9077
+  },
+  {
+    "name": "awesome-mac",
+    "owner": "jaywcjlove",
+    "url": "https://github.com/jaywcjlove/awesome-mac",
+    "stars": 109331,
+    "releases_count": 15,
+    "pull_requests_count": 1874,
+    "issues_count": 554
+  },
+  {
+    "name": "axios",
+    "owner": "axios",
+    "url": "https://github.com/axios/axios",
+    "stars": 109229,
+    "releases_count": 123,
+    "pull_requests_count": 2712,
+    "issues_count": 5051
+  },
+  {
+    "name": "frp",
+    "owner": "fatedier",
+    "url": "https://github.com/fatedier/frp",
+    "stars": 108619,
+    "releases_count": 115,
+    "pull_requests_count": 1250,
+    "issues_count": 4134
+  }
+]
