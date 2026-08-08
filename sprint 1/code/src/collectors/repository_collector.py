@@ -25,6 +25,7 @@ def collect_top_repositories(token, total_repositories=100, page_size=10):
                 "url": repository["url"],
                 "stars": repository["stargazerCount"],
                 "releases_count": repository["releases"]["totalCount"],
+                'pushed_at': repository.get('pushedAt'),
                 "pull_requests_count": repository["pullRequests"]["totalCount"],
                 "issues_count": repository["issues"]["totalCount"],
             })

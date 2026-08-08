@@ -21,6 +21,7 @@ query($first: Int!, $after: String) {
         releases {
           totalCount
         }
+        pushedAt
         pullRequests {
           totalCount
         }
