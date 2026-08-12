@@ -55,7 +55,7 @@ O grupo (trio) deve constituir, a partir deste laboratório, o GitHub Projects (
 
 Documento com: (i) introdução com hipóteses informais sobre as RQs; (ii) metodologia de coleta; (iii) resultados por RQ (valores medianos, contagem por categoria quando aplicável); (iv) discussão hipótese vs. resultado; (v) uma seção "Configuração do processo", descrevendo a estrutura do GitHub Projects (colunas, política de WIP) e um print do board ao final do laboratório, com o link do repositório/GitHub Projects do grupo.
 
-Link do repositório/GitHub Projects: `<preencher>`
+Link do repositório/GitHub Projects: [<Link>](https://github.com/GastonZinhow/lab-experimentacao-software/)
 
 ### Processo de Desenvolvimento
 

@@ -23,10 +23,12 @@ def collect_top_repositories(token, total_repositories=100, page_size=10):
                 "name": repository["name"],
                 "owner": repository["owner"]["login"],
                 "url": repository["url"],
+                "created_at": repository["createdAt"],
                 "stars": repository["stargazerCount"],
                 "releases_count": repository["releases"]["totalCount"],
-                'pushed_at': repository.get('pushedAt'),
+                "pushed_at": repository.get("pushedAt"),
                 "pull_requests_count": repository["pullRequests"]["totalCount"],
+                "merged_pull_requests_count": repository["mergedPullRequests"]["totalCount"],
                 "issues_count": repository["issues"]["totalCount"],
             })
 

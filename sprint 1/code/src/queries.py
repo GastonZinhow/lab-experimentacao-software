@@ -17,12 +17,16 @@ query($first: Int!, $after: String) {
           login
         }
         url
+        createdAt
         stargazerCount
         releases {
           totalCount
         }
         pushedAt
         pullRequests {
+          totalCount
+        }
+        mergedPullRequests: pullRequests(states: MERGED) {
           totalCount
         }
         issues {
