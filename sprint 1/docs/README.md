@@ -4,6 +4,7 @@
 
 - Matheus Gaston Viana Silveira
 - Mirelly Pego Alvarenga
+- Luisa Clara de Paula Lara Silva
 
 ## Limite de WIP
 
