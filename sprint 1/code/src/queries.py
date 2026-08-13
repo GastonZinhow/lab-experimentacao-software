@@ -29,7 +29,13 @@ query($first: Int!, $after: String) {
         mergedPullRequests: pullRequests(states: MERGED) {
           totalCount
         }
+        primaryLanguage {
+          name
+        }
         issues {
+          totalCount
+        }
+        closedIssues: issues(states: CLOSED) {
           totalCount
         }
       }

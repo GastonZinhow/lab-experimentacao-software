@@ -29,7 +29,9 @@ def collect_top_repositories(token, total_repositories=100, page_size=10):
                 "pushed_at": repository.get("pushedAt"),
                 "pull_requests_count": repository["pullRequests"]["totalCount"],
                 "merged_pull_requests_count": repository["mergedPullRequests"]["totalCount"],
+                "primary_language": repository["primaryLanguage"]["name"] if repository["primaryLanguage"] else None,
                 "issues_count": repository["issues"]["totalCount"],
+                "closed_issues_count": repository["closedIssues"]["totalCount"],
             })
 
             if len(collected_repositories) >= total_repositories:
