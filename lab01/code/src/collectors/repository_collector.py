@@ -33,6 +33,7 @@ def collect_top_repositories(token, total_repositories=100, page_size=10):
                 "issues_count": repository["issues"]["totalCount"],
                 "closed_issues_count": repository["closedIssues"]["totalCount"],
             })
+            print(f"Collected repositories: {len(collected_repositories)}/{total_repositories}")
 
             if len(collected_repositories) >= total_repositories:
                 break
