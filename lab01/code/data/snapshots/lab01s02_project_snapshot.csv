@@ -1,0 +1,16 @@
+issue_number,title,url,assignees,status,sprint
+6,[Lab01S02] Implementar paginacao para coletar 1000 repositorios,https://github.com/GastonZinhow/lab-experimentacao-software/issues/6,GastonZinhow,Done,Lab01S02
+7,[Lab01S02] Exportar dataset dos 1000 repositorios em CSV,https://github.com/GastonZinhow/lab-experimentacao-software/issues/7,GastonZinhow,Done,Lab01S02
+8,[Lab01S02] Validar consistencia dos dados por RQ,https://github.com/GastonZinhow/lab-experimentacao-software/issues/8,MirellyAlvarenga,Done,Lab01S02
+9,[Lab01S02] Escrever hipoteses informais da primeira versao do relatorio,https://github.com/GastonZinhow/lab-experimentacao-software/issues/9,MirellyAlvarenga,Done,Lab01S02
+10,[Lab01S02] Exportar snapshot CSV do Project ao fim da sprint,https://github.com/GastonZinhow/lab-experimentacao-software/issues/10,luisaassilva,To Do,Lab01S02
+2,[Lab01S01] Implementar consulta GraphQL base para top 100 repositorios,https://github.com/GastonZinhow/lab-experimentacao-software/issues/2,GastonZinhow,Done,Lab01S02
+3,[Lab01S01] RQ01 e RQ02: extrair idade e pull requests aceitas,https://github.com/GastonZinhow/lab-experimentacao-software/issues/3,GastonZinhow,Done,Lab01S02
+1,[Lab01S01] Criar GitHub Projects v2 e politica de WIP,https://github.com/GastonZinhow/lab-experimentacao-software/issues/1,GastonZinhow,Done,Lab01S02
+4,[Lab01S01] RQ03 e RQ04: extrair releases e ultima atualizacao,https://github.com/GastonZinhow/lab-experimentacao-software/issues/4,MirellyAlvarenga,Done,Lab01S02
+5,[Lab01S01] RQ05 e RQ06: linguagem primaria e percentual de issues fechadas,https://github.com/GastonZinhow/lab-experimentacao-software/issues/5,luisaassilva,Done,Lab01S02
+11,[Lab01S03] Analisar resultados das RQs 01 a 06,https://github.com/GastonZinhow/lab-experimentacao-software/issues/11,,Backlog,Lab01S02
+12,[Lab01S03] Implementar visualizacoes dos resultados,https://github.com/GastonZinhow/lab-experimentacao-software/issues/12,,Backlog,Lab01S02
+13,[Lab01S03] Bonus RQ07: comparar metricas por linguagem,https://github.com/GastonZinhow/lab-experimentacao-software/issues/13,,Backlog,Lab01S02
+14,[Final] Consolidar relatorio final do Lab01,https://github.com/GastonZinhow/lab-experimentacao-software/issues/14,,Backlog,Lab01S02
+15,"[Final] Revisar commits, issues e board antes da entrega",https://github.com/GastonZinhow/lab-experimentacao-software/issues/15,,Backlog,Lab01S02
