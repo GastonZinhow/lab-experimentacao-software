@@ -1,4 +1,4 @@
-import json
+import csv
 import statistics
 from datetime import datetime, timezone
 
@@ -29,8 +29,8 @@ def days_since_update(pushed_at):
 
 
 def merged_pr_ratio(repo):
-    total = repo.get("pull_requests_count", 0)
-    merged = repo.get("merged_pull_requests_count", 0)
+    total = int(repo.get("pull_requests_count") or 0)
+    merged = int(repo.get("merged_pull_requests_count") or 0)
     return round((merged / total) * 100, 2) if total > 0 else None
 
 
@@ -40,7 +40,7 @@ def group_by_language(repositories):
     for repo in repositories:
         language = repo.get("primary_language")
 
-        if language is None:
+        if not language:
             continue
 
         groups.setdefault(language, []).append(repo)
@@ -50,18 +50,18 @@ def group_by_language(repositories):
 
 def print_group_metrics(label, repositories):
     ratios = [r for r in (merged_pr_ratio(repo) for repo in repositories) if r is not None]
-    releases = [repo.get("releases_count", 0) for repo in repositories]
+    releases = [int(repo.get("releases_count") or 0) for repo in repositories]
     updates = [d for d in (days_since_update(repo.get("pushed_at")) for repo in repositories) if d is not None]
 
     print(f"{label} (n={len(repositories)})")
-    print(f"  - Mediana % PRs aceitas: {round(statistics.median(ratios), 2) if ratios else None}%")
+    print(f"  - Mediana % PRs aceitas: {round(statistics.median(ratios), 2) if ratios else None}% (n={len(ratios)})")
     print(f"  - Mediana de releases: {statistics.median(releases) if releases else None}")
     print(f"  - Mediana de dias desde ultimo push: {statistics.median(updates) if updates else None}")
 
 
-def analyze_rq07(json_path):
-    with open(json_path, "r", encoding="utf-8") as file:
-        repositories = json.load(file)
+def analyze_rq07(csv_path):
+    with open(csv_path, "r", encoding="utf-8", newline="") as file:
+        repositories = list(csv.DictReader(file, delimiter=";"))
 
     print("== Analise RQ07 (bonus) ==\n")
 
@@ -90,7 +90,7 @@ def analyze_rq07(json_path):
     populares = [r for r in repositories if r.get("primary_language") in POPULAR_LANGUAGES]
     nao_populares = [
         r for r in repositories
-        if r.get("primary_language") is not None and r.get("primary_language") not in POPULAR_LANGUAGES
+        if r.get("primary_language") and r.get("primary_language") not in POPULAR_LANGUAGES
     ]
 
     print_group_metrics("Linguagens populares (TIOBE top 10)", populares)
@@ -101,5 +101,5 @@ def analyze_rq07(json_path):
 if __name__ == "__main__":
     from pathlib import Path
 
-    data_path = Path(__file__).resolve().parents[2] / "data" / "raw" / "top_100_repositories.json"
+    data_path = Path(__file__).resolve().parents[2] / "data" / "raw" / "top_1000_repositories.csv"
     analyze_rq07(str(data_path))
