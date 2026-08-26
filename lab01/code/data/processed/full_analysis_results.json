@@ -1,0 +1,61 @@
+{
+  "rq01_idade": {
+    "n": 1000,
+    "min": 0.04,
+    "max": 18.37,
+    "mean": 7.68,
+    "median": 7.77,
+    "stdev": 4.53
+  },
+  "rq02_pr_merge_ratio": {
+    "n": 1000,
+    "min": 0,
+    "max": 103316,
+    "mean": 4234.14,
+    "median": 768.0,
+    "stdev": 10661.79
+  },
+  "rq03_releases": {
+    "all": {
+      "n": 1000,
+      "min": 0,
+      "max": 1000,
+      "mean": 126.16,
+      "median": 39.0,
+      "stdev": 212.39
+    },
+    "excluding_capped": {
+      "n": 979,
+      "min": 0,
+      "max": 999,
+      "mean": 107.41,
+      "median": 37,
+      "stdev": 171.26
+    },
+    "n_capped": 21
+  },
+  "rq04_dias_desde_update": {
+    "n": 1000,
+    "min": 7,
+    "max": 2458,
+    "mean": 121.06,
+    "median": 9.0,
+    "stdev": 265.1
+  },
+  "rq05_linguagem": {
+    "total": 1000,
+    "no_language": 87,
+    "considered": 913,
+    "popular": 507,
+    "not_popular": 406,
+    "popular_pct": 55.53
+  },
+  "rq06_issue_close_ratio": {
+    "n": 957,
+    "min": 7.69,
+    "max": 100.0,
+    "mean": 80.24,
+    "median": 87.61,
+    "stdev": 21.08
+  }
+}
