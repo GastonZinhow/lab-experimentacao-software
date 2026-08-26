@@ -1,0 +1,16 @@
+Title	URL	Assignees	Status	Linked pull requests	Sub-issues progress	Priority	Estimate	Size
+[Lab01S03] Analisar resultados das RQs 01 a 06	https://github.com/GastonZinhow/lab-experimentacao-software/issues/11	MirellyAlvarenga	Done					
+[Final] Revisar commits, issues e board antes da entrega	https://github.com/GastonZinhow/lab-experimentacao-software/issues/15	GastonZinhow	Done					
+[Lab01S03] Implementar visualizacoes dos resultados	https://github.com/GastonZinhow/lab-experimentacao-software/issues/12	MirellyAlvarenga	Done					
+[Lab01S03] Bonus RQ07: comparar metricas por linguagem	https://github.com/GastonZinhow/lab-experimentacao-software/issues/13	luisaassilva	Done	https://github.com/GastonZinhow/lab-experimentacao-software/pull/17				
+[Final] Consolidar relatorio final do Lab01	https://github.com/GastonZinhow/lab-experimentacao-software/issues/14	GastonZinhow, luisaassilva, MirellyAlvarenga	Done					
+[Lab01S02] Implementar paginacao para coletar 1000 repositorios	https://github.com/GastonZinhow/lab-experimentacao-software/issues/6	GastonZinhow	Done					
+[Lab01S02] Exportar dataset dos 1000 repositorios em CSV	https://github.com/GastonZinhow/lab-experimentacao-software/issues/7	GastonZinhow	Done					
+[Lab01S02] Validar consistencia dos dados por RQ	https://github.com/GastonZinhow/lab-experimentacao-software/issues/8	MirellyAlvarenga	Done					
+[Lab01S02] Escrever hipoteses informais da primeira versao do relatorio	https://github.com/GastonZinhow/lab-experimentacao-software/issues/9	MirellyAlvarenga	Done					
+[Lab01S02] Exportar snapshot CSV do Project ao fim da sprint	https://github.com/GastonZinhow/lab-experimentacao-software/issues/10	luisaassilva	Done	https://github.com/GastonZinhow/lab-experimentacao-software/pull/16				
+[Lab01S01] Implementar consulta GraphQL base para top 100 repositorios	https://github.com/GastonZinhow/lab-experimentacao-software/issues/2	GastonZinhow	Done					
+[Lab01S01] RQ01 e RQ02: extrair idade e pull requests aceitas	https://github.com/GastonZinhow/lab-experimentacao-software/issues/3	GastonZinhow	Done					
+[Lab01S01] Criar GitHub Projects v2 e politica de WIP	https://github.com/GastonZinhow/lab-experimentacao-software/issues/1	GastonZinhow	Done					
+[Lab01S01] RQ03 e RQ04: extrair releases e ultima atualizacao	https://github.com/GastonZinhow/lab-experimentacao-software/issues/4	MirellyAlvarenga	Done					
+[Lab01S01] RQ05 e RQ06: linguagem primaria e percentual de issues fechadas	https://github.com/GastonZinhow/lab-experimentacao-software/issues/5	luisaassilva	Done					
