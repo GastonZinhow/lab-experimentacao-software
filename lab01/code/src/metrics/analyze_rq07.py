@@ -1,6 +1,11 @@
 import csv
 import statistics
 from datetime import datetime, timezone
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 
 # Mesma fonte/lista da RQ05 (TIOBE Index, top 10, agosto/2026)
@@ -19,6 +24,17 @@ POPULAR_LANGUAGES = {
 }
 
 MIN_REPOS_PER_LANGUAGE = 2
+
+CHARTS_DIR = Path(__file__).resolve().parents[2] / "data" / "processed" / "charts"
+
+# Mesma paleta usada em full_analysis.py, para os graficos ficarem consistentes
+BLUE = "#2a78d6"
+ORANGE = "#eb6834"
+GRID = "#e1e0d9"
+AXIS = "#c3c2b7"
+MUTED = "#898781"
+INK = "#0b0b0b"
+SURFACE = "#fcfcfb"
 
 
 def days_since_update(pushed_at):
@@ -48,15 +64,80 @@ def group_by_language(repositories):
     return groups
 
 
-def print_group_metrics(label, repositories):
+def group_metrics(repositories):
     ratios = [r for r in (merged_pr_ratio(repo) for repo in repositories) if r is not None]
     releases = [int(repo.get("releases_count") or 0) for repo in repositories]
     updates = [d for d in (days_since_update(repo.get("pushed_at")) for repo in repositories) if d is not None]
 
-    print(f"{label} (n={len(repositories)})")
-    print(f"  - Mediana % PRs aceitas: {round(statistics.median(ratios), 2) if ratios else None}% (n={len(ratios)})")
-    print(f"  - Mediana de releases: {statistics.median(releases) if releases else None}")
-    print(f"  - Mediana de dias desde ultimo push: {statistics.median(updates) if updates else None}")
+    return {
+        "n": len(repositories),
+        "pr_merge_ratio_median": round(statistics.median(ratios), 2) if ratios else None,
+        "releases_median": statistics.median(releases) if releases else None,
+        "days_since_update_median": statistics.median(updates) if updates else None,
+    }
+
+
+def print_group_metrics(label, repositories):
+    metrics = group_metrics(repositories)
+
+    print(f"{label} (n={metrics['n']})")
+    print(f"  - Mediana % PRs aceitas: {metrics['pr_merge_ratio_median']}%")
+    print(f"  - Mediana de releases: {metrics['releases_median']}")
+    print(f"  - Mediana de dias desde ultimo push: {metrics['days_since_update_median']}")
+
+
+def style_axes(ax):
+    ax.set_facecolor(SURFACE)
+    ax.figure.set_facecolor(SURFACE)
+    for spine in ["top", "right"]:
+        ax.spines[spine].set_visible(False)
+    for spine in ["left", "bottom"]:
+        ax.spines[spine].set_color(AXIS)
+    ax.tick_params(colors=MUTED, labelsize=9)
+    ax.yaxis.grid(True, color=GRID, linewidth=0.8)
+    ax.set_axisbelow(True)
+
+
+def save_two_bar(values, title, ylabel, filename, value_fmt="{:.1f}"):
+    labels = ["Linguagem popular\n(TIOBE top 10)", "Outras linguagens"]
+
+    fig, ax = plt.subplots(figsize=(5, 4.2), dpi=150)
+    bars = ax.bar(labels, values, color=[BLUE, ORANGE], width=0.55)
+
+    for bar, value in zip(bars, values):
+        ax.text(
+            bar.get_x() + bar.get_width() / 2, bar.get_height(),
+            value_fmt.format(value), ha="center", va="bottom",
+            color=INK, fontsize=10,
+        )
+
+    ax.set_title(title, color=INK, fontsize=11, loc="left", pad=12)
+    ax.set_ylabel(ylabel, color=MUTED, fontsize=9)
+    style_axes(ax)
+    ax.set_ylim(0, max(values) * 1.2)
+
+    fig.tight_layout()
+    CHARTS_DIR.mkdir(parents=True, exist_ok=True)
+    fig.savefig(CHARTS_DIR / filename, facecolor=SURFACE)
+    plt.close(fig)
+
+
+def generate_charts(populares_metrics, nao_populares_metrics):
+    save_two_bar(
+        [populares_metrics["pr_merge_ratio_median"], nao_populares_metrics["pr_merge_ratio_median"]],
+        "RQ07 — Mediana de PRs aceitas (%) por grupo de linguagem",
+        "PRs aceitas / PRs totais (%)", "rq07_pr_merge_ratio.png",
+    )
+    save_two_bar(
+        [populares_metrics["releases_median"], nao_populares_metrics["releases_median"]],
+        "RQ07 — Mediana de releases por grupo de linguagem",
+        "Total de releases", "rq07_releases.png", value_fmt="{:.0f}",
+    )
+    save_two_bar(
+        [populares_metrics["days_since_update_median"], nao_populares_metrics["days_since_update_median"]],
+        "RQ07 — Mediana de dias desde a última atualização por grupo",
+        "Dias desde o último push", "rq07_dias_desde_update.png", value_fmt="{:.0f}",
+    )
 
 
 def analyze_rq07(csv_path):
@@ -96,6 +177,9 @@ def analyze_rq07(csv_path):
     print_group_metrics("Linguagens populares (TIOBE top 10)", populares)
     print()
     print_group_metrics("Linguagens NAO populares", nao_populares)
+
+    generate_charts(group_metrics(populares), group_metrics(nao_populares))
+    print(f"\nGraficos salvos em: {CHARTS_DIR}")
 
 
 if __name__ == "__main__":

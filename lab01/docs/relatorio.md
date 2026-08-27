@@ -214,11 +214,25 @@ Percentual de issues fechadas sobre o total de issues.
 
 Mediana: **87,61%** (média 80,24%; n = 957 repositórios com ao menos 1 issue).
 
-**RQ07 (bônus)** — fica com quem pegar essa issue.
+**RQ07 (bônus) — Linguagens populares recebem mais contribuição, lançam mais
+releases e são atualizadas com mais frequência?**
+RQ02, RQ03 e RQ04 segmentadas por grupo de linguagem (popular = TIOBE top 10,
+n = 507; outras, n = 406).
+
+![RQ07 — PRs aceitas por grupo de linguagem](../code/data/processed/charts/rq07_pr_merge_ratio.png)
+![RQ07 — Releases por grupo de linguagem](../code/data/processed/charts/rq07_releases.png)
+![RQ07 — Dias desde atualização por grupo de linguagem](../code/data/processed/charts/rq07_dias_desde_update.png)
+
+| Métrica | Mediana — linguagem popular | Mediana — outras linguagens |
+|---|---|---|
+| PRs aceitas (%) | 62,45% | 69,24% |
+| Releases (total) | 40 | 81 |
+| Dias desde atualização | 9 | 8 |
 
 Todos os valores acima são reproduzíveis executando
-`code/src/metrics/full_analysis.py`, que também grava os números completos em
-`code/data/processed/full_analysis_results.json`.
+`code/src/metrics/full_analysis.py` (RQ01-06) e
+`code/src/metrics/analyze_rq07.py` (RQ07), que também gravam os números
+completos em `code/data/processed/full_analysis_results.json`.
 
 ## 4. Discussão hipótese vs. resultado
 
@@ -266,7 +280,18 @@ repositórios populares. A cauda inferior (mínimo 7,69%) é consistente com a
 ressalva da hipótese sobre projetos muito grandes, cujo volume de issues
 supera a capacidade de resposta da manutenção.
 
-**RQ07 (bônus):** discussão a ser escrita por quem ficar com essa issue.
+**RQ07 (bônus — linguagem popular vs. demais):** hipótese **refutada** para
+PRs aceitas e releases. Ao contrário do esperado, repositórios em linguagens
+**fora** do TIOBE top 10 apresentam mediana maior de PRs aceitas (69,24% vs.
+62,45%) e de releases (81 vs. 40) do que os em linguagens populares — ou
+seja, linguagens populares **não** apresentam mais contribuição externa nem
+mais releases; apresentam menos. Uma leitura possível é que parte do grupo
+"outras linguagens" inclui ecossistemas com convenções fortes de release e
+contribuição (ex.: Go, TypeScript, Shell — fora do TIOBE top 10, mas comuns
+em ferramentas de infraestrutura/DevOps altamente colaborativas). Já para
+dias desde a última atualização, a diferença entre grupos é pequena (9 vs. 8
+dias) e não muda a conclusão geral da RQ04: repositórios populares, com ou
+sem linguagem popular, são mantidos ativamente.
 
 **O que a validação de dados (issue #8) acrescentou:** foi ela que permitiu
 identificar a saturação em `releases_count` a tempo de tratá-la como ressalva
@@ -300,15 +325,15 @@ laboratório.
 Ao final de cada sprint, um snapshot dos itens do Project (via script GraphQL
 próprio) é exportado para CSV, servindo de base para os Labs 04 e 05.
 
-**Link do repositório/GitHub Projects:** `<preencher>`
+**Link do repositório/GitHub Projects:** https://github.com/GastonZinhow/lab-experimentacao-software
 
 *(Anexar print do board ao final do laboratório, mostrando o fluxo completo
 do Lab01 e a política de WIP em uso — a ser incluído no Relatório Final.)*
 
 ## 6. Conclusão
 
-Os 1.000 repositórios mais populares do GitHub confirmam, para todas as RQs
-do enunciado, o perfil esperado de um projeto open-source maduro: são
+Os 1.000 repositórios mais populares do GitHub confirmam, para as seis RQs do
+enunciado, o perfil esperado de um projeto open-source maduro: são
 majoritariamente antigos (mediana de 7,77 anos), recebem contribuição externa
 relevante (mediana de 768 pull requests aceitas), lançam releases com
 frequência (mediana de 39) e permanecem ativamente mantidos (mediana de 9
@@ -319,6 +344,15 @@ maioria, mas quase metade (44,47%) usa linguagens fora do top 10, sugerindo
 que popularidade de repositório e popularidade de linguagem se reforçam
 menos do que a intuição inicial do grupo previa.
 
+A RQ07 (bônus) aprofunda exatamente essa nuance e vai além dela: a hipótese
+do grupo foi **refutada**. Repositórios em linguagens **fora** do TIOBE top
+10 recebem mais contribuição externa e lançam mais releases do que os em
+linguagens populares — o oposto do esperado. Ou seja, não só o vínculo entre
+popularidade de linguagem e de projeto é mais fraco do que o previsto (RQ05),
+como na direção oposta à intuição inicial ele nem existe (RQ07): estar entre
+as linguagens mais populares do mercado não torna um repositório mais
+colaborativo ou mais ativo em releases.
+
 **Limitações do estudo:** a amostra é um corte único no tempo (não uma série
 histórica), então não captura tendência — apenas o estado atual dos 1.000
 repositórios mais populares. Estrelas foram usadas como único proxy de
@@ -328,7 +362,9 @@ ainda que não altere a mediana reportada.
 
 **Com mais tempo**, o grupo recotaria via paginação REST os 21 repositórios
 afetados pelo teto de releases, para confirmar se a mediana muda ao usar o
-valor real em vez do truncado.
+valor real em vez do truncado, e aprofundaria a RQ07 por linguagem individual
+(em vez de só dois grupos binários) para entender quais linguagens
+específicas puxam o resultado do grupo "outras linguagens" para cima.
 
 ## 7. Referências
 
