@@ -1,125 +1,135 @@
 # Katas do Experimento (K01-K06)
 
 Issue #22 do Lab02: selecao e validacao de 6 katas Java de dificuldade
-comparavel para o experimento "Assistentes de IA vs. codificacao manual".
+variada para o experimento "Assistentes de IA vs. codificacao manual".
+
+## Origem e decisao do grupo
+
+Os 6 katas usados no experimento sao os mesmos problemas do LeetCode ja
+resolvidos por um integrante do grupo no trabalho pratico da disciplina de
+FPAA (Fundamentos de Projeto e Analise de Algoritmos). A decisao de
+reaproveita-los foi tomada conscientemente pelo grupo, mesmo sabendo que
+isso diverge da recomendacao do enunciado do Lab02 de preferir "katas
+autorais do grupo/professor ou exercicios pouco indexados" para reduzir o
+risco de memorizacao pelo assistente de IA.
+
+**Essa decisao e registrada aqui como uma ameaca a validade aceita e
+documentada** (ver tambem `desenho_experimento.md`, secao "Ameacas a
+validade"): como os 6 problemas sao exercicios classicos e amplamente
+indexados do LeetCode, com solucoes publicas conhecidas (inclusive no
+proprio GitHub do integrante que os resolveu no trabalho de FPAA), o
+assistente de IA (GitHub Copilot com GPT-5) pode reproduzir uma solucao
+memorizada durante seu treinamento em vez de efetivamente "ajudar" o
+participante a raciocinar sobre o problema. Isso pode inflar
+artificialmente o desempenho do tratamento `IA` nas RQ1 e RQ2 em relacao ao
+que se observaria com katas ineditos. Essa limitacao deve ser retomada na
+discussao do Relatorio Final.
 
 ## Criterios de selecao
 
-- **Dificuldade comparavel**: todos os katas tem escopo de uma unica classe
-  `Solution`, entre 3 e 5 metodos publicos, resolviveis dentro do time-box de
-  35 minutos por um estudante de graduacao com conhecimento basico de Java.
-- **Baixa indexacao / risco de memorizacao**: nenhum kata e uma copia de um
-  exercicio classico de plataformas como LeetCode/HackerRank/Codewars. Todos
-  sao autorais do grupo, ambientados em um cenario fictício de sistema
-  universitario (cantina, matricula, grade horaria), o que reduz a chance de
-  o assistente de IA ja ter visto a solucao exata durante o treinamento.
+- **Mescla de dificuldades**: ao contrario da recomendacao de dificuldade
+  homogenea, o grupo optou por uma mescla deliberada de katas faceis,
+  medios e dificeis (ver tabela abaixo), para observar se o efeito do
+  assistente de IA varia conforme a complexidade do problema.
+- **Diversidade de tecnicas algoritmicas**: os 6 katas cobrem tecnicas
+  distintas (dois ponteiros, busca em largura, programacao dinamica,
+  guloso/grafos, backtracking), evitando que o resultado do experimento
+  reflita apenas uma unica categoria de algoritmo.
 - **Testes de aceitacao prontos**: cada kata tem uma classe
-  `SolutionTest` em JUnit 5 que define o "pronto" da tarefa. Os testes nao
-  sao alterados pelo participante durante o trial.
-- **Numero par**: 6 katas, permitindo dividir exatamente 3 com IA / 3 sem IA
-  por participante (ver `desenho_experimento.md`).
+  `SolutionTest` em JUnit 5 baseada nos casos de exemplo oficiais do
+  LeetCode para o problema correspondente.
+- **Numero par**: 6 katas, permitindo dividir exatamente 3 com IA / 3 sem
+  IA por participante (ver `desenho_experimento.md`).
+- Os katas mais custosos de implementar do zero dentro do time-box de 35
+  minutos (ex.: os que exigem BFS sobre estado composto, deteccao de ciclo
+  em grafo direcionado, ou DFS sobre grade com leitura customizada de
+  entrada) foram deixados de fora desta selecao, mesmo constando no
+  trabalho de FPAA original, para manter os 6 katas escolhidos viaveis
+  dentro do tempo limite.
 
-## K01 - Fila de Atendimento com Prioridade
+## Tabela de katas
+
+| Kata | Problema | Dificuldade | Tecnica | Fonte |
+|---|---|---|---|---|
+| K01 | Is Subsequence | Facil | Dois ponteiros | leetcode.com/problems/is-subsequence |
+| K02 | Find if Path Exists in Graph | Facil | BFS em grafo nao direcionado | leetcode.com/problems/find-if-path-exists-in-graph |
+| K03 | House Robber | Media | Programacao dinamica | leetcode.com/problems/house-robber |
+| K04 | Flower Planting With No Adjacent | Media | Guloso sobre grafo | leetcode.com/problems/flower-planting-with-no-adjacent |
+| K05 | Longest Palindromic Subsequence | Media/Dificil | Programacao dinamica (LCS) | leetcode.com/problems/longest-palindromic-subsequence |
+| K06 | N-Queens II | Dificil | Backtracking | leetcode.com/problems/n-queens-ii |
+
+## K01 - Is Subsequence
 
 **Pacote:** `katas.k01`
 
-Na fila da cantina, alguns estudantes tem prioridade de atendimento (ex.:
-pessoas com deficiencia, gestantes). Implemente uma fila que:
+Dadas duas strings `s` e `t`, determinar se `s` e uma subsequencia de `t`
+(isto e, se e possivel obter `s` removendo alguns caracteres de `t`, sem
+reordenar os caracteres restantes).
 
-- atende primeiro quem tem prioridade, na ordem em que chegaram entre os
-  prioritarios;
-- atende os demais em ordem de chegada (FIFO), somente apos esgotar todos os
-  prioritarios presentes no momento do atendimento.
+Exemplos oficiais: `s="abc", t="ahbgdc"` -> `true`; `s="axc", t="ahbgdc"`
+-> `false`.
 
-**Dificuldade estimada:** baixa-media (estrutura de dados simples, duas
-filas).
-
-**Fonte:** kata autoral do grupo.
-
-## K02 - Calculo de Desconto por Combo
+## K02 - Find if Path Exists in Graph
 
 **Pacote:** `katas.k02`
 
-O sistema de vendas da cantina aplica desconto quando o cliente compra um
-combo (uma unidade de "principal" + uma unidade de "bebida" no mesmo
-pedido). Implemente o calculo do valor total de um pedido, aplicando um
-percentual de desconto sobre o item de menor valor do combo sempre que um
-combo completo puder ser formado no pedido.
+Dado um grafo nao direcionado com `n` vertices e uma lista de arestas,
+determinar se existe um caminho entre um vertice de origem e um vertice de
+destino.
 
-**Dificuldade estimada:** media (agrupamento por categoria + regra de
-formacao de pares).
+Exemplos oficiais: `n=3, edges=[[0,1],[1,2],[2,0]], source=0,
+destination=2` -> `true`; `n=6, edges=[[0,1],[0,2],[3,5],[5,4],[4,3]],
+source=0, destination=5` -> `false`.
 
-**Fonte:** kata autoral do grupo.
-
-## K03 - Validador de Codigo de Matricula
+## K03 - House Robber
 
 **Pacote:** `katas.k03`
 
-Códigos de matricula da universidade seguem o formato `AAYYNNNNN-D`, onde
-`AA` é a sigla do curso (2 letras maiusculas), `YY` é o ano de ingresso (2
-digitos), `NNNNN` é um numero sequencial (5 digitos) e `D` é um digito
-verificador calculado como a soma de todos os digitos numericos do codigo
-(YY + NNNNN) modulo 10. Implemente a validacao do formato e do digito
-verificador.
+Dado um vetor com o valor de dinheiro guardado em cada casa de uma rua,
+determinar o valor maximo que pode ser roubado sem roubar duas casas
+adjacentes.
 
-**Dificuldade estimada:** media (parsing de string + regra aritmetica).
+Exemplos oficiais: `nums=[1,2,3,1]` -> `4`; `nums=[2,7,9,3,1]` -> `12`.
 
-**Fonte:** kata autoral do grupo.
-
-## K04 - Agrupador de Notas por Conceito
+## K04 - Flower Planting With No Adjacent
 
 **Pacote:** `katas.k04`
 
-Dada uma lista de notas numericas (0-10) de uma turma, implemente a
-conversao de cada nota para um conceito (`A`: nota >= 9, `B`: >= 7, `C`: >=
-5, `D`: < 5) e o calculo de estatisticas da turma: a mediana das notas e o
-conceito mais frequente (em caso de empate, o conceito alfabeticamente
-menor).
+Dados `n` jardins e uma lista de caminhos (arestas) entre pares de
+jardins, atribuir a cada jardim um entre 4 tipos de flores, de forma que
+nenhum par de jardins conectados por um caminho tenha o mesmo tipo de
+flor. Qualquer atribuicao valida e aceita (o problema garante que sempre
+existe solucao, pois cada jardim tem no maximo 3 vizinhos).
 
-**Dificuldade estimada:** media (ordenacao, mediana, contagem de frequencia).
-
-**Fonte:** kata autoral do grupo.
-
-## K05 - Detector de Conflito de Horario
+## K05 - Longest Palindromic Subsequence
 
 **Pacote:** `katas.k05`
 
-Cada disciplina da grade horaria de um estudante tem um dia da semana e um
-horario de inicio/fim (em minutos desde 00:00). Implemente a deteccao de
-conflitos: duas disciplinas conflitam se estao no mesmo dia e os intervalos
-de horario se sobrepoem (sobreposicao parcial conta como conflito; um
-terminar exatamente quando o outro comeca nao conta). O metodo deve
-retornar todos os pares de disciplinas em conflito.
+Dada uma string `s`, encontrar o tamanho da maior subsequencia
+palindromica de `s`.
 
-**Dificuldade estimada:** media (comparacao de intervalos, combinacao de
-pares).
+Exemplos oficiais: `s="bbbab"` -> `4`; `s="cbbd"` -> `2`.
 
-**Fonte:** kata autoral do grupo.
-
-## K06 - Compactador de Texto Simples
+## K06 - N-Queens II
 
 **Pacote:** `katas.k06`
 
-Implemente uma compactacao Run-Length Encoding customizada para as
-observacoes de texto do sistema da cantina: apenas sequencias de 3 ou mais
-caracteres iguais consecutivos sao compactadas no formato `<caractere><contagem>`;
-sequencias menores que 3 permanecem inalteradas, caractere a caractere.
-Implemente tambem a descompactacao (operacao inversa).
+Dado um inteiro `n`, retornar o numero de solucoes distintas do problema
+das `n` rainhas (posicionar `n` rainhas em um tabuleiro `n x n` de forma
+que nenhuma ataque outra).
 
-**Dificuldade estimada:** media (parsing de string, dois metodos
-complementares).
-
-**Fonte:** kata autoral do grupo.
+Exemplos oficiais: `n=4` -> `2`; `n=1` -> `1`.
 
 ## Observacoes de validacao
 
 - Todos os katas foram implementados com o esqueleto (`Solution.java`
   lancando `UnsupportedOperationException`) e os testes de aceitacao
-  (`SolutionTest.java`) no projeto `lab02/code/katas-java`.
+  (`SolutionTest.java`) no projeto `lab02/code/katas-java`, seguindo as
+  assinaturas de metodo originais do LeetCode para cada problema.
 - Antes de qualquer implementacao, `mvn test -Dtest=katas.k0N.*Test` falha
   para todos os katas (0% de testes passando), confirmando que cada kata
   esta corretamente "vazio" no inicio do trial.
-- Justificativa de dificuldade comparavel: todos os 6 katas exigem uso de
-  estruturas de dados basicas (listas, mapas), manipulacao de string ou
-  aritmetica simples, e nenhum exige bibliotecas externas alem do JDK
-  padrao.
+- Para K04 (Flower Planting), como existe mais de uma atribuicao valida de
+  flores, os testes de aceitacao verificam a propriedade de validade da
+  solucao (nenhum par adjacente com a mesma flor, valores entre 1 e 4),
+  em vez de comparar com uma unica saida esperada.

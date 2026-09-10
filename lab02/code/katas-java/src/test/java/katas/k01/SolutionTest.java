@@ -2,61 +2,39 @@ package katas.k01;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Testes de aceitacao do K01 (issue #22). Nao alterar durante o trial.
+ * Testes de aceitacao do K01 (issue #22), baseados nos exemplos oficiais
+ * do LeetCode. Nao alterar durante o trial.
  */
 class SolutionTest {
 
     private final Solution solution = new Solution();
 
     @Test
-    void atendePrioritariosAntesDosDemaisMantendoOrdemDeChegada() {
-        List<String> nomes = List.of("Ana", "Bruno", "Carla", "Diego");
-        List<Boolean> prioridade = List.of(false, true, false, true);
-
-        List<String> resultado = solution.ordemDeAtendimento(nomes, prioridade);
-
-        assertEquals(List.of("Bruno", "Diego", "Ana", "Carla"), resultado);
+    void aceitaSubsequenciaValida() {
+        assertTrue(solution.isSubsequence("abc", "ahbgdc"));
     }
 
     @Test
-    void semPrioritariosMantemOrdemDeChegada() {
-        List<String> nomes = List.of("Ana", "Bruno", "Carla");
-        List<Boolean> prioridade = List.of(false, false, false);
-
-        List<String> resultado = solution.ordemDeAtendimento(nomes, prioridade);
-
-        assertEquals(List.of("Ana", "Bruno", "Carla"), resultado);
+    void rejeitaQuandoNaoESubsequencia() {
+        assertFalse(solution.isSubsequence("axc", "ahbgdc"));
     }
 
     @Test
-    void todosPrioritariosMantemOrdemDeChegada() {
-        List<String> nomes = List.of("Ana", "Bruno", "Carla");
-        List<Boolean> prioridade = List.of(true, true, true);
-
-        List<String> resultado = solution.ordemDeAtendimento(nomes, prioridade);
-
-        assertEquals(List.of("Ana", "Bruno", "Carla"), resultado);
+    void stringVaziaESubsequenciaDeQualquerString() {
+        assertTrue(solution.isSubsequence("", "ahbgdc"));
     }
 
     @Test
-    void listaVaziaRetornaListaVazia() {
-        List<String> resultado = solution.ordemDeAtendimento(List.of(), List.of());
-
-        assertEquals(List.of(), resultado);
+    void stringIgualETSubsequenciaDeSiMesma() {
+        assertTrue(solution.isSubsequence("abc", "abc"));
     }
 
     @Test
-    void unicoPrioritarioNoFimVaiParaOInicio() {
-        List<String> nomes = List.of("Ana", "Bruno", "Carla", "Diego", "Elis");
-        List<Boolean> prioridade = List.of(false, false, false, false, true);
-
-        List<String> resultado = solution.ordemDeAtendimento(nomes, prioridade);
-
-        assertEquals(List.of("Elis", "Ana", "Bruno", "Carla", "Diego"), resultado);
+    void rejeitaQuandoSEMaiorQueT() {
+        assertFalse(solution.isSubsequence("abcd", "abc"));
     }
 }

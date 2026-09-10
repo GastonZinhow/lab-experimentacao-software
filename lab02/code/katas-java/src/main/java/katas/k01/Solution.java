@@ -1,24 +1,16 @@
 package katas.k01;
 
-import java.util.List;
-
 /**
- * K01 - Fila de Atendimento com Prioridade (issue #22).
+ * K01 - Is Subsequence (issue #22).
+ * https://leetcode.com/problems/is-subsequence/
  *
- * Implementar durante o trial: os metodos abaixo devem substituir o
- * "throw new UnsupportedOperationException()" pela implementacao real.
+ * Dadas duas strings s e t, determina se s e uma subsequencia de t (ou
+ * seja, se e possivel obter s removendo alguns caracteres de t, sem
+ * reordenar os caracteres restantes).
  */
 public class Solution {
 
-    /**
-     * Recebe a lista de estudantes na ordem de chegada e retorna a ordem de
-     * atendimento: primeiro todos os prioritarios (na ordem de chegada entre
-     * eles), depois os demais (na ordem de chegada entre eles).
-     *
-     * @param nomes      nomes dos estudantes, na ordem de chegada
-     * @param prioridade prioridade[i] indica se nomes[i] tem prioridade
-     */
-    public List<String> ordemDeAtendimento(List<String> nomes, List<Boolean> prioridade) {
+    public boolean isSubsequence(String s, String t) {
         throw new UnsupportedOperationException();
     }
 }

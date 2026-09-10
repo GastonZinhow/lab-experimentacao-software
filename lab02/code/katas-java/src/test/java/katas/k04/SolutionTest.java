@@ -2,61 +2,71 @@ package katas.k04;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Testes de aceitacao do K04 (issue #22). Nao alterar durante o trial.
+ * Testes de aceitacao do K04 (issue #22), baseados no exemplo oficial do
+ * LeetCode. Como o problema admite mais de uma atribuicao valida, os
+ * testes verificam a propriedade de validade da solucao em vez de uma
+ * unica saida esperada. Nao alterar durante o trial.
  */
 class SolutionTest {
 
     private final Solution solution = new Solution();
-    private static final double DELTA = 0.001;
 
-    @Test
-    void obterConceitoRespeitaLimitesDeFaixa() {
-        assertEquals("A", solution.obterConceito(9.0));
-        assertEquals("A", solution.obterConceito(9.5));
-        assertEquals("B", solution.obterConceito(7.0));
-        assertEquals("B", solution.obterConceito(8.9));
-        assertEquals("C", solution.obterConceito(5.0));
-        assertEquals("C", solution.obterConceito(6.9));
-        assertEquals("D", solution.obterConceito(4.999));
+    private void assertValidAssignment(int n, int[][] paths, int[] answer) {
+        assertEquals(n, answer.length);
+
+        for (int flower : answer) {
+            assertTrue(flower >= 1 && flower <= 4, "flor fora do intervalo 1-4: " + flower);
+        }
+
+        for (int[] path : paths) {
+            int a = path[0] - 1;
+            int b = path[1] - 1;
+            assertTrue(answer[a] != answer[b],
+                "jardins adjacentes " + path[0] + " e " + path[1] + " tem a mesma flor");
+        }
     }
 
     @Test
-    void calcularMedianaComQuantidadeImparDeNotas() {
-        List<Double> notas = List.of(9.5, 8.0, 6.0, 4.0, 9.0);
+    void atribuiFloresValidasParaExemploOficial() {
+        int n = 4;
+        int[][] paths = {{1, 2}, {2, 3}, {3, 4}, {4, 1}, {1, 3}, {2, 4}};
 
-        assertEquals(8.0, solution.calcularMediana(notas), DELTA);
+        int[] answer = solution.gardenNoAdj(n, paths);
+
+        assertValidAssignment(n, paths, answer);
     }
 
     @Test
-    void calcularMedianaComQuantidadeParDeNotas() {
-        List<Double> notas = List.of(9.5, 8.0, 6.0, 4.0);
+    void atribuiFloresValidasSemCaminhos() {
+        int n = 3;
+        int[][] paths = {};
 
-        assertEquals(7.0, solution.calcularMediana(notas), DELTA);
+        int[] answer = solution.gardenNoAdj(n, paths);
+
+        assertValidAssignment(n, paths, answer);
     }
 
     @Test
-    void conceitoMaisFrequenteSemEmpate() {
-        List<Double> notas = List.of(9.5, 8.0, 6.0, 4.0, 9.0);
+    void atribuiFloresValidasParaCadeiaLinear() {
+        int n = 5;
+        int[][] paths = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
 
-        assertEquals("A", solution.conceitoMaisFrequente(notas));
+        int[] answer = solution.gardenNoAdj(n, paths);
+
+        assertValidAssignment(n, paths, answer);
     }
 
     @Test
-    void conceitoMaisFrequenteEmEmpateRetornaOAlfabeticamenteMenor() {
-        List<Double> notas = List.of(9.0, 9.0, 7.0, 7.0);
+    void atribuiFloresValidasParaJardimComTresVizinhos() {
+        int n = 4;
+        int[][] paths = {{1, 2}, {1, 3}, {1, 4}};
 
-        assertEquals("A", solution.conceitoMaisFrequente(notas));
-    }
+        int[] answer = solution.gardenNoAdj(n, paths);
 
-    @Test
-    void conceitoMaisFrequenteEmEmpateEntreCED() {
-        List<Double> notas = List.of(5.0, 5.0, 3.0, 3.0);
-
-        assertEquals("C", solution.conceitoMaisFrequente(notas));
+        assertValidAssignment(n, paths, answer);
     }
 }

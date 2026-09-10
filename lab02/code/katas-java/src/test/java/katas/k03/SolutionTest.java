@@ -2,50 +2,38 @@ package katas.k03;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Testes de aceitacao do K03 (issue #22). Nao alterar durante o trial.
+ * Testes de aceitacao do K03 (issue #22), baseados nos exemplos oficiais
+ * do LeetCode. Nao alterar durante o trial.
  */
 class SolutionTest {
 
     private final Solution solution = new Solution();
 
     @Test
-    void aceitaCodigoComDigitoVerificadorCorreto() {
-        // digitos: 2,3,0,0,4,5,6 -> soma 20 -> D = 0
-        assertTrue(solution.isValido("CC2300456-0"));
+    void escolheCasasNaoAdjacentesDeMaiorValor() {
+        assertEquals(4, solution.rob(new int[]{1, 2, 3, 1}));
     }
 
     @Test
-    void aceitaOutroCodigoComDigitoVerificadorCorreto() {
-        // digitos: 2,4,0,1,2,3,4 -> soma 16 -> D = 6
-        assertTrue(solution.isValido("ES2401234-6"));
+    void puloDeDuasCasasParaMaximizarOValor() {
+        assertEquals(12, solution.rob(new int[]{2, 7, 9, 3, 1}));
     }
 
     @Test
-    void rejeitaDigitoVerificadorIncorreto() {
-        assertFalse(solution.isValido("CC2300456-1"));
+    void umaUnicaCasaRetornaSeuProprioValor() {
+        assertEquals(5, solution.rob(new int[]{5}));
     }
 
     @Test
-    void rejeitaSiglaDeCursoMinuscula() {
-        assertFalse(solution.isValido("cc2300456-0"));
+    void duasCasasRetornaAMaior() {
+        assertEquals(7, solution.rob(new int[]{3, 7}));
     }
 
     @Test
-    void rejeitaNumeroSequencialComTamanhoErrado() {
-        assertFalse(solution.isValido("CC230456-6"));
-    }
-
-    @Test
-    void rejeitaFormatoSemHifen() {
-        assertFalse(solution.isValido("CC23004560"));
-    }
-
-    @Test
-    void rejeitaCodigoVazio() {
-        assertFalse(solution.isValido(""));
+    void vetorVazioRetornaZero() {
+        assertEquals(0, solution.rob(new int[]{}));
     }
 }

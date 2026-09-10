@@ -1,18 +1,16 @@
 package katas.k03;
 
 /**
- * K03 - Validador de Codigo de Matricula (issue #22).
+ * K03 - House Robber (issue #22).
+ * https://leetcode.com/problems/house-robber/
  *
- * Formato esperado: {@code AAYYNNNNN-D}
- * - AA: sigla do curso, 2 letras maiusculas (A-Z);
- * - YY: ano de ingresso, 2 digitos;
- * - NNNNN: numero sequencial, 5 digitos;
- * - D: digito verificador = soma de todos os digitos numericos do codigo
- *   (os digitos de YY e de NNNNN, 7 digitos ao todo), modulo 10.
+ * Dado um vetor nums em que nums[i] e o valor guardado na i-esima casa de
+ * uma rua, determina o valor maximo que pode ser roubado sem roubar duas
+ * casas adjacentes.
  */
 public class Solution {
 
-    public boolean isValido(String codigo) {
+    public int rob(int[] nums) {
         throw new UnsupportedOperationException();
     }
 }

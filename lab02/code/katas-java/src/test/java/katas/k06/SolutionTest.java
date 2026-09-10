@@ -5,49 +5,35 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Testes de aceitacao do K06 (issue #22). Nao alterar durante o trial.
+ * Testes de aceitacao do K06 (issue #22), baseados nos exemplos oficiais
+ * do LeetCode. Nao alterar durante o trial.
  */
 class SolutionTest {
 
     private final Solution solution = new Solution();
 
     @Test
-    void compactaApenasSequenciasDeTresOuMaisRepeticoes() {
-        assertEquals("a3bbc4d", solution.compactar("aaabbccccd"));
+    void tabuleiroQuatroPorQuatroTemDuasSolucoes() {
+        assertEquals(2, solution.totalNQueens(4));
     }
 
     @Test
-    void naoCompactaSequenciasCurtasIsoladas() {
-        assertEquals("aab4cca", solution.compactar("aabbbbcca"));
+    void tabuleiroUmPorUmTemUmaSolucao() {
+        assertEquals(1, solution.totalNQueens(1));
     }
 
     @Test
-    void compactaSequenciaLongaComContagemDeDoisDigitos() {
-        assertEquals("a10", solution.compactar("aaaaaaaaaa"));
+    void tabuleiroDoisPorDoisNaoTemSolucao() {
+        assertEquals(0, solution.totalNQueens(2));
     }
 
     @Test
-    void textoVazioPermaneceVazio() {
-        assertEquals("", solution.compactar(""));
+    void tabuleiroTresPorTresNaoTemSolucao() {
+        assertEquals(0, solution.totalNQueens(3));
     }
 
     @Test
-    void descompactaSequenciaComCaracteresIsoladosECompactados() {
-        assertEquals("aaabbccccd", solution.descompactar("a3bbc4d"));
-    }
-
-    @Test
-    void descompactaSequenciaComContagemDeDoisDigitos() {
-        assertEquals("aaaaaaaaaa", solution.descompactar("a10"));
-    }
-
-    @Test
-    void compactarEDescompactarSaoInversas() {
-        String original = "aabbbbccccccdde";
-
-        String compactado = solution.compactar(original);
-        String restaurado = solution.descompactar(compactado);
-
-        assertEquals(original, restaurado);
+    void tabuleiroOitoPorOitoTemNoventaEDuasSolucoes() {
+        assertEquals(92, solution.totalNQueens(8));
     }
 }

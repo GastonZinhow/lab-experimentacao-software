@@ -1,69 +1,39 @@
 package katas.k05;
 
-import katas.k05.Solution.Conflito;
-import katas.k05.Solution.Disciplina;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Testes de aceitacao do K05 (issue #22). Nao alterar durante o trial.
+ * Testes de aceitacao do K05 (issue #22), baseados nos exemplos oficiais
+ * do LeetCode. Nao alterar durante o trial.
  */
 class SolutionTest {
 
     private final Solution solution = new Solution();
 
     @Test
-    void detectaSobreposicaoParcialNoMesmoDia() {
-        List<Disciplina> grade = List.of(
-            new Disciplina("Calculo", "SEG", 480, 570),
-            new Disciplina("Fisica", "SEG", 550, 640),
-            new Disciplina("Quimica", "TER", 480, 570),
-            new Disciplina("Programacao", "SEG", 570, 660)
-        );
-
-        List<Conflito> conflitos = solution.detectarConflitos(grade);
-
-        assertEquals(
-            List.of(
-                new Conflito("Calculo", "Fisica"),
-                new Conflito("Fisica", "Programacao")
-            ),
-            conflitos
-        );
+    void encontraSubsequenciaPalindromicaDeQuatroCaracteres() {
+        assertEquals(4, solution.longestPalindromeSubseq("bbbab"));
     }
 
     @Test
-    void horariosQueSoSeTocamNaoSaoConflito() {
-        List<Disciplina> grade = List.of(
-            new Disciplina("Calculo", "SEG", 480, 570),
-            new Disciplina("Programacao", "SEG", 570, 660)
-        );
-
-        assertEquals(List.of(), solution.detectarConflitos(grade));
+    void encontraSubsequenciaPalindromicaDeDoisCaracteres() {
+        assertEquals(2, solution.longestPalindromeSubseq("cbbd"));
     }
 
     @Test
-    void diasDiferentesNuncaConflitam() {
-        List<Disciplina> grade = List.of(
-            new Disciplina("Calculo", "SEG", 480, 570),
-            new Disciplina("Fisica", "TER", 480, 570)
-        );
-
-        assertEquals(List.of(), solution.detectarConflitos(grade));
+    void stringDeUmCaractereEPalindromoDeTamanhoUm() {
+        assertEquals(1, solution.longestPalindromeSubseq("a"));
     }
 
     @Test
-    void gradeVaziaNaoTemConflitos() {
-        assertEquals(List.of(), solution.detectarConflitos(List.of()));
+    void stringJaPalindromaRetornaOProprioTamanho() {
+        assertEquals(5, solution.longestPalindromeSubseq("aba" + "ba"));
     }
 
     @Test
-    void umaUnicaDisciplinaNaoTemConflito() {
-        List<Disciplina> grade = List.of(new Disciplina("Calculo", "SEG", 480, 570));
-
-        assertEquals(List.of(), solution.detectarConflitos(grade));
+    void stringSemRepeticaoRetornaUm() {
+        assertEquals(1, solution.longestPalindromeSubseq("abcde"));
     }
 }
