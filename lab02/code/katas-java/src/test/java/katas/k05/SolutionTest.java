@@ -13,27 +13,27 @@ class SolutionTest {
     private final Solution solution = new Solution();
 
     @Test
-    void encontraSubsequenciaPalindromicaDeQuatroCaracteres() {
-        assertEquals(4, solution.longestPalindromeSubseq("bbbab"));
+    void encontraCicloDeTresVerticesNoExemploOficial() {
+        assertEquals(3, solution.longestCycle(new int[] {3, 3, 4, 2, 3}));
     }
 
     @Test
-    void encontraSubsequenciaPalindromicaDeDoisCaracteres() {
-        assertEquals(2, solution.longestPalindromeSubseq("cbbd"));
+    void retornaMenosUmQuandoNaoExisteCiclo() {
+        assertEquals(-1, solution.longestCycle(new int[] {2, -1, 3, 1}));
     }
 
     @Test
-    void stringDeUmCaractereEPalindromoDeTamanhoUm() {
-        assertEquals(1, solution.longestPalindromeSubseq("a"));
+    void reconheceAutoCicloComoCicloDeTamanhoUm() {
+        assertEquals(1, solution.longestCycle(new int[] {0}));
     }
 
     @Test
-    void stringJaPalindromaRetornaOProprioTamanho() {
-        assertEquals(5, solution.longestPalindromeSubseq("aba" + "ba"));
+    void retornaMaiorCicloQuandoExistemMultiplosCiclos() {
+        assertEquals(3, solution.longestCycle(new int[] {1, 2, 0, 4, 3}));
     }
 
     @Test
-    void stringSemRepeticaoRetornaUm() {
-        assertEquals(1, solution.longestPalindromeSubseq("abcde"));
+    void ignoraCaminhoQueEntraEmCicloJaContado() {
+        assertEquals(3, solution.longestCycle(new int[] {1, 2, 3, 1, 2}));
     }
 }

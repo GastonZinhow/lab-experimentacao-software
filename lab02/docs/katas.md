@@ -55,7 +55,7 @@ discussao do Relatorio Final.
 | K02 | Find if Path Exists in Graph | Facil | BFS em grafo nao direcionado | leetcode.com/problems/find-if-path-exists-in-graph |
 | K03 | House Robber | Media | Programacao dinamica | leetcode.com/problems/house-robber |
 | K04 | Flower Planting With No Adjacent | Media | Guloso sobre grafo | leetcode.com/problems/flower-planting-with-no-adjacent |
-| K05 | Longest Palindromic Subsequence | Media/Dificil | Programacao dinamica (LCS) | leetcode.com/problems/longest-palindromic-subsequence |
+| K05 | Longest Cycle in a Graph | Dificil | Deteccao de ciclo em grafo direcionado | leetcode.com/problems/longest-cycle-in-a-graph |
 | K06 | N-Queens II | Dificil | Backtracking | leetcode.com/problems/n-queens-ii |
 
 ## K01 - Is Subsequence
@@ -101,14 +101,18 @@ nenhum par de jardins conectados por um caminho tenha o mesmo tipo de
 flor. Qualquer atribuicao valida e aceita (o problema garante que sempre
 existe solucao, pois cada jardim tem no maximo 3 vizinhos).
 
-## K05 - Longest Palindromic Subsequence
+## K05 - Longest Cycle in a Graph
 
 **Pacote:** `katas.k05`
 
-Dada uma string `s`, encontrar o tamanho da maior subsequencia
-palindromica de `s`.
+Dado um grafo direcionado com `n` vertices em que cada vertice tem no
+maximo uma aresta de saida, representado por um vetor `edges`, encontrar
+o tamanho do maior ciclo existente. `edges[i]` indica o proximo vertice
+alcancado a partir de `i`; quando `edges[i] = -1`, o vertice nao possui
+aresta de saida.
 
-Exemplos oficiais: `s="bbbab"` -> `4`; `s="cbbd"` -> `2`.
+Exemplos oficiais: `edges=[3,3,4,2,3]` -> `3`;
+`edges=[2,-1,3,1]` -> `-1`.
 
 ## K06 - N-Queens II
 
