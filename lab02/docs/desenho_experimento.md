@@ -64,4 +64,15 @@ as 6 katas, sendo 3 com IA e 3 manualmente.
 - Vazamento de soluçõees já conhecidas.
 - Diferença real de dificuldade entre katas.
 - Interrupções ou diferenças de ambiente durante a execução.
+- **Memorização (ameaça aceita e documentada):** os 6 katas escolhidos
+  (`katas.md`) são problemas clássicos e amplamente indexados do LeetCode,
+  reaproveitados de um trabalho prático de FPAA já resolvido e publicado
+  no GitHub por um integrante do grupo. Isso diverge da recomendação do
+  enunciado do Lab02 de preferir katas autorais/pouco indexados. O
+  assistente de IA pode reproduzir uma solução memorizada durante seu
+  treinamento em vez de raciocinar sobre o problema, o que pode inflar
+  artificialmente o desempenho do tratamento `IA` nas RQ1 e RQ2. O grupo
+  optou conscientemente por essa mescla de dificuldades (fácil, média e
+  difícil) em vez de katas inéditos de dificuldade homogênea, e essa
+  limitação deve ser retomada na discussão do Relatório Final.
 

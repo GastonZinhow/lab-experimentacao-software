@@ -30,7 +30,9 @@ Cada kata vive em seu próprio pacote `katas.kNN`, com:
   (issue #20, `lab02/code/scripts/register_trial.py`).
 
 `katas.k00example` é um kata de exemplo (não faz parte do experimento) que
-serve apenas como template para a issue #22 (seleção dos 6 katas reais).
+serve apenas como template. Os 6 katas reais do experimento (`k01`-`k06`)
+já estão criados (issue #22) e documentados em
+[`lab02/docs/katas.md`](../../docs/katas.md).
 
 ## Rodando os testes
 
