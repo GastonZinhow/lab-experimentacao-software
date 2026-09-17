@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd xmlns="https://pmd-code.org/schema/cpd-report"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         pmdVersion="7.27.0"
+         timestamp="2026-09-16T20:26:37.5879338-03:00"
+         version="1.0.0"
+         xsi:schemaLocation="https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd">
+   <file path="C:\Users\MatheusGastonVianaSi\Documents\GitHub\lab-experimentacao-software\lab02\code\trials\matheus_gaston\Manual\K04\Solution.java"
+         totalNumberOfTokens="208"/>
+</pmd-cpd>
