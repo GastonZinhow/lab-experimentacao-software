@@ -1,0 +1,7 @@
+trial_id,integrante,kata,tratamento,timebox_segundos,inicio,fim,tempo_segundos,tempo_min,censurado,testes_passando,testes_total,taxa_sucesso,observacoes
+matheus_gaston-k01-IA,matheus_gaston,k01,IA,2100,2026-09-16T19:59:16-03:00,2026-09-16T20:00:39-03:00,83,1.38,False,5,5,1.0000,1prompt
+matheus_gaston-k02-Manual,matheus_gaston,k02,Manual,2100,2026-09-16T19:42:10-03:00,2026-09-16T20:08:43-03:00,1593,26.55,False,4,4,1.0000,
+matheus_gaston-k03-IA,matheus_gaston,k03,IA,2100,2026-09-16T20:09:47-03:00,2026-09-16T20:11:19-03:00,92,1.53,False,5,5,1.0000,1 prompt
+matheus_gaston-k04-Manual,matheus_gaston,k04,Manual,2100,2026-09-16T20:05:23-03:00,2026-09-16T20:13:55-03:00,512,8.53,False,4,4,1.0000,
+matheus_gaston-k05-IA,matheus_gaston,k05,IA,2100,2026-09-16T20:15:00-03:00,2026-09-16T20:16:01-03:00,61,1.02,False,5,5,1.0000,1prompt
+matheus_gaston-k06-Manual,matheus_gaston,k06,Manual,2100,2026-09-16T19:49:11-03:00,2026-09-16T20:21:01-03:00,1910,31.83,False,5,5,1.0000,
