@@ -1,5 +1,5 @@
 class Solution {
-    public int[] gardenNoAdjacent(int n, int[][] paths) {
+    public int[] gardenNoAdj(int n, int[][] paths) {
         List<List<Integer>> graph = new ArrayList<>();
         for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
 

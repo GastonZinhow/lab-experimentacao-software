@@ -11,3 +11,9 @@ Mirelly-k03-Manual,Mirelly,k03,Manual,2100,2026-09-16T21:35:00-03:00,2026-09-16T
 Mirelly-k04-IA,Mirelly,k04,IA,2100,2026-09-16T21:55:00-03:00,2026-09-16T21:56:09-03:00,69.0,1.15,False,4,4,1.0000,1 prompt
 Mirelly-k05-Manual,Mirelly,k05,Manual,2100,2026-09-16T22:00:00-03:00,2026-09-16T22:25:00-03:00,1500.0,25.0,False,5,5,1.0000,trial concluido
 Mirelly-k06-IA,Mirelly,k06,IA,2100,2026-09-16T22:30:00-03:00,2026-09-16T22:30:27-03:00,27.0,0.45,False,5,5,1.0000,1 prompt
+Luisa-k01-IA,Luisa,k01,IA,2100,2026-09-16T20:00:00-03:00,2026-09-16T20:15:00-03:00,900,15.0,False,5,5,1.0000,tempo aproximado autorreportado
+Luisa-k02-Manual,Luisa,k02,Manual,2100,2026-09-16T20:15:00-03:00,2026-09-16T20:35:00-03:00,1200,20.0,False,4,4,1.0000,tempo aproximado autorreportado
+Luisa-k03-Manual,Luisa,k03,Manual,2100,2026-09-16T20:35:00-03:00,2026-09-16T20:45:00-03:00,600,10.0,False,5,5,1.0000,tempo aproximado autorreportado
+Luisa-k04-IA,Luisa,k04,IA,2100,2026-09-16T20:45:00-03:00,2026-09-16T21:20:00-03:00,2100,35.0,False,4,4,1.0000,tempo aproximado autorreportado; precisou pesquisar
+Luisa-k05-Manual,Luisa,k05,Manual,2100,2026-09-16T21:20:00-03:00,2026-09-16T21:50:00-03:00,1800,30.0,False,5,5,1.0000,tempo aproximado autorreportado; precisou pesquisar
+Luisa-k06-IA,Luisa,k06,IA,2100,2026-09-16T21:50:00-03:00,2026-09-16T22:07:00-03:00,1020,17.0,False,5,5,1.0000,tempo aproximado autorreportado; ja conhecia o problema
