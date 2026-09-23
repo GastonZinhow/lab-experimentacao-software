@@ -138,7 +138,7 @@ def carregar_trials():
 
 def duplicacao_cpd(run_id):
     """% de tokens duplicados segundo o PMD CPD (0 se nao houver duplicacao)."""
-    xml_path = PROCESSED_DIR / f"cpd-{run_id}.xml"
+    xml_path = PROCESSED_DIR / "cpd" / f"cpd-{run_id}.xml"
     if not xml_path.exists():
         return float("nan")
     raiz = ET.parse(xml_path).getroot()
@@ -557,7 +557,7 @@ def grafico_rq3(estaticas):
     cabecalho(fig, 0.45, 0.35, "RQ3 · Estrutura do código produzido",
               "Cada ponto é a solução final de um trial; a linha preta marca a mediana do tratamento.")
     desenhar_rq3(fig, 0.45, 1.35, 11.1, 3.05, estaticas)
-    rodape(fig, f"Fonte: data/processed/ck e cpd-*.xml · {descricao_amostra(estaticas)} · "
+    rodape(fig, f"Fonte: data/processed/ck e data/processed/cpd-*.xml · {descricao_amostra(estaticas)} · "
                 "katas diferentes em cada tratamento")
     salvar(fig, "rq3_metricas_estaticas.png")
 
@@ -633,7 +633,7 @@ def dashboard(trials, estaticas):
     else:
         desenhar_rq3(fig, 0.45, y + 0.95, 13.1, 3.0, estaticas)
 
-    rodape(fig, "Fontes: data/raw/trials.csv, data/processed/ck, data/processed/cpd-*.xml · "
+    rodape(fig, "Fontes: data/raw/trials.csv, data/processed/ck, data/processed/cpd/cpd-*.xml · "
                 "gerado por scripts/dashboard.py (issue #45)")
     salvar(fig, "dashboard.png")
 
