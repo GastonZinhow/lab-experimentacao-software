@@ -70,3 +70,27 @@ Enquanto um trial está em andamento, `start` grava um arquivo local
 horário de início. Ele é apagado automaticamente por `stop` ou `abort`. Só é
 possível ter um trial em andamento por vez — isso é intencional, para
 impedir que dois cronômetros fiquem rodando ao mesmo tempo por engano.
+
+## Dashboard de visualização (issue #45)
+
+`dashboard.py` lê `../data/raw/trials.csv` e as saídas do CK/PMD CPD em
+`../data/processed` e gera os gráficos comparando `IA` e `Manual` em
+`../data/processed/charts`:
+
+| Arquivo | Conteúdo |
+|---|---|
+| `rq1_tempo_por_tratamento.png` | RQ1 · tempo até passar nos testes por tratamento (trials, mediana e IQR) |
+| `rq1_tempo_por_kata.png` | RQ1 · mediana IA vs. Manual em cada kata e razão Manual ÷ IA |
+| `rq2_taxa_sucesso.png` | RQ2 · % de testes de aceitação passando por tratamento |
+| `rq3_metricas_estaticas.png` | RQ3 · WMC, LOC, WMC ÷ LOC e duplicação (CPD) por tratamento |
+| `dashboard.png` | visão consolidada das três RQs |
+
+Requer Pandas e Matplotlib (`pip install -r ../requirements.txt`). Rodar a
+partir de `lab02/code`:
+
+```
+python scripts/dashboard.py
+```
+
+Os gráficos são recalculados a partir dos dados a cada execução, então
+basta rodar de novo depois de registrar novos trials ou métricas.
