@@ -62,7 +62,8 @@ if ($CkJarPath -and (Test-Path -LiteralPath $CkJarPath)) {
     $ckOutput = Join-Path $processed "ck\$runName"
     $ckLog = Join-Path $processed "ck-$runName.log"
     New-Item -ItemType Directory -Force -Path $ckOutput | Out-Null
-    $exitCode = Invoke-NativeCommand "java -jar `"$ckJar`" `"$source`" false 0 false `"$ckOutput`"" $ckLog
+    # O CK concatena o nome do CSV direto no caminho de saida, entao a barra final e obrigatoria
+    $exitCode = Invoke-NativeCommand "java -jar `"$ckJar`" `"$source`" false 0 false `"$ckOutput/`"" $ckLog
     $status = if ($exitCode -eq 0) { "ok" } else { "failed" }
     $notes = if ($exitCode -eq 0) { "CK executado" } else { "CK falhou; veja o log" }
     Add-CsvRow $staticMetricsCsv $runName $source "CK" $ckOutput $status $exitCode $notes
@@ -75,8 +76,10 @@ else {
 
 if ($PmdBinPath -and (Test-Path -LiteralPath $PmdBinPath)) {
     $pmdBin = (Resolve-Path -LiteralPath $PmdBinPath).Path
-    $cpdOutput = Join-Path $processed "cpd-$runName.xml"
-    $cpdLog = Join-Path $processed "cpd-$runName.log"
+    $cpdDir = Join-Path $processed "cpd"
+    New-Item -ItemType Directory -Force -Path $cpdDir | Out-Null
+    $cpdOutput = Join-Path $cpdDir "cpd-$runName.xml"
+    $cpdLog = Join-Path $cpdDir "cpd-$runName.log"
     $exitCode = Invoke-NativeCommandWithSeparateOutput "`"$pmdBin`" cpd --minimum-tokens $MinimumTokens --dir `"$source`" --language java --format xml" $cpdOutput $cpdLog
     $status = if ($exitCode -eq 0) { "ok" } else { "failed" }
     $notes = if ($exitCode -eq 0) { "PMD CPD executado" } else { "PMD CPD encontrou duplicacao ou falhou; veja XML/log" }
