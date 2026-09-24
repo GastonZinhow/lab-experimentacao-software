@@ -421,6 +421,32 @@ def escala_bonita(valor, max_divisoes=5):
     return valor / max_divisoes, valor
 
 
+def deslocamentos_beeswarm(ax, valores, diametro_px=12):
+    """Deslocamento horizontal (em dados) de cada ponto para que nenhum se sobreponha.
+
+    Cada ponto vai para a posicao livre mais proxima do centro, testando
+    colisao em pixels com os pontos ja posicionados.
+    """
+    caixa = ax.get_window_extent()
+    (x0, x1), (y0, y1) = ax.get_xlim(), ax.get_ylim()
+    px_x = caixa.width / (x1 - x0)
+    px_y = caixa.height / (y1 - y0)
+    d = diametro_px * PX
+    colocados = []
+    deslocamentos = []
+    for v in valores:
+        y = v * px_y
+        candidatos = [0.0]
+        for k in range(1, 20):
+            candidatos += [k * d / 2, -k * d / 2]
+        for c in candidatos:
+            if all((c - cx) ** 2 + (y - cy) ** 2 >= d ** 2 for cx, cy in colocados):
+                colocados.append((c, y))
+                deslocamentos.append(c / px_x)
+                break
+    return deslocamentos
+
+
 def desenhar_painel_rq3(ax, estaticas, coluna, casas):
     estilo_eixos(ax, grade="y")
     ax.set_xlim(-0.6, 1.6)
@@ -436,19 +462,16 @@ def desenhar_painel_rq3(ax, estaticas, coluna, casas):
         valores = estaticas.loc[estaticas["tratamento"] == trat, coluna].sort_values().reset_index(drop=True)
         if valores.empty:
             continue
-        # valores proximos (ate 4% do eixo) ficam lado a lado em vez de sobrepostos
-        grupos = []
-        for v in valores:
-            if grupos and v - grupos[-1][-1] <= 0.04 * topo:
-                grupos[-1].append(v)
-            else:
-                grupos.append([v])
-        xs = [x + 0.17 * (i - (len(g) - 1) / 2) for g in grupos for i in range(len(g))]
+        xs = [x + d for d in deslocamentos_beeswarm(ax, valores)]
+        ys = list(valores)
+        meia = max(abs(xi - x) for xi in xs) + 0.14
         med = valores.median()
-        ax.plot([x - 0.3, x + 0.3], [med, med], color=INK, linewidth=pt(2), zorder=3, solid_capstyle="butt")
-        pontos(ax, xs, valores, COR[trat])
-        ax.text(x + 0.34, med, fmt(med, casas), ha="left", va="center", fontsize=9,
-                color=INK, fontweight="semibold")
+        ax.plot([x - meia, x + meia], [med, med], color=INK, linewidth=pt(2), zorder=3,
+                solid_capstyle="butt")
+        pontos(ax, xs, ys, COR[trat])
+        ax.text(x + meia + 0.05, med, fmt(med, casas), ha="left", va="center", fontsize=9,
+                color=INK, fontweight="semibold",
+                bbox=dict(boxstyle="round,pad=0.15", facecolor=SURFACE, edgecolor="none"))
 
 
 def desenhar_tile_duplicacao(fig, esq, topo, larg, alt, estaticas):
@@ -528,8 +551,14 @@ def grafico_tempo_por_tratamento(trials):
 def grafico_tempo_por_kata(trials):
     n = trials["kata"].nunique()
     fig = figura(11, 2.45 + 0.62 * n)
-    cabecalho(fig, 0.45, 0.35, "RQ1 · Tempo por kata e tratamento",
-              "Em todos os katas, a mediana com IA ficou abaixo da mediana manual.")
+    medianas = trials.groupby(["kata", "tratamento"])["tempo_min"].median().unstack().dropna()
+    ia_mais_rapida = int((medianas["IA"] < medianas["Manual"]).sum())
+    if ia_mais_rapida == len(medianas):
+        sub = "Em todos os katas, a mediana com IA ficou abaixo da mediana manual."
+    else:
+        sub = (f"A mediana com IA ficou abaixo da mediana manual em {ia_mais_rapida} "
+               f"de {len(medianas)} katas.")
+    cabecalho(fig, 0.45, 0.35, "RQ1 · Tempo por kata e tratamento", sub)
     ax = eixos(fig, 3.35, 1.5, 6.45, 0.62 * n)
     desenhar_tempo_por_kata(ax, trials)
     rodape(fig, f"Fonte: data/raw/trials.csv · {descricao_amostra(trials)} · "
@@ -557,7 +586,7 @@ def grafico_rq3(estaticas):
     cabecalho(fig, 0.45, 0.35, "RQ3 · Estrutura do código produzido",
               "Cada ponto é a solução final de um trial; a linha preta marca a mediana do tratamento.")
     desenhar_rq3(fig, 0.45, 1.35, 11.1, 3.05, estaticas)
-    rodape(fig, f"Fonte: data/processed/ck e data/processed/cpd-*.xml · {descricao_amostra(estaticas)} · "
+    rodape(fig, f"Fonte: data/processed/ck e data/processed/cpd/cpd-*.xml · {descricao_amostra(estaticas)} · "
                 "katas diferentes em cada tratamento")
     salvar(fig, "rq3_metricas_estaticas.png")
 
