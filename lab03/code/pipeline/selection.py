@@ -82,33 +82,58 @@ def initial_slices(min_stars: int, breaks: List[int]) -> List[SearchSlice]:
     return slices
 
 
-def _search_page(client: GitHubClient, query: str, page: int) -> Dict[str, Any]:
+def _slim_search(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Guarda só os campos usados: cada página bruta tem ~650 KB."""
+    return {
+        "total_count": data.get("total_count", 0),
+        "incomplete_results": data.get("incomplete_results", False),
+        "items": [
+            {
+                "id": item["id"],
+                "full_name": item["full_name"],
+                "owner": item["owner"]["login"],
+                "repo": item["name"],
+                "stars": item["stargazers_count"],
+                "language": item.get("language"),
+                "created_at": item.get("created_at"),
+                "default_branch": item.get("default_branch"),
+                "fork": item.get("fork", False),
+                "archived": item.get("archived", False),
+            }
+            for item in data.get("items", [])
+        ],
+    }
+
+
+def _search_page(
+    client: GitHubClient, query: str, page: int, per_page: int = SEARCH_PAGE_SIZE
+) -> Dict[str, Any]:
     data, _ = client.get_json(
         f"{API}/search/repositories",
         params={
             "q": query,
             "sort": "stars",
             "order": "desc",
-            "per_page": SEARCH_PAGE_SIZE,
+            "per_page": per_page,
             "page": page,
         },
+        transform=_slim_search,
     )
     return data
 
 
 def plan_slices(
     client: GitHubClient, slices: List[SearchSlice], today: date
-) -> List[Tuple[SearchSlice, Dict[str, Any]]]:
+) -> List[Tuple[SearchSlice, int]]:
     """
     Subdivide as faixas até que nenhuma passe do teto de 1.000 resultados.
-    Retorna as faixas finais com a 1ª página de resultados de cada uma.
+    Retorna as faixas finais com o `total_count` de cada uma.
     """
     pending = list(slices)
     leaves = []
     while pending:
         s = pending.pop(0)
-        first_page = _search_page(client, s.query(), 1)
-        total = first_page.get("total_count", 0)
+        total = _search_page(client, s.query(), 1, per_page=1).get("total_count", 0)
         if total > SEARCH_CAP:
             parts = s.split(today)
             if parts:
@@ -116,24 +141,8 @@ def plan_slices(
                 pending = parts + pending
                 continue
             print(f"  [Aviso] {s.query()}: {total} resultados e nao ha como subdividir")
-        leaves.append((s, first_page))
+        leaves.append((s, total))
     return leaves
-
-
-def _candidate_record(item: Dict[str, Any], query: str) -> Dict[str, Any]:
-    return {
-        "id": item["id"],
-        "full_name": item["full_name"],
-        "owner": item["owner"]["login"],
-        "repo": item["name"],
-        "stars": item["stargazers_count"],
-        "language": item.get("language"),
-        "created_at": item.get("created_at"),
-        "default_branch": item.get("default_branch"),
-        "fork": item.get("fork", False),
-        "archived": item.get("archived", False),
-        "faixa_busca": query,
-    }
 
 
 def search_candidates(
@@ -147,17 +156,15 @@ def search_candidates(
     leaves = plan_slices(client, initial_slices(min_stars, breaks), today)
 
     records, slice_log = [], []
-    for s, first_page in leaves:
+    for s, total in leaves:
         query = s.query()
-        total = first_page.get("total_count", 0)
         n_pages = min(-(-total // SEARCH_PAGE_SIZE), SEARCH_CAP // SEARCH_PAGE_SIZE)
-        items = list(first_page.get("items", []))
-        incomplete = bool(first_page.get("incomplete_results"))
-        for page in range(2, n_pages + 1):
+        items, incomplete = [], False
+        for page in range(1, n_pages + 1):
             data = _search_page(client, query, page)
             items.extend(data.get("items", []))
             incomplete = incomplete or bool(data.get("incomplete_results"))
-        records.extend(_candidate_record(i, query) for i in items)
+        records.extend({**i, "faixa_busca": query} for i in items)
         slice_log.append({
             "faixa_busca": query,
             "total_count": total,

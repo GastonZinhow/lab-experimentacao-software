@@ -17,6 +17,7 @@ from pipeline.selection import (
     count_valid_runs,
     initial_slices,
     plan_slices,
+    search_candidates,
 )
 
 API = "https://api.github.com"
@@ -140,7 +141,7 @@ class FakeSearchClient:
         self.total_for = total_for
         self.queries = []
 
-    def get_json(self, url, params=None):
+    def get_json(self, url, params=None, transform=None):
         self.queries.append(params["q"])
         return {"total_count": self.total_for(params["q"]), "items": []}, False
 
@@ -152,7 +153,7 @@ def test_plan_slices_subdivide_ate_nenhuma_faixa_passar_do_teto():
         return int(hi) - int(lo) + 1
 
     leaves = plan_slices(FakeSearchClient(total_for), [SearchSlice(1001, 4000)], date(2026, 10, 7))
-    totals = [first["total_count"] for _, first in leaves]
+    totals = [total for _, total in leaves]
 
     assert all(t <= 1000 for t in totals)
     assert sum(totals) == 3000
@@ -160,6 +161,40 @@ def test_plan_slices_subdivide_ate_nenhuma_faixa_passar_do_teto():
     bounds = [(s.stars_lo, s.stars_hi) for s, _ in leaves]
     assert bounds[0][0] == 1001 and bounds[-1][1] == 4000
     assert all(a[1] + 1 == b[0] for a, b in zip(bounds, bounds[1:]))
+
+
+def _repo_item(i, stars):
+    return {
+        "id": i, "full_name": f"org/r{i}", "name": f"r{i}", "owner": {"login": "org"},
+        "stargazers_count": stars, "language": "Go", "created_at": "2020-01-01T00:00:00Z",
+        "default_branch": "main", "fork": False, "archived": False,
+        "description": "campo descartado antes do cache",
+    }
+
+
+def test_search_candidates_pagina_remove_duplicatas_e_enxuga_cache(client):
+    # faixa [1001..1999]: 150 repositórios (2 páginas); faixa >=2000: o
+    # repositório 149 aparece de novo (mudou de faixa durante a coleta)
+    faixa1 = [_repo_item(i, 1500) for i in range(150)]
+    faixa2 = [_repo_item(149, 2001), _repo_item(500, 9000)]
+
+    def responder(request, context):
+        q = request.qs["q"][0]
+        per_page, page = int(request.qs["per_page"][0]), int(request.qs["page"][0])
+        items = faixa1 if "1001..1999" in q else faixa2
+        return {"total_count": len(items), "incomplete_results": False,
+                "items": items[(page - 1) * per_page: page * per_page]}
+
+    with requests_mock.Mocker() as m:
+        m.get(f"{API}/search/repositories", json=responder)
+        df, log = search_candidates(client, 1001, [2000], date(2026, 10, 7))
+
+    assert len(df) == 151
+    assert df["id"].is_unique
+    assert list(log["coletados"]) == [150, 2]
+    assert not log["acima_do_teto"].any()
+    assert "description" not in df.columns
+    assert df.iloc[0]["full_name"] == "org/r500"   # ordenado por estrelas
 
 
 def test_plan_slices_mantem_faixa_dentro_do_teto():

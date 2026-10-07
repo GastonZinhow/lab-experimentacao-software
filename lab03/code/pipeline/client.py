@@ -2,7 +2,7 @@ import os
 import re
 import time
 import requests
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Callable, Dict, Any, List, Optional, Tuple
 from urllib.parse import parse_qs, urlparse
 from pipeline.cache import ResponseCache
 
@@ -102,8 +102,12 @@ class GitHubClient:
         return resp
 
     def get_json(
-        self, url: str, params: Optional[Dict[str, Any]] = None
+        self,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        transform: Optional[Callable[[Any], Any]] = None,
     ) -> Tuple[Any, bool]:
+        """`transform` reduz a resposta antes de ela ir para o cache."""
         full_req = requests.Request("GET", url, params=params).prepare()
         cache_key = full_req.url
         self.total_requests += 1
@@ -117,6 +121,8 @@ class GitHubClient:
         self.network_requests += 1
         resp = self.request_with_retry(url, params=params)
         data = resp.json()
+        if transform is not None and resp.status_code == 200:
+            data = transform(data)
 
         if self.cache and resp.status_code == 200:
             self.cache.set(cache_key, data)
