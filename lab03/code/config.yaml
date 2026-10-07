@@ -1,0 +1,8 @@
+github_token_env: "GITHUB_TOKEN"
+window:
+  start: "2025-09-30"
+  end: "2026-09-30"
+cache_dir: ".cache"
+output_dir: "data"
+max_retries: 5
+seed: 42
