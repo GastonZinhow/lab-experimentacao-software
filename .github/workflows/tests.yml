@@ -22,5 +22,7 @@ jobs:
 
       - name: Executar Pytest com Trava de Cobertura (mínimo 80%)
         working-directory: lab03/code
+        env:
+          PYTHONPATH: .
         run: |
-          pytest --cov=metricas --cov-fail-under=80 --cov-report=term-missing
+          pytest --cov=metrics --cov-fail-under=80 --cov-report=term-missing
