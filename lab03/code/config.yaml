@@ -6,3 +6,12 @@ cache_dir: ".cache"
 output_dir: "data"
 max_retries: 5
 seed: 42
+selection:
+  # Busca: stars:>1000, fatiada nas faixas [1001..1999], [2000..4999], ...
+  # Faixas com mais de 1.000 resultados são subdivididas automaticamente.
+  min_stars: 1001
+  star_breaks: [2000, 5000, 10000, 50000]
+  # Candidatos são avaliados em ordem aleatória (seed) até reunir a amostra.
+  sample_size: 100
+  min_releases: 5
+  min_runs: 50
