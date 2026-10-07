@@ -1,3 +1,4 @@
+import time
 import argparse
 import yaml
 import os
@@ -7,6 +8,7 @@ from pipeline.client import GitHubClient
 from pipeline.collector_runs import collect_repo_runs
 
 def main():
+    start_time = time.time()
     parser = argparse.ArgumentParser(description="Pipeline DORA Mining")
     parser.add_argument("--config", required=True, help="Caminho para config.yaml")
     args = parser.parse_args()
@@ -38,6 +40,21 @@ def main():
         final_df = pd.concat(all_runs_dfs, ignore_index=True)
         final_df.to_csv(os.path.join(cfg.get("output_dir", "data"), "runs.csv"), index=False)
         print(f"Salvo runs.csv com {len(final_df)} execuções coletadas.")
+
+    elapsed = time.time() - start_time
+
+    print("\n" + "=" * 50)
+    print("           RELATÓRIO DE DESEMPENHO E CACHE        ")
+    print("=" * 50)
+    print(f"Tempo total de execução  : {elapsed:.2f} segundos")
+    print(f"Total de chamadas lógicas: {client.total_requests}")
+    print(f"Requisições na REDE (API): {client.network_requests}")
+    print(f"Requisições via CACHE    : {client.cache_hits}")
+    
+    if client.total_requests > 0:
+        taxa_cache = (client.cache_hits / client.total_requests) * 100
+        print(f"Taxa de acerto de Cache  : {taxa_cache:.1f}%")
+    print("=" * 50)
 
 if __name__ == "__main__":
     main()
