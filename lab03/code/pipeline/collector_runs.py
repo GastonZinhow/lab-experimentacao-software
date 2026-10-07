@@ -25,8 +25,9 @@ def fetch_runs_range(client: GitHubClient, owner: str, repo: str, branch: str, s
         "per_page": 100
     }
 
-    resp = client.request_with_retry(url, params=params)
-    data = resp.json()
+    # Sonda com per_page=1 via cache: numa nova execução o total do mês
+    # já está em disco e só as páginas ainda não baixadas vão para a API.
+    data, _ = client.get_json(url, params={**params, "per_page": 1})
     total_count = data.get("total_count", 0)
 
     if total_count == 0:

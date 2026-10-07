@@ -1,8 +1,31 @@
 import os
+import re
 import time
 import requests
 from typing import Dict, Any, List, Optional, Tuple
+from urllib.parse import parse_qs, urlparse
 from pipeline.cache import ResponseCache
+
+
+def parse_last_page(link_header: Optional[str]) -> Optional[int]:
+    """
+    Lê o número da última página no cabeçalho `Link` da API do GitHub.
+
+    Ex.: '<https://api.github.com/...&page=2>; rel="next",
+          <https://api.github.com/...&page=523>; rel="last"' -> 523
+
+    Retorna None quando não há `rel="last"` (resposta de página única
+    ou já na última página).
+    """
+    if not link_header:
+        return None
+    for part in link_header.split(","):
+        match = re.search(r'<([^>]+)>\s*;\s*rel="last"', part)
+        if match:
+            page = parse_qs(urlparse(match.group(1)).query).get("page")
+            if page:
+                return int(page[0])
+    return None
 
 
 class GitHubClient:
@@ -44,6 +67,16 @@ class GitHubClient:
             )
             time.sleep(sleep_duration)
 
+    @staticmethod
+    def _is_rate_limited(response: requests.Response) -> bool:
+        if response.status_code not in (403, 429):
+            return False
+        return (
+            response.headers.get("X-RateLimit-Remaining") == "0"
+            or "Retry-After" in response.headers
+            or "rate limit" in response.text.lower()
+        )
+
     def request_with_retry(
         self, url: str, params: Optional[Dict[str, Any]] = None
     ) -> requests.Response:
@@ -55,12 +88,14 @@ class GitHubClient:
             resp = self.session.get(full_url)
             self._handle_rate_limit(resp)
 
-            if resp.status_code in [200, 404]:
+            if resp.ok or resp.status_code == 404:
                 return resp
-            elif 500 <= resp.status_code < 600 or resp.status_code == 403:
-                time.sleep(backoff)
+            elif 500 <= resp.status_code < 600 or self._is_rate_limited(resp):
+                time.sleep(int(resp.headers.get("Retry-After", backoff)))
                 backoff *= 2
             else:
+                # 403 que não é rate limit (ex.: lista de contribuidores
+                # grande demais) não melhora com nova tentativa.
                 resp.raise_for_status()
 
         resp.raise_for_status()
@@ -87,6 +122,39 @@ class GitHubClient:
             self.cache.set(cache_key, data)
 
         return data, False
+
+    def count_items(
+        self, url: str, params: Optional[Dict[str, Any]] = None
+    ) -> Optional[int]:
+        """
+        Conta os itens de um endpoint paginado sem baixar a lista inteira:
+        com `per_page=1`, o número da última página no cabeçalho `Link`
+        é o total de itens. Retorna None se o recurso não existir (404).
+        """
+        params = {**(params or {}), "per_page": 1}
+        full_req = requests.Request("GET", url, params=params).prepare()
+        cache_key = f"{full_req.url}#count"
+        self.total_requests += 1
+
+        if self.cache:
+            cached = self.cache.get(cache_key)
+            if cached is not None:
+                self.cache_hits += 1
+                return cached["count"]
+
+        self.network_requests += 1
+        resp = self.request_with_retry(url, params=params)
+        if resp.status_code == 404:
+            return None
+
+        count = parse_last_page(resp.headers.get("Link"))
+        if count is None:
+            # Página única: 0 ou 1 item (204 = repositório vazio).
+            count = len(resp.json()) if resp.status_code == 200 else 0
+
+        if self.cache:
+            self.cache.set(cache_key, {"count": count})
+        return count
 
     def paginate(
         self, url: str, params: Optional[Dict[str, Any]] = None
