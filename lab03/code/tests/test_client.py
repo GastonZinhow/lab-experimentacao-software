@@ -34,6 +34,33 @@ def test_client_retry_sucesso_apos_500(client):
             assert mock_sleep.called
 
 
+def test_client_retry_apos_queda_de_conexao(client):
+    url = "https://api.github.com/test-conexao"
+
+    with requests_mock.Mocker() as m:
+        m.get(url, [
+            {"exc": requests.exceptions.ConnectionError("Remote end closed connection")},
+            {"json": {"status": "ok"}, "status_code": 200},
+        ])
+
+        with patch("time.sleep") as mock_sleep:
+            data, _ = client.get_json(url)
+            assert data == {"status": "ok"}
+            assert mock_sleep.called
+
+
+def test_client_queda_de_conexao_persistente_lanca_erro(client):
+    url = "https://api.github.com/test-conexao-fora"
+
+    with requests_mock.Mocker() as m:
+        m.get(url, exc=requests.exceptions.ConnectionError("fora do ar"))
+
+        with patch("time.sleep"):
+            with pytest.raises(requests.exceptions.ConnectionError):
+                client.get_json(url)
+        assert m.call_count == 3
+
+
 def test_client_retry_exaustao_lanca_erro(client):
     url = "https://api.github.com/test-fail"
 
