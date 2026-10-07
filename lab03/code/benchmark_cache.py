@@ -15,9 +15,8 @@ with open(CONFIG_PATH, "r") as f:
 start = cfg["window"]["start"]
 end = cfg["window"]["end"]
 
-CANDIDATES_PATH = os.path.join(cfg.get("output_dir", "data"), "candidates.csv")
-if not os.path.exists(CANDIDATES_PATH):
-    CANDIDATES_PATH = os.path.join(cfg.get("output_dir", "data"), "candidates.csv")
+# Amostra final gerada por `python -m pipeline` (owner, repo, default_branch)
+CANDIDATES_PATH = os.path.join(cfg.get("output_dir", "data"), "metadados.csv")
 
 df_candidates = pd.read_csv(CANDIDATES_PATH)
 
