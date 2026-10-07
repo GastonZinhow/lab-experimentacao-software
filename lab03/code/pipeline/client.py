@@ -85,7 +85,16 @@ class GitHubClient:
 
         backoff = 1
         for attempt in range(self.max_retries):
-            resp = self.session.get(full_url)
+            try:
+                resp = self.session.get(full_url, timeout=60)
+            except (requests.ConnectionError, requests.Timeout) as e:
+                # Queda de rede é temporária como um 5xx: mesmo backoff.
+                if attempt == self.max_retries - 1:
+                    raise
+                print(f"[Rede] {e.__class__.__name__}; nova tentativa em {backoff}s")
+                time.sleep(backoff)
+                backoff *= 2
+                continue
             self._handle_rate_limit(resp)
 
             if resp.ok or resp.status_code == 404:
