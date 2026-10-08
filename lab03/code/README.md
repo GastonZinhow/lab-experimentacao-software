@@ -30,6 +30,15 @@ o que já foi baixado é lido do cache.
    e nº de contribuidores (`GET /contributors?per_page=1&anon=true`, lendo a
    última página do cabeçalho `Link`).
 
+### Conferência da coleta
+```bash
+python conferencia.py --config config.yaml
+```
+Recalcula, sem cache e por um caminho independente do pipeline, o nº de
+releases e de runs válidos do repositório com menos e do com mais runs da
+amostra, e grava `data/conferencia.md` com a comparação e os links para
+conferir na interface do GitHub. Sai com código 1 se algum valor divergir.
+
 ### Saídas (`data/`)
 | Arquivo | Conteúdo |
 |---|---|
@@ -37,7 +46,8 @@ o que já foi baixado é lido do cache.
 | `candidatos.csv` | Todos os candidatos, com `ordem_avaliacao`, `status` (`incluido`, `descartado`, `nao_avaliado`) e `motivo_descarte`. |
 | `metadados.csv` | Amostra final com os fatores da RQ 06. |
 | `funil.csv` | Quantos repositórios restam após cada etapa e por que os demais saíram. |
-| `runs.csv` | Workflow runs (`event=push`, default branch, janela) da amostra final. |
+| `runs.csv` | Workflow runs (`event=push`, default branch, janela) da amostra final (não versionado: é regerado pelo cache). |
+| `conferencia.md` | Resultado de `conferencia.py`. |
 
 #### `metadados.csv`
 | Coluna | Tipo | Unidade | Origem |
