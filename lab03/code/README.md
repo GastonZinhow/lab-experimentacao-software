@@ -16,6 +16,10 @@ python -m pipeline --config config.yaml                  # amostra completa (sel
 python -m pipeline --config config.yaml --sample-size 5  # teste rápido
 ```
 
+No Windows, `coletar.cmd` roda a coleta e a conferência em sequência e grava
+o log em `.cache/pipeline.log`; enquanto o pipeline roda, o Windows não entra
+em suspensão automática (a tela pode apagar).
+
 Todas as respostas da API ficam em `.cache/api_cache.db`. Se a coleta for
 interrompida (rate limit, rede, `Ctrl+C`), basta rodar o mesmo comando de novo:
 o que já foi baixado é lido do cache.

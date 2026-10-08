@@ -3,6 +3,7 @@ import argparse
 from datetime import date
 from pipeline.config import load_config
 import os
+import sys
 import pandas as pd
 from pipeline.cache import ResponseCache
 from pipeline.client import GitHubClient
@@ -15,8 +16,20 @@ from pipeline.selection import (
     select_sample,
 )
 
+def impedir_suspensao() -> None:
+    """
+    No Windows, impede a suspensão automática enquanto o pipeline roda (a tela
+    ainda pode apagar). O bloqueio é liberado sozinho quando o processo termina.
+    """
+    if sys.platform == "win32":
+        import ctypes
+        ES_CONTINUOUS, ES_SYSTEM_REQUIRED = 0x80000000, 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+
+
 def main():
     start_time = time.time()
+    impedir_suspensao()
     parser = argparse.ArgumentParser(description="Pipeline DORA Mining")
     parser.add_argument("--config", required=True, help="Caminho para config.yaml")
     parser.add_argument(

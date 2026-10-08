@@ -194,7 +194,9 @@ class GitHubClient:
         url: str,
         params: Optional[Dict[str, Any]] = None,
         raise_on_404: bool = False,
+        transform_item: Optional[Callable[[Any], Any]] = None,
     ) -> List[Any]:
+        """`transform_item` reduz cada item antes de a página ir para o cache."""
         items: List[Any] = []
         next_url: Optional[str] = url
         current_params = params
@@ -226,6 +228,8 @@ class GitHubClient:
                 )
             else:
                 page_items = data
+            if transform_item is not None:
+                page_items = [transform_item(i) for i in page_items]
 
             next_link = resp.links.get("next", {}).get("url")
 

@@ -122,3 +122,17 @@ def test_client_persistencia_cache(client):
         assert dado2 == {"resultado": "primeira_chamada"}
         assert do_cache2 is True
         assert m.call_count == 1
+
+def test_client_paginate_guarda_itens_enxutos_no_cache(client, mock_cache):
+    from pipeline.collector_runs import slim_run
+
+    url = "https://api.github.com/repos/org/repo/actions/runs?page=1"
+    run = {"id": 1, "workflow_id": 7, "conclusion": "success", "repository": {"x": "y" * 1000}}
+
+    with requests_mock.Mocker() as m:
+        m.get(url, json={"workflow_runs": [run]})
+        runs = client.paginate(url, transform_item=slim_run)
+
+    assert runs[0]["id"] == 1 and runs[0]["conclusion"] == "success"
+    assert "repository" not in runs[0]
+    assert "repository" not in mock_cache.get(url)["items"][0]

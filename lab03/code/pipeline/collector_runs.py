@@ -7,6 +7,18 @@ SUCCESS_SET = {"success"}
 FAILURE_SET = {"failure", "timed_out", "startup_failure"}
 IGNORE_SET = {"cancelled", "skipped", "neutral", "action_required", "stale", None, ""}
 
+# Campos de cada run guardados no cache: a resposta completa tem ~17 KB por
+# run (repositório, commit, autor...) e levou o cache a vários GB.
+RUN_FIELDS = (
+    "id", "workflow_id", "name", "event", "head_branch", "head_sha", "status",
+    "conclusion", "run_attempt", "created_at", "run_started_at", "updated_at",
+)
+
+
+def slim_run(run: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: run.get(k) for k in RUN_FIELDS}
+
+
 def classify_conclusion(conclusion: str) -> str:
     if conclusion in SUCCESS_SET:
         return "sucesso"
@@ -33,13 +45,17 @@ def fetch_runs_range(client: GitHubClient, owner: str, repo: str, branch: str, s
     if total_count == 0:
         return []
 
-    if total_count >= 1000 and (end_dt - start_dt).days > 1:
-        print(f"  [Aviso] Intervalo {created_str} atingiu teto ({total_count}). Subdividindo...")
-        mid_dt = start_dt + (end_dt - start_dt) / 2
-        return (fetch_runs_range(client, owner, repo, branch, start_dt, mid_dt) +
-                fetch_runs_range(client, owner, repo, branch, mid_dt + timedelta(days=1), end_dt))
+    if total_count >= 1000:
+        if end_dt.date() > start_dt.date():
+            print(f"  [Aviso] Intervalo {created_str} atingiu teto ({total_count}). Subdividindo...")
+            mid_dt = start_dt + (end_dt - start_dt) / 2
+            return (fetch_runs_range(client, owner, repo, branch, start_dt, mid_dt) +
+                    fetch_runs_range(client, owner, repo, branch, mid_dt + timedelta(days=1), end_dt))
+        # Um único dia com mais de 1.000 runs: a API só devolve os 1.000 primeiros.
+        print(f"  [Aviso] {owner}/{repo} {created_str}: {total_count} runs em um dia; "
+              f"apenas 1000 disponiveis pela API")
 
-    return client.paginate(url, params=params)
+    return client.paginate(url, params=params, transform_item=slim_run)
 
 def collect_repo_runs(client: GitHubClient, owner: str, repo: str, branch: str, start_date: str, end_date: str) -> pd.DataFrame:
     start_dt = datetime.strptime(start_date, "%Y-%m-%d")
