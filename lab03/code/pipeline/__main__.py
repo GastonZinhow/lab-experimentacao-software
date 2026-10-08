@@ -1,49 +1,69 @@
 import time
 import argparse
-import yaml
+from datetime import date
+from pipeline.config import load_config
 import os
 import pandas as pd
 from pipeline.cache import ResponseCache
 from pipeline.client import GitHubClient
-from pipeline.collector_runs import collect_repo_runs
 from collections import Counter
 from pipeline.collector_releases import collect_repo_releases, collect_repo_tags
+from pipeline.selection import (
+    build_funnel,
+    build_metadata,
+    search_candidates,
+    select_sample,
+)
 
 def main():
     start_time = time.time()
     parser = argparse.ArgumentParser(description="Pipeline DORA Mining")
     parser.add_argument("--config", required=True, help="Caminho para config.yaml")
+    parser.add_argument(
+        "--sample-size", type=int,
+        help="Sobrescreve selection.sample_size (ex.: 5 para um teste rápido)",
+    )
     args = parser.parse_args()
 
-    with open(args.config, "r") as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_config(args.config)
+
+    sel = cfg["selection"]
+    if args.sample_size:
+        sel["sample_size"] = args.sample_size
+    window = cfg["window"]
+    out_dir = cfg.get("output_dir", "data")
+    os.makedirs(out_dir, exist_ok=True)
 
     cache = ResponseCache(os.path.join(cfg.get("cache_dir", ".cache"), "api_cache.db"))
     client = GitHubClient(cache=cache, max_retries=cfg.get("max_retries", 5))
 
-    input_repos_path = os.path.join(cfg.get("output_dir", "data"), "candidates.csv")
-    if os.path.exists(input_repos_path):
-        df_cand = pd.read_csv(input_repos_path)
-        repos = df_cand[["owner", "repo", "default_branch"]].to_dict(orient="records")
-    else:
-        repos = [{"owner": "octocat", "repo": "Hello-World", "default_branch": "master"}]
+    # 1. Candidatos: busca fatiada por faixas de estrelas
+    candidates, slice_log = search_candidates(
+        client, sel["min_stars"], sel["star_breaks"], date.today()
+    )
+    slice_log.to_csv(os.path.join(out_dir, "faixas_busca.csv"), index=False)
+    print(f"[Busca] {len(candidates)} candidatos em {len(slice_log)} faixas.")
 
-    os.makedirs(cfg.get("output_dir", "data"), exist_ok=True)
-    all_runs_dfs = []
+    # 2. Critério de inclusão, até atingir o tamanho da amostra
+    selected, runs = select_sample(client, candidates, sel, window, cfg.get("seed", 42))
 
-    for r in repos:
-        df_runs = collect_repo_runs(
-            client, r["owner"], r["repo"], r["default_branch"],
-            cfg["window"]["start"], cfg["window"]["end"]
-        )
-        all_runs_dfs.append(df_runs)
+    selected.to_csv(os.path.join(out_dir, "candidatos.csv"), index=False)
+    metadata = build_metadata(selected, window["end"])
+    metadata.to_csv(os.path.join(out_dir, "metadados.csv"), index=False)
+    funnel = build_funnel(selected, sel)
+    funnel.to_csv(os.path.join(out_dir, "funil.csv"), index=False)
 
-    if all_runs_dfs:
-        final_df = pd.concat(all_runs_dfs, ignore_index=True)
-        final_df.to_csv(os.path.join(cfg.get("output_dir", "data"), "runs.csv"), index=False)
+    print("\nFunil de seleção:")
+    print(funnel.to_string(index=False))
+
+    # 3. Workflow runs da amostra final
+    if runs:
+        final_df = pd.concat(runs, ignore_index=True)
+        final_df.to_csv(os.path.join(out_dir, "runs.csv"), index=False)
         print(f"Salvo runs.csv com {len(final_df)} execuções coletadas.")
 
-    out_dir = cfg.get("output_dir", "data")
+    # 4. Releases, commits entre releases e tags da amostra final (#54)
+    repos = metadata[["owner", "repo", "default_branch"]].to_dict(orient="records")
     releases_dfs, commits_dfs, tags_dfs = [], [], []
     contadores_total: Counter = Counter()
 
@@ -75,7 +95,7 @@ def main():
     print(f"Total de chamadas lógicas: {client.total_requests}")
     print(f"Requisições na REDE (API): {client.network_requests}")
     print(f"Requisições via CACHE    : {client.cache_hits}")
-    
+
     if client.total_requests > 0:
         taxa_cache = (client.cache_hits / client.total_requests) * 100
         print(f"Taxa de acerto de Cache  : {taxa_cache:.1f}%")

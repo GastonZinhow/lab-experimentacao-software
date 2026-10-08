@@ -11,9 +11,9 @@ credentials.ini
 
 data/*.csv
 !data/candidatos.csv
-
-lab03/code/data/*.csv
-!lab03/code/data/candidatos.csv
+!data/metadados.csv
+!data/funil.csv
+!data/faixas_busca.csv
 
 __pycache__/
 *.py[cod]
