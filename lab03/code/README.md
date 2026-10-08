@@ -3,8 +3,12 @@
 ### Pré-requisitos
 ```bash
 pip install -r requirements.txt
-export GITHUB_TOKEN="seu_token_aqui"
+export GITHUB_TOKEN="seu_token_aqui"     # PowerShell: $env:GITHUB_TOKEN = "seu_token_aqui"
 ```
+Sem `GITHUB_TOKEN`, os scripts usam o token do GitHub CLI (`gh auth login`).
+Os caminhos de `config.yaml` (`cache_dir`, `output_dir`) são relativos à pasta
+do próprio `config.yaml`, então os comandos abaixo podem ser rodados de
+`lab03/code` ou, trocando o caminho do config, de qualquer pasta.
 
 ### Execução
 ```bash

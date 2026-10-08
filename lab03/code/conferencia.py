@@ -19,7 +19,7 @@ import sys
 from datetime import date, datetime, timedelta
 
 import pandas as pd
-import yaml
+from pipeline.config import load_config
 
 from pipeline.client import GitHubClient
 
@@ -67,12 +67,14 @@ def main():
     parser = argparse.ArgumentParser(description="Conferência independente da coleta")
     parser.add_argument("--config", required=True)
     args = parser.parse_args()
-    with open(args.config, encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_config(args.config)
 
     out_dir = cfg.get("output_dir", "data")
     start, end = cfg["window"]["start"], cfg["window"]["end"]
-    meta = pd.read_csv(os.path.join(out_dir, "metadados.csv"))
+    meta_path = os.path.join(out_dir, "metadados.csv")
+    if not os.path.exists(meta_path):
+        sys.exit(f"{meta_path} não existe: rode antes `python -m pipeline --config config.yaml`.")
+    meta = pd.read_csv(meta_path)
     meta = meta.sort_values("n_runs_validos_janela")
     chosen = [meta.iloc[0], meta.iloc[-1]]
 

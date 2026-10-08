@@ -1,5 +1,6 @@
 import os
 import re
+import subprocess
 import time
 import requests
 from typing import Callable, Dict, Any, List, Optional, Tuple
@@ -28,6 +29,17 @@ def parse_last_page(link_header: Optional[str]) -> Optional[int]:
     return None
 
 
+def _gh_cli_token() -> str:
+    """Token do GitHub CLI (`gh auth token`), se ele estiver instalado e logado."""
+    try:
+        result = subprocess.run(
+            ["gh", "auth", "token"], capture_output=True, text=True, timeout=10
+        )
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return result.stdout.strip() if result.returncode == 0 else ""
+
+
 class GitHubClient:
     def __init__(
         self,
@@ -35,10 +47,12 @@ class GitHubClient:
         cache: Optional[ResponseCache] = None,
         max_retries: int = 5,
     ):
-        self.token = token or os.environ.get("GITHUB_TOKEN", "")
+        self.token = token or os.environ.get("GITHUB_TOKEN", "") or _gh_cli_token()
         if not self.token:
             raise ValueError(
-                "Token do GitHub não encontrado. Defina a variável de ambiente GITHUB_TOKEN ou passe o token ao instanciar o cliente."
+                "Token do GitHub não encontrado. Defina a variável de ambiente "
+                "GITHUB_TOKEN (PowerShell: $env:GITHUB_TOKEN = \"seu_token\"; "
+                "bash: export GITHUB_TOKEN=seu_token) ou faça login com `gh auth login`."
             )
 
         self.cache = cache

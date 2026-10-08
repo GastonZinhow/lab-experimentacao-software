@@ -1,7 +1,7 @@
 import time
 import argparse
 from datetime import date
-import yaml
+from pipeline.config import load_config
 import os
 import pandas as pd
 from pipeline.cache import ResponseCache
@@ -23,8 +23,7 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(args.config, "r", encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_config(args.config)
 
     sel = cfg["selection"]
     if args.sample_size:
