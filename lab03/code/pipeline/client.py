@@ -5,6 +5,10 @@ from typing import Dict, Any, List, Optional, Tuple
 from pipeline.cache import ResponseCache
 
 
+class NotFoundError(Exception):
+    """Recurso inexistente (HTTP 404), ex.: tag apagada ou reescrita no compare."""
+
+
 class GitHubClient:
     def __init__(
         self,
@@ -89,7 +93,10 @@ class GitHubClient:
         return data, False
 
     def paginate(
-        self, url: str, params: Optional[Dict[str, Any]] = None
+        self,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        raise_on_404: bool = False,
     ) -> List[Any]:
         items: List[Any] = []
         next_url: Optional[str] = url
@@ -112,6 +119,8 @@ class GitHubClient:
 
             self.network_requests += 1
             resp = self.request_with_retry(next_url, params=current_params)
+            if resp.status_code == 404 and raise_on_404:
+                raise NotFoundError(resp.url)
             data = resp.json()
 
             if isinstance(data, dict):

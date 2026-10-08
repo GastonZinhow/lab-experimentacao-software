@@ -6,3 +6,5 @@ cache_dir: ".cache"
 output_dir: "data"
 max_retries: 5
 seed: 42
+# Limite opcional de tags com data buscada por repositório (null = todas)
+max_tags_por_repo: null

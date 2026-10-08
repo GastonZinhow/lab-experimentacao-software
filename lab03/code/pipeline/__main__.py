@@ -6,6 +6,8 @@ import pandas as pd
 from pipeline.cache import ResponseCache
 from pipeline.client import GitHubClient
 from pipeline.collector_runs import collect_repo_runs
+from collections import Counter
+from pipeline.collector_releases import collect_repo_releases, collect_repo_tags
 
 def main():
     start_time = time.time()
@@ -40,6 +42,29 @@ def main():
         final_df = pd.concat(all_runs_dfs, ignore_index=True)
         final_df.to_csv(os.path.join(cfg.get("output_dir", "data"), "runs.csv"), index=False)
         print(f"Salvo runs.csv com {len(final_df)} execuções coletadas.")
+
+    out_dir = cfg.get("output_dir", "data")
+    releases_dfs, commits_dfs, tags_dfs = [], [], []
+    contadores_total: Counter = Counter()
+
+    for r in repos:
+        df_rel, df_com, contadores = collect_repo_releases(
+            client, r["owner"], r["repo"], cfg["window"]["start"], cfg["window"]["end"]
+        )
+        releases_dfs.append(df_rel)
+        commits_dfs.append(df_com)
+        contadores_total.update(contadores)
+        tags_dfs.append(collect_repo_tags(client, r["owner"], r["repo"], cfg.get("max_tags_por_repo")))
+
+    for nome_csv, dfs in [("releases.csv", releases_dfs), ("commits_por_release.csv", commits_dfs), ("tags.csv", tags_dfs)]:
+        df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
+        df.to_csv(os.path.join(out_dir, nome_csv), index=False)
+        print(f"Salvo {nome_csv} com {len(df)} linhas.")
+
+    print("\n[Releases] Contadores totais:")
+    for chave in ["releases_publicadas", "prereleases", "drafts_descartados", "releases_na_janela",
+                  "ignoradas_sem_anterior", "ignoradas_404", "sem_commits_novos", "commits_coletados"]:
+        print(f"  {chave:<24}: {contadores_total[chave]}")
 
     elapsed = time.time() - start_time
 
