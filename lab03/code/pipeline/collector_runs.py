@@ -46,11 +46,20 @@ def fetch_runs_range(client: GitHubClient, owner: str, repo: str, branch: str, s
         return []
 
     if total_count >= 1000:
-        if end_dt.date() > start_dt.date():
+        if (end_dt - start_dt).days > 1:
             print(f"  [Aviso] Intervalo {created_str} atingiu teto ({total_count}). Subdividindo...")
             mid_dt = start_dt + (end_dt - start_dt) / 2
             return (fetch_runs_range(client, owner, repo, branch, start_dt, mid_dt) +
                     fetch_runs_range(client, owner, repo, branch, mid_dt + timedelta(days=1), end_dt))
+        if end_dt.date() > start_dt.date():
+            # Intervalo curto demais para dividir ao meio: consulta dia a dia.
+            print(f"  [Aviso] Intervalo {created_str} atingiu teto ({total_count}). Dividindo por dia...")
+            n_days = (end_dt.date() - start_dt.date()).days
+            runs = []
+            for i in range(n_days + 1):
+                day = datetime.combine(start_dt.date() + timedelta(days=i), datetime.min.time())
+                runs += fetch_runs_range(client, owner, repo, branch, day, day)
+            return runs
         # Um único dia com mais de 1.000 runs: a API só devolve os 1.000 primeiros.
         print(f"  [Aviso] {owner}/{repo} {created_str}: {total_count} runs em um dia; "
               f"apenas 1000 disponiveis pela API")
