@@ -4,6 +4,9 @@ window:
   end: "2026-09-30"
 cache_dir: ".cache"
 output_dir: "data"
+usar_git_local: true
+git_dir: ".git_cache"
+clone_workers: 4
 max_retries: 5
 seed: 42
 # Limite opcional de tags com data buscada por repositório (null = todas)

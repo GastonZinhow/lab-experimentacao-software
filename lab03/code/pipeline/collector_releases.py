@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from urllib.parse import quote
 
 import pandas as pd
+import requests
 
 from metrics.datas import parse_data
 from pipeline.client import GitHubClient, NotFoundError
@@ -12,9 +13,14 @@ API = "https://api.github.com"
 # Valores da coluna status_compare em releases.csv
 COMPARE_OK = "ok"
 COMPARE_404 = "404"
+COMPARE_UNAVAILABLE = "indisponivel"
 SEM_ANTERIOR = "sem_anterior"
 FORA_DA_JANELA = "fora_da_janela"
 FORA_DA_SERIE = "fora_da_serie"
+
+
+class CompareUnavailableError(Exception):
+    """O GitHub não conseguiu gerar uma comparação válida dentro do limite."""
 
 
 def tipo_release(release: Dict[str, Any]) -> str:
@@ -61,10 +67,27 @@ def fetch_compare_commits(
     """
     Commits de head que não estão em base. O compare sem paginação para em 250
     commits, por isso pagina com per_page=100 seguindo o cabeçalho Link.
-    Lança NotFoundError se alguma das tags não existir mais.
+    Lança NotFoundError se alguma das tags não existir mais e
+    CompareUnavailableError quando o GitHub não consegue gerar uma comparação
+    muito grande/complexa.
     """
     url = f"{API}/repos/{owner}/{repo}/compare/{quote(base, safe='')}...{quote(head, safe='')}"
-    return client.paginate(url, params={"per_page": 100}, raise_on_404=True)
+    try:
+        return client.paginate(url, params={"per_page": 100}, raise_on_404=True)
+    except requests.HTTPError as exc:
+        response = exc.response
+        if response is not None and response.status_code == 422:
+            try:
+                payload = response.json()
+            except ValueError:
+                payload = {}
+            if any(
+                error.get("code") == "not_available"
+                for error in payload.get("errors", [])
+                if isinstance(error, dict)
+            ):
+                raise CompareUnavailableError(response.url) from exc
+        raise
 
 
 def _primeira_linha(mensagem: Optional[str]) -> str:
@@ -78,6 +101,7 @@ def collect_repo_releases(
     start_date: str,
     end_date: str,
     incluir_prerelease: bool = False,
+    git=None,                      # <-- NOVO
 ) -> Tuple[pd.DataFrame, pd.DataFrame, Counter]:
     """
     Coleta as releases do repositório e, para cada release da janela [start, end),
@@ -122,11 +146,21 @@ def collect_repo_releases(
         else:
             contadores["releases_na_janela_com_anterior"] += 1
             try:
-                commits = fetch_compare_commits(client, owner, repo, tag_anterior, r["tag_name"])
+                if git is not None:
+                    commits = git.compare_commits(tag_anterior, r["tag_name"])
+                else:
+                    commits = fetch_compare_commits(client, owner, repo, tag_anterior, r["tag_name"])
             except NotFoundError:
                 status = COMPARE_404
                 contadores["ignoradas_404"] += 1
                 print(f"  [404] compare {tag_anterior}...{r['tag_name']} (tag apagada/reescrita?)")
+            except CompareUnavailableError:
+                status = COMPARE_UNAVAILABLE
+                contadores["ignoradas_indisponivel"] += 1
+                print(
+                    f"  [422] compare {tag_anterior}...{r['tag_name']} "
+                    "(comparação grande demais para a API)"
+                )
             else:
                 status = COMPARE_OK
                 n_commits = len(commits)
@@ -169,7 +203,9 @@ def collect_repo_releases(
     print(
         f"  -> {contadores['releases_publicadas']} publicadas, {contadores['prereleases']} pré-releases, "
         f"{contadores['drafts_descartados']} drafts | na janela: {contadores['releases_na_janela']} | "
-        f"ignoradas: {contadores['ignoradas_sem_anterior']} sem anterior, {contadores['ignoradas_404']} por 404 | "
+        f"ignoradas: {contadores['ignoradas_sem_anterior']} sem anterior, "
+        f"{contadores['ignoradas_404']} por 404, "
+        f"{contadores['ignoradas_indisponivel']} indisponíveis | "
         f"{contadores['commits_coletados']} commits"
     )
     df_releases = pd.DataFrame(linhas_releases)

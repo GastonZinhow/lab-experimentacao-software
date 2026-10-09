@@ -79,11 +79,11 @@ conferir na interface do GitHub. Sai com código 1 se algum valor divergir.
 
 | Arquivo | Conteúdo |
 |---|---|
-| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. |
+| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `indisponivel` (a API não conseguiu gerar um compare muito grande), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. |
 | `data/commits_por_release.csv` | Um commit por linha para cada release da janela: `sha`, `commit_author_date`, `commit_committer_date`, primeira linha da `mensagem`, `tag_name` e `tag_anterior`. O `compare` é paginado (100 por página), então releases com mais de 250 commits vêm completas. |
 | `data/tags.csv` | Tags com o SHA e a data do commit apontado (`commit_author_date`). `max_tags_por_repo` no `config.yaml` limita quantas tags recebem data. |
 
-A janela é o intervalo semiaberto `[window.start, window.end)`. Ao final da execução, o log mostra os contadores de releases ignoradas (`ignoradas_404`, `ignoradas_sem_anterior`) e de releases sem commits novos.
+A janela é o intervalo semiaberto `[window.start, window.end)`. O compare é feito entre releases consecutivas da série coletada, aproveitando releases intermediárias quando elas existem. Se o GitHub retornar `422/not_available` para uma comparação grande demais, a release recebe `status_compare=indisponivel`, fica sem `n_commits` e a coleta continua; esses commits não entram nos contadores. Ao final da execução, o log mostra os contadores de releases ignoradas (`ignoradas_404`, `ignoradas_indisponivel`, `ignoradas_sem_anterior`) e de releases sem commits novos.
 
 ### Testes
 ```bash

@@ -5,6 +5,7 @@ import requests_mock
 from pipeline.cache import ResponseCache
 from pipeline.client import GitHubClient, NotFoundError
 from pipeline.collector_releases import (
+    CompareUnavailableError,
     collect_repo_releases,
     collect_repo_tags,
     fetch_compare_commits,
@@ -114,6 +115,46 @@ def test_compare_com_mais_de_250_commits_traz_todos(client, api_mock):
 def test_compare_404_lanca_not_found(client, api_mock):
     with pytest.raises(NotFoundError):
         fetch_compare_commits(client, "org", "proj", "v1.1", "v1.2")
+
+
+def test_compare_422_lanca_indisponivel(client):
+    with requests_mock.Mocker() as m:
+        m.get(
+            f"{REPO}/compare/v1.1...v1.2?per_page=100",
+            complete_qs=True,
+            status_code=422,
+            json={
+                "message": "Server Error: Sorry, this diff is taking too long to generate.",
+                "errors": [{"resource": "Comparison", "field": "diff", "code": "not_available"}],
+            },
+        )
+        with pytest.raises(CompareUnavailableError) as exc_info:
+            fetch_compare_commits(client, "org", "proj", "v1.1", "v1.2")
+
+    assert "v1.1...v1.2" in str(exc_info.value)
+
+
+def test_collect_repo_releases_continua_com_compare_indisponivel(client):
+    releases = [
+        _release(2, "v1.1", "2025-11-10T00:00:00Z"),
+        _release(1, "v1.0", "2025-10-10T00:00:00Z"),
+    ]
+    with requests_mock.Mocker() as m:
+        m.get(f"{REPO}/releases?per_page=100", complete_qs=True, json=releases)
+        m.get(
+            f"{REPO}/compare/v1.0...v1.1?per_page=100",
+            complete_qs=True,
+            status_code=422,
+            json={"errors": [{"code": "not_available"}]},
+        )
+        df_rel, df_com, cont = collect_repo_releases(client, "org", "proj", *JANELA)
+
+    release = df_rel.set_index("tag_name").loc["v1.1"]
+    assert release["status_compare"] == "indisponivel"
+    assert pd.isna(release["n_commits"])
+    assert df_com.empty
+    assert cont["ignoradas_indisponivel"] == 1
+    assert cont["commits_coletados"] == 0
 
 
 def test_collect_repo_releases(client, api_mock):

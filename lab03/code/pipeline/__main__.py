@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor
+from pipeline.git_local import GitRepo, collect_repo_tags_git
 import time
 import argparse
 from datetime import date
@@ -80,14 +82,36 @@ def main():
     releases_dfs, commits_dfs, tags_dfs = [], [], []
     contadores_total: Counter = Counter()
 
+        # 4. Releases, commits entre releases e tags da amostra final (#54)
+    repos = metadata[["owner", "repo", "default_branch"]].to_dict(orient="records")
+    releases_dfs, commits_dfs, tags_dfs = [], [], []
+    contadores_total: Counter = Counter()
+
+    # 4a. Clones locais em paralelo (só subprocess, sem tocar no client)
+    git_repos = {}
+    if cfg.get("usar_git_local", True):
+        base = cfg.get("git_dir", ".git_cache")
+        candidatos_git = {(r["owner"], r["repo"]): GitRepo(r["owner"], r["repo"], base) for r in repos}
+        with ThreadPoolExecutor(max_workers=cfg.get("clone_workers", 4)) as ex:
+            oks = list(ex.map(lambda g: g.ensure_cloned(), candidatos_git.values()))
+        git_repos = {k: g for (k, g), ok in zip(candidatos_git.items(), oks) if ok}
+        print(f"[Git] {len(git_repos)}/{len(repos)} repositórios disponíveis localmente.")
+
+    # 4b. Coleta (git quando disponível, API como fallback)
     for r in repos:
+        t_repo = time.time()
+        git = git_repos.get((r["owner"], r["repo"]))
         df_rel, df_com, contadores = collect_repo_releases(
-            client, r["owner"], r["repo"], cfg["window"]["start"], cfg["window"]["end"]
+            client, r["owner"], r["repo"], cfg["window"]["start"], cfg["window"]["end"], git=git
         )
         releases_dfs.append(df_rel)
         commits_dfs.append(df_com)
         contadores_total.update(contadores)
-        tags_dfs.append(collect_repo_tags(client, r["owner"], r["repo"], cfg.get("max_tags_por_repo")))
+        if git:
+            tags_dfs.append(collect_repo_tags_git(git, r["owner"], r["repo"], cfg.get("max_tags_por_repo")))
+        else:
+            tags_dfs.append(collect_repo_tags(client, r["owner"], r["repo"], cfg.get("max_tags_por_repo")))
+        print(f"  [Tempo] {r['owner']}/{r['repo']}: {time.time() - t_repo:.1f}s")
 
     for nome_csv, dfs in [("releases.csv", releases_dfs), ("commits_por_release.csv", commits_dfs), ("tags.csv", tags_dfs)]:
         df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
@@ -96,7 +120,8 @@ def main():
 
     print("\n[Releases] Contadores totais:")
     for chave in ["releases_publicadas", "prereleases", "drafts_descartados", "releases_na_janela",
-                  "ignoradas_sem_anterior", "ignoradas_404", "sem_commits_novos", "commits_coletados"]:
+                  "ignoradas_sem_anterior", "ignoradas_404", "ignoradas_indisponivel",
+                  "sem_commits_novos", "commits_coletados"]:
         print(f"  {chave:<24}: {contadores_total[chave]}")
 
     elapsed = time.time() - start_time

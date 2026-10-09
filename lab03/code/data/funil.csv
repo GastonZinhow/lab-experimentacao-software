@@ -1,0 +1,10 @@
+etapa,quantidade,descartados,motivo_descarte
+Candidatos da busca (sem duplicatas),65394,0,
+Avaliados em ordem aleatoria (seed),855,64539,nao avaliados: amostra atingiu o tamanho-alvo
+Nao arquivados,782,73,arquivado
+Nao fork,782,0,fork
+Disponiveis na API,782,0,indisponivel na API
+Com GitHub Actions,445,337,sem GitHub Actions (total_count = 0)
+>= 5 releases na janela,135,310,menos de 5 releases na janela
+>= 50 workflow runs validos na janela,100,35,menos de 50 workflow runs validos na janela
+Amostra final,100,0,
