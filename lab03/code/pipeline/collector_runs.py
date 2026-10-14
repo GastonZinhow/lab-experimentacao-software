@@ -68,13 +68,15 @@ def fetch_runs_range(client: GitHubClient, owner: str, repo: str, branch: str, s
 
 def collect_repo_runs(client: GitHubClient, owner: str, repo: str, branch: str, start_date: str, end_date: str) -> pd.DataFrame:
     start_dt = datetime.strptime(start_date, "%Y-%m-%d")
-    end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+    # Janela semiaberta [start, end): o filtro `created` da API inclui os dois
+    # extremos, então o último dia consultado é a véspera de end_date.
+    end_dt = datetime.strptime(end_date, "%Y-%m-%d") - timedelta(days=1)
 
     print(f"\n[Coletando] {owner}/{repo} (branch: {branch}) de {start_date} a {end_date}...")
     all_runs = []
     curr = start_dt
 
-    while curr < end_dt:
+    while curr <= end_dt:
         next_month = (curr.replace(day=1) + timedelta(days=32)).replace(day=1) - timedelta(days=1)
         sub_end = min(next_month, end_dt)
         

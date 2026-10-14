@@ -222,9 +222,10 @@ def releases():
 
 
 def test_count_releases_na_janela(releases):
-    # v1.0, v1.1 e v1.2 (limites inclusivos); rc é pré-release; draft,
-    # v0.9 (antes) e v3.0 (depois) ficam de fora
-    assert count_releases_in_window(releases, "2025-09-30", "2026-09-30") == (3, 1)
+    # Janela semiaberta: v1.0 e v1.1 entram; v1.2 (no dia do fim) fica de fora,
+    # como nas métricas; rc é pré-release; draft, v0.9 (antes) e v3.0 (depois)
+    # ficam de fora
+    assert count_releases_in_window(releases, "2025-09-30", "2026-09-30") == (2, 1)
 
 
 def test_count_releases_lista_vazia():

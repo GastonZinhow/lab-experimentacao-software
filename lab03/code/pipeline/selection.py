@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 import requests
 
+from metrics.datas import parse_data
 from pipeline.client import GitHubClient
 from pipeline.collector_runs import collect_repo_runs
 
@@ -196,15 +197,16 @@ def count_releases_in_window(
     releases: List[Dict[str, Any]], start: str, end: str
 ) -> Tuple[int, int]:
     """
-    Conta as releases publicadas (draft = false) na janela [start, end].
+    Conta as releases publicadas (draft = false) na janela semiaberta
+    [start, end), a mesma das métricas (metrics/deploy.py).
     Retorna (releases, pré-releases); só as primeiras definem "deploy".
     """
-    start_dt, end_dt = _parse_ts(start), _parse_ts(end)
+    start_dt, end_dt = parse_data(start), parse_data(end)
     n_releases = n_prereleases = 0
     for r in releases:
         if r.get("draft") or not r.get("published_at"):
             continue
-        if not (start_dt <= _parse_ts(r["published_at"]) <= end_dt):
+        if not (start_dt <= parse_data(r["published_at"]) < end_dt):
             continue
         if r.get("prerelease"):
             n_prereleases += 1
