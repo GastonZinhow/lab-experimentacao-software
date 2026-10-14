@@ -144,7 +144,205 @@ validade; e a Seção 6 relata a replicação cruzada do estudo.
 
 # 2. Metodologia
 
-*Lab03S02.*
+O estudo é uma mineração de repositórios (*mining software repositories*)
+sobre dados públicos do GitHub. Todas as etapas, da busca de candidatos ao
+cálculo das métricas, são feitas por scripts do grupo em `lab03/code`, que
+acessam diretamente a API REST do GitHub, sem bibliotecas de terceiros para
+a API. Os parâmetros (janela, semente, critérios de inclusão, tamanho da
+amostra) ficam em `config.yaml`, e qualquer pessoa pode regenerar os mesmos
+arquivos com `python -m pipeline --config config.yaml`.
+
+## 2.1 Fonte de dados e janela de observação
+
+A janela de observação é o intervalo semiaberto **[30/09/2025, 30/09/2026)**,
+com 365 dias (≈ 52,1 semanas), fixado pelo professor para toda a turma. Só
+entram nas métricas *releases* publicadas e execuções de *workflow* criadas
+dentro dela. Os dados vêm de seis *endpoints*: busca de repositórios
+(`/search/repositories`), *workflows* (`/actions/workflows`), execuções de
+*workflow* (`/actions/runs`), *releases* (`/releases`), *tags* (`/tags`) e
+comparação entre duas *tags* (`/compare/{base}...{head}`), além de
+`/contributors` para contar contribuidores.
+
+Três limites da API exigem cuidado. (i) A busca devolve no máximo 1.000
+resultados por consulta; por isso ela é fatiada por faixas de estrelas, e
+toda faixa acima do teto é dividida ao meio até caber nele (no extremo, uma
+única contagem de estrelas é fatiada pela data de criação). (ii) A listagem
+de execuções filtrada também para em 1.000 resultados; o pipeline sonda o
+total de cada intervalo e o subdivide (até o nível de um dia) quando o teto é
+atingido. (iii) O `compare` sem paginação para em 250 *commits*; o pipeline
+pagina de 100 em 100 seguindo o cabeçalho `Link`. Todas as respostas são
+guardadas num cache SQLite, o que permite retomar a coleta após quedas de rede
+ou pausas por *rate limit*, e as pausas seguem os cabeçalhos
+`X-RateLimit-Remaining` e `X-RateLimit-Reset`.
+
+## 2.2 Seleção da amostra
+
+Os candidatos são todos os repositórios com mais de 1.000 estrelas
+(`stars:>1000`), sem duplicatas. Eles são embaralhados com semente fixa
+(`seed = 42`) e avaliados nessa ordem até que a amostra atinja o tamanho-alvo.
+Cada candidato passa pelos filtros em ordem crescente de custo, parando no
+primeiro que reprova: (1) não arquivado; (2) não *fork*; (3) usa GitHub
+Actions (`total_count > 0` em `/actions/workflows`); (4) pelo menos 5
+*releases* publicadas na janela; (5) pelo menos 50 execuções válidas
+(sucesso ou falha) de `push` no *default branch* na janela. Os dois últimos
+são o critério mínimo de inclusão comum à turma. Embaralhar antes de avaliar
+evita que a amostra fique concentrada nos repositórios mais populares.
+
+A Tabela 1 mostra o funil gerado automaticamente pelo pipeline
+(`data/funil.csv`) para a amostra da Sprint 01; a coleta completa da Sprint 02
+(Issue #63) estende a mesma ordem de avaliação até pelo menos 300
+repositórios.
+
+**Tabela 1. Funil de seleção da amostra da Sprint 01 (busca em 14/10/2026).**
+
+| Etapa | Restam | Descartados | Motivo |
+|---|---:|---:|---|
+| Candidatos da busca (`stars:>1000`, sem duplicatas) | 65.532 | – | – |
+| Avaliados em ordem aleatória até reunir a amostra | 855 | 64.677 | não avaliados: amostra completa |
+| Não arquivados | 786 | 69 | arquivado |
+| Não *fork* | 786 | 0 | *fork* |
+| Disponíveis na API | 786 | 0 | erro ou acesso negado |
+| Com GitHub Actions | 464 | 322 | `total_count = 0` |
+| ≥ 5 *releases* na janela | 137 | 327 | poucas *releases* |
+| ≥ 50 execuções válidas na janela | **100** | 37 | poucas execuções |
+
+A busca foi dividida em 96 faixas de estrelas, nenhuma acima do teto de
+1.000 resultados (a maior tem 989). Entre os candidatos avaliados, o filtro
+que mais descarta é o de *releases*: só 30% dos repositórios com GitHub
+Actions publicaram pelo menos 5 *releases* na janela, o que já indica que
+publicar *releases* no GitHub não é a prática da maioria dos projetos
+populares. Na amostra de 100 repositórios, a mediana é de 3.604 estrelas,
+99 contribuidores, 6,7 anos de idade, 16,5 *releases* e 516 execuções
+válidas na janela; as linguagens mais frequentes são TypeScript (21),
+Python (21), Go (15) e Rust (9).
+
+## 2.3 Metadados dos repositórios
+
+Para cada repositório da amostra, o pipeline registra (`data/metadados.csv`):
+estrelas, linguagem principal, data de criação e idade no fim da janela (em
+dias), *default branch*, número de *workflows*, número de *releases* e
+pré-*releases* na janela, número de execuções válidas na janela e número de
+contribuidores. Os contribuidores são contados com uma única chamada a
+`/contributors?per_page=1&anon=true`, lendo o número da última página no
+cabeçalho `Link`. Esses metadados e o tipo do projeto rotulado manualmente
+(Seção 2.6) são os fatores da RQ06; fatores numéricos são agrupados por
+quartis.
+
+## 2.4 Definições operacionais
+
+As definições abaixo são comuns a toda a turma, para que os resultados sejam
+comparáveis e o estudo possa ser replicado por outro grupo.
+
+- **Deploy:** uma *release* publicada (`draft = false`, `prerelease = false`)
+  com `published_at` na janela. Pré-*releases* e *tags* sem *release* só
+  entram como variantes na RQ07.
+- **Branch:** apenas o *default branch* do repositório.
+- **Data de um commit:** `commit.author.date`.
+- **Execuções de CI:** apenas execuções disparadas por `push` (`event = push`)
+  no *default branch*. O campo `conclusion` define a classificação: `success`
+  é sucesso; `failure`, `timed_out` e `startup_failure` são falha; os demais
+  valores (`cancelled`, `skipped`, `neutral`, `action_required`, `stale` e
+  vazio) são ignorados.
+- **Censura:** um evento que não termina dentro da janela (um episódio de
+  falha ainda não recuperado, uma *release* dos últimos 7 dias cuja correção
+  ainda não poderia ter saído) não é descartado; é contado como censurado e
+  reportado.
+
+## 2.5 Métricas
+
+Em todas as RQs, cada métrica é calculada por repositório e resumida na
+amostra por **mediana e IQR**, por causa da assimetria típica dessas
+distribuições.
+
+- **RQ01, frequência de deploy:** nº de *releases* na janela ÷ nº de semanas
+  da janela (≈ 52,1), em *releases* por semana.
+- **RQ02, lead time:** para cada *release* R da janela, os *commits* de R são
+  os de `compare/{release anterior}...{R}`; a *release* anterior pode estar
+  fora da janela. *Releases* sem anterior (a primeira da história) ou com
+  *tags* apagadas (`compare` com 404) ficam fora do cálculo e são contadas.
+  **(a) Por release:** `published_at(R) − data do commit mais antigo de R`,
+  com a mediana entre as *releases*. **(b) Por commit:**
+  `published_at(R) − data de cada commit de R`, com a mediana de todos os
+  *commits* de todas as *releases*.
+- **RQ03, taxa de falha (CFR):** **(a) proxy de CI:**
+  `falhas ÷ (falhas + sucessos)` entre as execuções válidas. **(b) proxy de
+  entrega:** R falha se for seguida, em até 7 dias, por uma *release*
+  corretiva; CFR = *releases* que falharam ÷ *releases* avaliadas, excluindo
+  do denominador as *releases* dos últimos 7 dias da janela (censura). A
+  heurística de *release* corretiva (Issue #61) é validada contra a
+  amostra-ouro (Seção 2.6).
+- **RQ04, tempo de recuperação:** as execuções de cada *workflow* são
+  ordenadas por `run_started_at`; um episódio de falha começa na primeira
+  falha após um sucesso e termina no próximo sucesso do mesmo *workflow*. A
+  duração é `updated_at do sucesso − run_started_at da primeira falha`, em
+  horas, com a mediana de todos os episódios do repositório. Episódios sem
+  sucesso até o fim da janela são censurados, e a proporção de censurados é
+  reportada.
+- **RQ05:** correlação de Spearman (ρ, p-valor e n) entre a frequência de
+  *deploy* e o CFR, separadamente para as variantes (a) e (b).
+- **RQ06:** Kruskal-Wallis (ou Mann-Whitney, com dois grupos) para cada par
+  fator × métrica, com correção de Holm para comparações múltiplas e tamanho
+  de efeito (ε² = H/(n − 1) ou *Cliff's delta*).
+- **RQ07:** cada repositório é classificado em Elite, High, Medium ou Low em
+  cada métrica pela tabela de referência da disciplina, e a categoria geral é
+  a mediana das notas (Elite = 4, …, Low = 1) arredondada para baixo. A
+  classificação é repetida em três combinações de definições: **C1**
+  (*release*, *lead time* (a), CFR (a)), **C2** (*release* + pré-*release*,
+  *lead time* (b), CFR (b)) e **C3** (*tag*, *lead time* (b), CFR (a)). Para
+  cada par de combinações, reportamos a proporção de repositórios que mudam de
+  categoria e o kappa de Cohen ponderado linearmente.
+- **RQ08 (bônus):** *rework rate* = *releases* corretivas ÷ total de
+  *releases* na janela, usando a mesma heurística do CFR (b).
+
+## 2.6 Validação manual (amostra-ouro)
+
+Para saber o quanto os critérios automáticos concordam com o julgamento
+humano, os três autores rotularam uma amostra-ouro. O protocolo completo está
+em `docs/protocolo_consenso.md` e o guia de rotulagem em
+`validacao/guia_rotulagem.md`.
+
+**Sorteio.** O script `rotulagem/sorteio.py` sorteia 60 repositórios
+(`sample(n=60, random_state=42)`) entre os 100 primeiros incluídos na ordem
+de avaliação da Seção 2.2, e 5 *releases* publicadas na janela de cada um
+(`random_state=42`), num total de 300 *releases*. Como a ordem de avaliação é
+fixa, esses 100 repositórios continuam sendo os primeiros incluídos quando a
+amostra cresce, e rodar o script de novo gera exatamente o mesmo sorteio. A
+planilha de rotulagem traz, para cada *release*, o link da sua página e o
+link da comparação com a *release* anterior, e não traz nenhuma coluna da
+heurística.
+
+**Rotulagem independente.** Cada autor, sem consultar os demais e sem ver a
+saída da heurística, rotulou: (i) o tipo do projeto (biblioteca/*framework*,
+aplicação/serviço, ferramenta CLI ou outro); (ii) se as *releases* do
+repositório representam entregas reais ao usuário (sim, não ou incerto); e
+(iii) para cada uma das 5 *releases*, se ela é corretiva (sim ou não), lendo
+as *release notes* e os *commits*. Cada planilha foi commitada antes da
+reunião de consenso, e a data do commit registra a independência.
+
+**Concordância.** A concordância entre os três avaliadores é medida pelo
+kappa de Fleiss (`aggregate_raters` e `fleiss_kappa` do `statsmodels`) em
+cada dimensão: 60 itens no tipo do projeto e nas entregas reais e 300 itens
+na *release* corretiva. Os valores são interpretados pela escala de Landis e
+Koch (1977) e calculados sobre as planilhas independentes, antes da reunião.
+
+**Consenso.** Itens unânimes ou com maioria de 2 votos recebem o rótulo da
+maioria; empates 1-1-1, possíveis nas dimensões com mais de duas categorias,
+são decididos em reunião, e cada decisão fica registrada com a sua
+justificativa em `validacao/decisoes_reuniao.csv`. O resultado,
+`validacao/rotulos_consenso.csv`, é a referência para avaliar a heurística de
+*release* corretiva com precisão, *recall* e F1 (refinando-a enquanto o F1
+ficar abaixo de 0,70) e fornece o tipo do projeto usado na RQ06.
+
+## 2.7 Conferência da coleta
+
+Além dos testes unitários (cobertura mínima de 80% nas funções de métrica,
+verificada na integração contínua do repositório), o script `conferencia.py`
+recalcula, por um caminho independente e sem cache, o número de *releases* e
+de execuções válidas de dois repositórios da amostra (o de menos e o de mais
+execuções) e compara com o pipeline. As execuções são contadas pelo
+`total_count` filtrado por `status`, mês a mês, em vez de baixar e
+classificar cada execução. O resultado fica em `data/conferencia.md`, com os
+links para conferir os valores na interface do GitHub.
 
 # 3. Resultados
 
