@@ -45,6 +45,15 @@ def _runs_params(branch: str, start_dt: datetime, end_dt: datetime) -> Dict[str,
     }
 
 
+def _janela_inclusiva(start_date: str, end_date: str) -> Tuple[datetime, datetime]:
+    """Converte a janela pública [início, fim) para os limites inclusivos da API."""
+    start_dt = datetime.strptime(start_date, DATE_FORMAT)
+    end_exclusive = datetime.strptime(end_date, DATE_FORMAT)
+    if end_exclusive <= start_dt:
+        raise ValueError("O fim da janela deve ser posterior ao início.")
+    return start_dt, end_exclusive - timedelta(days=1)
+
+
 def _total_count(
     client: GitHubClient, owner: str, repo: str, branch: str,
     start_dt: datetime, end_dt: datetime,
@@ -72,8 +81,7 @@ def contar_runs_janela(
     runs (qualquer conclusão) com os mesmos filtros da coleta. Se já for menor
     que `min_runs`, o repositório pode ser descartado sem baixar nada.
     """
-    start_dt = datetime.strptime(start_date, DATE_FORMAT)
-    end_dt = datetime.strptime(end_date, DATE_FORMAT)
+    start_dt, end_dt = _janela_inclusiva(start_date, end_date)
     return _total_count(client, owner, repo, branch, start_dt, end_dt)
 
 
@@ -116,7 +124,7 @@ def fetch_runs_range(
 def _faixas_mensais(start_dt: datetime, end_dt: datetime) -> List[Tuple[datetime, datetime]]:
     faixas = []
     curr = start_dt
-    while curr < end_dt:
+    while curr <= end_dt:
         next_month = (curr.replace(day=1) + timedelta(days=32)).replace(day=1) - timedelta(days=1)
         sub_end = min(next_month, end_dt)
         faixas.append((curr, sub_end))
@@ -137,8 +145,7 @@ def collect_repo_runs(
     `particionar_por_mes=True` reproduz a coleta antiga mês a mês, útil para
     reaproveitar um cache já populado por ela (as URLs são as mesmas).
     """
-    start_dt = datetime.strptime(start_date, DATE_FORMAT)
-    end_dt = datetime.strptime(end_date, DATE_FORMAT)
+    start_dt, end_dt = _janela_inclusiva(start_date, end_date)
 
     print(f"\n[Coletando] {owner}/{repo} (branch: {branch}) de {start_date} a {end_date}...")
     faixas = _faixas_mensais(start_dt, end_dt) if particionar_por_mes else [(start_dt, end_dt)]

@@ -1,6 +1,10 @@
 from datetime import date, datetime, timedelta
 
-from pipeline.collector_runs import collect_repo_runs, fetch_runs_range
+from pipeline.collector_runs import (
+    collect_repo_runs,
+    contar_runs_janela,
+    fetch_runs_range,
+)
 
 
 class FakeRunsClient:
@@ -42,3 +46,14 @@ def test_mes_inteiro_coletado_pelo_collect_repo_runs():
     assert len(df) == 31 * 10
     assert max(b for _, b in client.ranges) == "2025-10-30"
     assert set(df["status_classificacao"]) == {"sucesso"}
+
+
+def test_contagem_previa_tambem_exclui_o_fim_da_janela():
+    client = FakeRunsClient(per_day=10)
+
+    total = contar_runs_janela(
+        client, "o", "r", "main", "2025-09-30", "2025-10-31"
+    )
+
+    assert total == 31 * 10
+    assert client.ranges == [("2025-09-30", "2025-10-30")]

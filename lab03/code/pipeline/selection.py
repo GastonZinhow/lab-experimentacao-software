@@ -250,7 +250,7 @@ def count_releases_in_window(
     start: str,
     end: str,
 ) -> Tuple[int, int]:
-    """Conta releases e pré-releases publicadas dentro da janela."""
+    """Conta releases e pré-releases na janela semiaberta [início, fim)."""
     start_dt, end_dt = _parse_ts(start), _parse_ts(end)
     n_releases = n_prereleases = 0
 
@@ -260,7 +260,7 @@ def count_releases_in_window(
 
         published = _parse_ts(release["published_at"])
 
-        if not start_dt <= published <= end_dt:
+        if not start_dt <= published < end_dt:
             continue
 
         if release.get("prerelease"):
