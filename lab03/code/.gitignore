@@ -8,6 +8,7 @@ credentials.ini
 *.db
 *.sqlite
 *.sqlite3
+.git_cache
 
 data/*.csv
 !data/candidatos.csv
