@@ -38,5 +38,7 @@ def test_subdivisao_nunca_gera_intervalo_invertido_e_cobre_todos_os_dias():
 def test_mes_inteiro_coletado_pelo_collect_repo_runs():
     client = FakeRunsClient(per_day=10)
     df = collect_repo_runs(client, "o", "r", "main", "2025-09-30", "2025-10-31")
-    assert len(df) == 32 * 10
+    # Janela semiaberta: 30/09 a 30/10 (31 dias); 31/10 fica de fora
+    assert len(df) == 31 * 10
+    assert max(b for _, b in client.ranges) == "2025-10-30"
     assert set(df["status_classificacao"]) == {"sucesso"}

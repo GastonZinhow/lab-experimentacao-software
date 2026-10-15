@@ -39,7 +39,7 @@ def count_releases(client, full_name, start, end):
     releases = client.paginate(f"{API}/repos/{full_name}/releases", params={"per_page": 100})
     in_window = [
         r for r in releases
-        if not r["draft"] and r["published_at"] and start <= r["published_at"][:10] <= end
+        if not r["draft"] and r["published_at"] and start <= r["published_at"][:10] < end
     ]
     n_pre = sum(1 for r in in_window if r["prerelease"])
     return len(in_window) - n_pre, n_pre
@@ -80,13 +80,14 @@ def main():
 
     client = GitHubClient(cache=None, max_retries=cfg.get("max_retries", 5))
     s_date = datetime.strptime(start, "%Y-%m-%d").date()
-    e_date = datetime.strptime(end, "%Y-%m-%d").date()
+    # Janela semiaberta [start, end): o último dia contado é a véspera de end.
+    e_date = datetime.strptime(end, "%Y-%m-%d").date() - timedelta(days=1)
 
     lines = [
         "# Conferência da coleta (Issue #52)",
         "",
         f"Gerado em {date.today().isoformat()} por `python conferencia.py --config config.yaml`.",
-        f"Janela: {start} a {end}. Os valores \"conferência\" foram baixados de novo da API,",
+        f"Janela: [{start}, {end}), isto é, de {start} a {e_date.isoformat()}. Os valores \"conferência\" foram baixados de novo da API,",
         "sem cache, por um caminho diferente do pipeline (releases filtradas neste script;",
         "runs contados pelo `total_count` com filtro `status`, mês a mês).",
         "",
@@ -128,7 +129,7 @@ def main():
             f"- **{name}**",
             f"  - releases: https://github.com/{name}/releases",
             f"  - runs: https://github.com/{name}/actions?query="
-            f"branch%3A{branch}+event%3Apush+created%3A{start}..{end}+is%3Asuccess "
+            f"branch%3A{branch}+event%3Apush+created%3A{start}..{e_date.isoformat()}+is%3Asuccess "
             "(troque `is:success` por `is:failure`)",
         ]
 

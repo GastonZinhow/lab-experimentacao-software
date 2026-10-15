@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 import requests
 
+from metrics.datas import parse_data
 from pipeline.client import GitHubClient
 from pipeline.collector_runs import collect_repo_runs, contar_runs_janela
 

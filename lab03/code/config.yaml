@@ -20,3 +20,12 @@ selection:
   sample_size: 300
   min_releases: 5
   min_runs: 50
+validation:
+  # Amostra-ouro (seção 6 do enunciado, Issue #59). Caminhos relativos a este arquivo.
+  dir: "../validacao"
+  # Sorteio entre os N primeiros incluídos na ordem de avaliação (seed): ficam
+  # iguais quando a amostra cresce para a coleta completa, então o sorteio não muda.
+  base_amostra: 100
+  n_repos: 60
+  releases_por_repo: 5
+  seed: 42

@@ -85,6 +85,30 @@ conferir na interface do GitHub. Sai com código 1 se algum valor divergir.
 
 A janela é o intervalo semiaberto `[window.start, window.end)`. O compare é feito entre releases consecutivas da série coletada, aproveitando releases intermediárias quando elas existem. Se o GitHub retornar `422/not_available` para uma comparação grande demais, a release recebe `status_compare=indisponivel`, fica sem `n_commits` e a coleta continua; esses commits não entram nos contadores. Ao final da execução, o log mostra os contadores de releases ignoradas (`ignoradas_404`, `ignoradas_indisponivel`, `ignoradas_sem_anterior`) e de releases sem commits novos.
 
+### Validação manual (amostra-ouro, issue #59)
+
+```bash
+python -m rotulagem.sorteio --config config.yaml       # sorteio + planilha de rotulagem
+python -m rotulagem.concordancia --config config.yaml  # kappa de Fleiss, divergências e consenso
+```
+
+O sorteio usa a seção `validation` do `config.yaml`: 60 repositórios entre os
+100 primeiros incluídos na ordem de avaliação e 5 releases publicadas na janela
+de cada um, sempre com `seed = 42`. Rodá-lo de novo gera exatamente os mesmos
+arquivos. As saídas ficam em `lab03/validacao/`:
+
+| Arquivo | Conteúdo |
+|---|---|
+| `amostra_ouro_repos.csv` | Os 60 repositórios sorteados. |
+| `planilha_rotulagem.csv` | Uma linha por release, com links para a release e para os commits desde a anterior; colunas de rótulo vazias e nenhuma coluna da heurística. |
+| `rotulos_<avaliador>.csv` | Planilha preenchida por cada avaliador ([guia](../validacao/guia_rotulagem.md)). |
+| `kappa_fleiss.csv` | Kappa de Fleiss e interpretação de Landis & Koch por dimensão. |
+| `divergencias.csv` | Itens sem unanimidade (pauta da reunião). |
+| `decisoes_reuniao.csv` | Decisões da reunião de consenso (empates e revisões). |
+| `rotulos_consenso.csv` | Rótulo de consenso por release e a origem de cada um (`unanime`, `maioria`, `reuniao`). |
+
+O protocolo de desempate está em [`docs/protocolo_consenso.md`](../docs/protocolo_consenso.md).
+
 ### Testes
 ```bash
 pytest --cov=metrics --cov-report=term-missing
