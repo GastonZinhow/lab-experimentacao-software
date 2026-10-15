@@ -266,11 +266,15 @@ distribuições.
   *commits* de todas as *releases*.
 - **RQ03, taxa de falha (CFR):** **(a) proxy de CI:**
   `falhas ÷ (falhas + sucessos)` entre as execuções válidas. **(b) proxy de
-  entrega:** R falha se for seguida, em até 7 dias, por uma *release*
-  corretiva; CFR = *releases* que falharam ÷ *releases* avaliadas, excluindo
-  do denominador as *releases* dos últimos 7 dias da janela (censura). A
-  heurística de *release* corretiva (Issue #61) é validada contra a
-  amostra-ouro (Seção 2.6).
+  entrega:** as *releases* publicadas da janela são ordenadas por
+  `published_at`; uma *release* R falha se alguma *release* publicada depois
+  dela, no intervalo `(published_at(R), published_at(R) + 7 dias]`, for
+  corretiva (Seção 2.7), e não só a imediatamente seguinte. CFR = *releases*
+  que falharam ÷ *releases* avaliadas. As *releases* dos últimos 7 dias da
+  janela (`published_at ≥ 23/09/2026`) não têm o prazo inteiro observado:
+  saem do numerador e do denominador (censura) e são reportadas, mas ainda
+  podem marcar como falha uma *release* anterior. O CFR (b) é indefinido
+  quando todas as *releases* do repositório são censuradas.
 - **RQ04, tempo de recuperação:** as execuções de cada *workflow* são
   ordenadas por `run_started_at`; um episódio de falha começa na primeira
   falha após um sucesso e termina no próximo sucesso do mesmo *workflow*. A
@@ -292,7 +296,8 @@ distribuições.
   cada par de combinações, reportamos a proporção de repositórios que mudam de
   categoria e o kappa de Cohen ponderado linearmente.
 - **RQ08 (bônus):** *rework rate* = *releases* corretivas ÷ total de
-  *releases* na janela, usando a mesma heurística do CFR (b).
+  *releases* na janela, usando a mesma heurística do CFR (b) (sem censura,
+  pois não depende do que vem depois da *release*).
 
 ## 2.6 Validação manual (amostra-ouro)
 
@@ -333,7 +338,46 @@ justificativa em `validacao/decisoes_reuniao.csv`. O resultado,
 *release* corretiva com precisão, *recall* e F1 (refinando-a enquanto o F1
 ficar abaixo de 0,70) e fornece o tipo do projeto usado na RQ06.
 
-## 2.7 Conferência da coleta
+## 2.7 Heurística de *release* corretiva
+
+Uma *release* corretiva é aquela cujo objetivo principal é corrigir um
+defeito recente. A heurística (`metrics/corretiva.py`) só usa dados que o
+pipeline já coleta: o nome da *tag* da *release* R e o da *release* anterior,
+a primeira linha das mensagens dos *commits* de
+`compare/{anterior}...{R}` e o texto das *release notes* (campo `body` da
+própria listagem de *releases*, sem chamadas extras à API). A versão SemVer é
+o último trecho `X.Y` ou `X.Y.Z` da *tag*, o que aceita prefixos de pacote
+(`rig-core-v0.1.2`, `@scope/pacote@1.2.3`) e sufixos (`-rc.1`, `.Final`);
+*tags* sem esse trecho (`unlshd-083`, `october-2025`) são tratadas como fora
+do SemVer, sem erro. Três versões foram avaliadas (histórico completo em
+`docs/versoes_heuristica.md`):
+
+- **v1 (enunciado):** R é corretiva se a versão muda só o *patch* em relação
+  à anterior (`2.3.0 → 2.3.1`) **ou** se algum *commit* contém `revert`,
+  `hotfix` ou `fix` no início de uma palavra.
+- **v2 (só *commits*):** descarta linhas de ruído (*commits* `chore`, `ci`,
+  `docs`, `build`, `test`, `refactor`, *merges*, *bumps* de dependência,
+  *commits* de versão e o texto padrão das notas do GitHub) e compara versões
+  só entre *tags* do mesmo pacote (o prefixo antes da versão). R é corretiva
+  se: (i) a versão muda só o *patch* ou está fora do SemVer; (ii) tem no
+  máximo 5 *commits* significativos; e (iii) há pelo menos um sinal de
+  correção (`fix`, `hotfix`, `revert`, `bug`, `regression`, `crash`,
+  `broken`, `workaround`) e no máximo 0,5 sinal de funcionalidade (`feat`,
+  `add`, `new`, `implement`, `support`, `improve`…) por sinal de correção.
+- **v3 (*commits* + *release notes*, versão final):** como a v2, mas os sinais
+  de (iii) são contados também nas linhas das *release notes*, e a mudança
+  de *minor* é aceita (só a de *major* fica de fora), porque alguns projetos
+  sobem o *minor* mesmo em *releases* só de correção.
+
+Os limiares da v2 e da v3 (5 *commits*, 0,5 funcionalidade por correção,
+incrementos aceitos) foram escolhidos numa grade pequena de valores e
+avaliados por validação cruzada agrupada por repositório (5 partes), para
+estimar o desempenho em repositórios fora da amostra-ouro. Precisão,
+*recall* e F1 são calculados com `precision_recall_fscore_support`
+(`rotulagem/avaliacao.py`), tendo "corretiva = sim" do consenso como classe
+positiva.
+
+## 2.8 Conferência da coleta
 
 Além dos testes unitários (cobertura mínima de 80% nas funções de métrica,
 verificada na integração contínua do repositório), o script `conferencia.py`

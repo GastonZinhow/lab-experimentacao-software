@@ -21,6 +21,7 @@ def _release(id_, tag, published_at, prerelease=False, draft=False):
         "id": id_, "tag_name": tag, "name": tag, "draft": draft, "prerelease": prerelease,
         "created_at": published_at, "published_at": published_at,
         "html_url": f"https://github.com/org/proj/releases/tag/{tag}",
+        "body": f"## {tag}\n- fix: crash",
     }
 
 
@@ -188,3 +189,9 @@ def test_collect_repo_tags_max_tags(client):
         m.get(f"{REPO}/tags?per_page=100", complete_qs=True, json=tags)
         df = collect_repo_tags(client, "org", "proj", max_tags=2)
     assert list(df["tag_name"]) == ["v0", "v1"]
+
+
+def test_collect_releases_grava_release_notes(client, api_mock):
+    df_rel, _, _ = collect_repo_releases(client, "org", "proj", *JANELA)
+    notas = df_rel.set_index("tag_name")["body"]
+    assert notas["v1.2"] == "## v1.2\n- fix: crash"

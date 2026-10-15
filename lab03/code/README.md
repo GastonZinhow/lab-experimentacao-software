@@ -79,7 +79,7 @@ conferir na interface do GitHub. Sai com código 1 se algum valor divergir.
 
 | Arquivo | Conteúdo |
 |---|---|
-| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. |
+| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. `body` = texto das release notes (usado pela heurística corretiva v3). |
 | `data/commits_por_release.csv` | Um commit por linha para cada release da janela: `sha`, `commit_author_date`, `commit_committer_date`, primeira linha da `mensagem`, `tag_name` e `tag_anterior`. O `compare` é paginado (100 por página), então releases com mais de 250 commits vêm completas. |
 | `data/tags.csv` | Tags com o SHA e a data do commit apontado (`commit_author_date`). `max_tags_por_repo` no `config.yaml` limita quantas tags recebem data. |
 
@@ -106,8 +106,26 @@ arquivos. As saídas ficam em `lab03/validacao/`:
 | `divergencias.csv` | Itens sem unanimidade (pauta da reunião). |
 | `decisoes_reuniao.csv` | Decisões da reunião de consenso (empates e revisões). |
 | `rotulos_consenso.csv` | Rótulo de consenso por release e a origem de cada um (`unanime`, `maioria`, `reuniao`). |
+| `commits_amostra_ouro.csv` | Commits `tag_anterior..tag_name` das 300 releases da amostra-ouro (formato de `commits_por_release.csv`). |
+| `notas_amostra_ouro.csv` | Release notes das 300 releases da amostra-ouro. |
+| `erros_heuristica_<versao>.csv` | Falsos positivos e negativos de cada versão da heurística (gerado por `rotulagem.avaliacao`). |
 
 O protocolo de desempate está em [`docs/protocolo_consenso.md`](../docs/protocolo_consenso.md).
+
+### Heurística corretiva e CFR (b) (issue #61)
+
+```bash
+python -m rotulagem.avaliacao --config config.yaml --todas   # P/R/F1 de cada versão contra o consenso
+python calcular_cfr_b.py --config config.yaml                # data/cfr_b.csv e data/releases_corretivas.csv
+```
+
+A heurística está em `metrics/corretiva.py` (versão atual em `VERSAO_ATUAL`);
+o histórico das versões e o P/R/F1 de cada uma, em
+[`docs/versoes_heuristica.md`](../docs/versoes_heuristica.md). Uma release R
+falhou se alguma release publicada até 7 dias depois dela for corretiva;
+releases dos últimos 7 dias da janela são censuradas. `cfr_b.csv` traz, por
+repositório, `cfr_b`, `falhas`, `avaliadas`, `censuradas`, `corretivas` e
+`releases`.
 
 ### Testes
 ```bash

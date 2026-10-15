@@ -164,6 +164,7 @@ def collect_repo_releases(
             "status_compare": status,
             "n_commits": n_commits,
             "html_url": r.get("html_url"),
+            "body": r.get("body"),
         })
 
     print(
