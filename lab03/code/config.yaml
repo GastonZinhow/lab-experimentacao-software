@@ -4,6 +4,9 @@ window:
   end: "2026-09-30"
 cache_dir: ".cache"
 output_dir: "data"
+usar_git_local: true
+git_dir: ".git_cache"
+clone_workers: 4
 max_retries: 5
 seed: 42
 # Limite opcional de tags com data buscada por repositório (null = todas)
@@ -14,7 +17,7 @@ selection:
   min_stars: 1001
   star_breaks: [2000, 5000, 10000, 50000]
   # Candidatos são avaliados em ordem aleatória (seed) até reunir a amostra.
-  sample_size: 100
+  sample_size: 300
   min_releases: 5
   min_runs: 50
 validation:
