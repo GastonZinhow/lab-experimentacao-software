@@ -390,11 +390,177 @@ links para conferir os valores na interface do GitHub.
 
 # 3. Resultados
 
-*Lab03S03.*
+A amostra final tem 300 repositórios (funil em `data/funil.csv`). Releases,
+*commits* e execuções foram coletados entre 18 e 19/10/2026 para a mesma
+amostra selecionada em 14/10 (`--reusar-amostra`): 17.859 *releases*
+publicadas na janela, 1.361.066 *commits* e 555.301 execuções, das quais
+491.249 válidas. Entre a seleção e a coleta, os totais caíram 0,5%
+(*releases*) e 0,6% (execuções válidas), porque *releases* foram apagadas e
+execuções expiraram pela retenção do GitHub; dois repositórios ficaram abaixo
+de 5 *releases* e foram mantidos. Os números desta seção vêm de
+`code/data/dataset_dora.csv` e do notebook `analise/rq01_04_descritiva.ipynb`
+(Issue #64); a Tabela 2 resume todas as métricas e variantes.
+
+**Tabela 2. Mediana e IQR das métricas DORA por repositório (n = repositórios com a métrica definida).**
+
+| RQ | Métrica (variante) | Unidade | n | Mediana | Q1 | Q3 | IQR |
+|---|---|---|---:|---:|---:|---:|---:|
+| RQ01 | Frequência (*release*) | por semana | 300 | 0,35 | 0,17 | 0,77 | 0,59 |
+| RQ01 | Frequência (*release* + pré-*release*) | por semana | 300 | 0,38 | 0,19 | 0,88 | 0,69 |
+| RQ01 | Frequência (*tag*) | por semana | 300 | 0,45 | 0,23 | 1,02 | 0,79 |
+| RQ02 | *Lead time* (a) por *release* | dias | 299 | 10,6 | 2,2 | 33,3 | 31,1 |
+| RQ02 | *Lead time* (b) por *commit* | dias | 299 | 8,1 | 2,0 | 29,6 | 27,5 |
+| RQ03 | CFR (a) *proxy* de CI | % | 300 | 5,7 | 2,0 | 13,5 | 11,5 |
+| RQ03 | CFR (b) *proxy* de entrega | % | 300 | 12,5 | 0,0 | 30,2 | 30,2 |
+| RQ04 | Tempo de recuperação | horas | 276 | 3,1 | 0,9 | 17,4 | 16,5 |
+
+## 3.1 RQ01: frequência de *deploy*
+
+A mediana é de 0,35 *release* por semana, cerca de uma *release* a cada três
+semanas (Figura 1). Metade dos repositórios (49,7%) publica entre uma por mês
+e uma por semana (Medium), 32,7% publicam menos de uma por mês (Low), 16,7%
+entre uma e sete por semana (High) e só três (1,0%) chegam a Elite. A
+distribuição é muito assimétrica: o máximo é de 73 *releases* por semana,
+enquanto o Q3 é de 0,77. Contar pré-*releases* ou *tags* desloca a mediana
+para 0,38 e 0,45 por semana, respectivamente, porque muitos projetos criam
+*tags* sem publicar *release*.
+
+![Figura 1](../analise/figuras/rq01_deploy_frequency.png)
+**Figura 1. Frequência de *deploy* por repositório nas três unidades de *deploy* (escala log); as linhas marcam os cortes da tabela DORA.**
+
+## 3.2 RQ02: *lead time*
+
+O *lead time* mediano é de 10,6 dias na variante (a) e de 8,1 dias na (b),
+ambos entre uma semana e 30 dias (Figura 2). Das 17.859 *releases* da janela,
+13.531 entraram no cálculo; 4.272 não traziam *commits* novos em relação à
+anterior e 56 eram a primeira *release* da história do repositório. Nenhuma
+comparação retornou 404. As variantes estão fortemente associadas
+(Spearman ρ = 0,72) e a diferença pareada é significativa (Wilcoxon,
+p < 0,001), mas menor do que esperávamos: (a) supera (b) em 62,9% dos
+repositórios, e a razão (a)/(b) tem mediana 1,41 (Q1 = 0,59; Q3 = 2,47). Em
+37% dos repositórios a variante (b) é a maior. As duas variantes põem o
+repositório na mesma categoria DORA em 55,2% dos casos.
+
+Dois artefatos aparecem nos dados brutos. 0,3% dos *commits* têm data de
+autoria posterior à publicação da *release* (*rebase* ou *cherry-pick*), e
+um repositório tem *lead time* (b) negativo. Além disso, 31,7% dos *commits*
+têm *lead time* acima de um ano, concentrados em projetos que mantêm séries
+paralelas de versões (por exemplo, `phpseclib`, com 9,5 anos na variante a):
+como a *release* anterior é a anterior por data, o `compare` entre ramos de
+manutenção diferentes traz o histórico divergente inteiro.
+
+![Figura 2](../analise/figuras/rq02_lead_time.png)
+**Figura 2. *Lead time* (a) e (b) por repositório (escala log). À direita, cada ponto é um repositório; acima da diagonal, (a) > (b).**
+
+## 3.3 RQ03: taxa de falha
+
+O CFR (a), *proxy* de CI, tem mediana de 5,7% (IQR 2,0%–13,5%); 77,3% dos
+repositórios ficam em Elite (≤ 15%). O CFR (b), *proxy* de entrega, tem
+mediana de 12,5%, mas com dispersão muito maior (IQR 0%–30,2%): 34,3% dos
+repositórios não têm nenhuma *release* seguida de corretiva em 7 dias, e a
+heurística v3 marca 25,2% das *releases* da janela (4.509) como corretivas.
+As duas variantes praticamente não se correlacionam (ρ = 0,06; p = 0,27;
+Figura 3), e o mesmo repositório cai na mesma categoria DORA nas duas em só
+49,7% dos casos. A censura do CFR (b) é pequena: 400 *releases* (2,2%),
+publicadas nos últimos 7 dias da janela, ficaram fora do denominador, e todos
+os 300 repositórios tiveram pelo menos uma *release* avaliável.
+
+![Figura 3](../analise/figuras/rq03_cfr.png)
+**Figura 3. CFR (a) e (b) por repositório. À direita, a falta de relação entre as duas variantes.**
+
+## 3.4 RQ04: tempo de recuperação
+
+A mediana do tempo de recuperação é de 3,1 horas (IQR 0,9–17,4 h; Figura 4),
+com cauda longa até 1.650 horas. Pela tabela DORA, 27,5% dos repositórios
+são Elite (< 1 hora), 53,3% High, 15,6% Medium e 3,6% Low. Foram 13.926
+episódios de falha em 280 repositórios; 20 repositórios não tiveram nenhum,
+e outros 4 só tiveram episódios não recuperados, ficando sem tempo definido.
+Apenas 204 episódios (1,5%) foram censurados, mas eles aparecem em 96
+repositórios (34,3% dos que tiveram episódios). Por repositório, a mediana de
+episódios censurados é de 0% (Q3 = 2,3%), e quatro repositórios têm todos os
+seus episódios censurados.
+
+![Figura 4](../analise/figuras/rq04_recuperacao.png)
+**Figura 4. Tempo de recuperação mediano por repositório (escala log) e proporção de episódios censurados.**
+
+## 3.5 Classificação DORA de referência (C1)
+
+Na combinação C1 (*release*, *lead time* (a), CFR (a) e tempo de
+recuperação), 45,7% dos repositórios são Medium, 41,7% High, 7,0% Low e 5,7%
+Elite (Tabela 3, Figura 5; notebook `analise/classificacao_c1.ipynb`, Issue
+#65). As métricas de estabilidade puxam a classificação para cima e as de
+velocidade, para baixo: a nota média (Elite = 4, Low = 1) é 3,66 no CFR (a) e
+3,05 na recuperação, contra 1,86 na frequência e 2,31 no *lead time*. A
+frequência de *deploy* é a pior métrica (ou empata como pior) em 82,3% dos
+repositórios. 275 repositórios têm as quatro métricas; nos demais, a métrica
+ausente fica fora da mediana. A classificação por repositório está em
+`code/data/classificacao_c1.csv`, base da RQ07.
+
+**Tabela 3. Distribuição das categorias DORA na combinação C1 (% dos repositórios com a métrica definida).**
+
+| Métrica | n | Elite | High | Medium | Low |
+|---|---:|---:|---:|---:|---:|
+| Frequência de *deploy* | 300 | 1,0 | 16,7 | 49,7 | 32,7 |
+| *Lead time* (a) | 299 | 16,1 | 25,8 | 31,1 | 27,1 |
+| CFR (a) | 300 | 77,3 | 15,0 | 4,3 | 3,3 |
+| Tempo de recuperação | 276 | 27,5 | 53,3 | 15,6 | 3,6 |
+| **Geral (C1)** | 300 | 5,7 | 41,7 | 45,7 | 7,0 |
+
+![Figura 5](../analise/figuras/c1_distribuicao.png)
+**Figura 5. Distribuição das categorias DORA da combinação C1 por métrica e geral.**
 
 # 4. Discussão
 
-*Lab03S03.*
+**H1 (frequência) confirmada.** A mediana ficou em Medium (0,35 por semana)
+e a distribuição é assimétrica à direita, como esperado. A cauda Elite foi
+ainda menor do que imaginávamos: só 1% da amostra publica uma *release* por
+dia. Publicar *releases* no GitHub é um ritual de versão, não um registro de
+*deploy* contínuo; a diferença para as variantes com *tags* e pré-*releases*
+mostra que parte das entregas acontece fora da *release* publicada.
+
+**H2 (*lead time*) confirmada em parte.** A ordem de grandeza (semanas) se
+confirmou, mas a variante (a) não é "sistematicamente" maior: (b) supera (a)
+em 37% dos repositórios. A pista do enunciado vale *dentro* de uma *release*,
+em que (a) é o maior dos *lead times* dos seus *commits*. Entre *releases*,
+porém, as variantes pesam coisas diferentes: (a) dá o mesmo peso a cada
+*release*, e (b), a cada *commit*. Quando poucas *releases* grandes e antigas
+concentram os *commits* e há muitas *releases* pequenas e rápidas, (b) é
+dominada pelas grandes e passa (a). Os dados confirmam: nos repositórios com
+(b) > (a), os 10% maiores *releases* concentram 53% dos *commits*, contra 31%
+nos demais, e a mediana é de 9 *commits* por *release*, contra 19. Também não
+se confirmou que (b) desloque os repositórios para categorias melhores: as
+distribuições das duas variantes são parecidas, e a concordância entre elas
+(55%) é baixa por causa das trocas entre categorias vizinhas, nos dois
+sentidos.
+
+**H3 (CFR) refutada em (a), confirmada na relação entre as variantes.** O
+CFR (a) ficou abaixo do esperado (5,7%, contra 10%–25%): as execuções de
+`push` no branch principal já passaram pelos *checks* do *pull request*, e
+três em cada quatro repositórios são Elite nessa métrica. O CFR (b) foi o
+dobro do (a) e quase não se correlaciona com ele (ρ = 0,06), como previmos:
+as duas variantes medem fenômenos diferentes, quebra de *pipeline* e correção
+rápida de uma versão publicada. O CFR (b) é também o mais instável dos dois,
+pois depende de uma heurística com 25% de *releases* marcadas como
+corretivas e de um prazo de 7 dias que favorece quem publica com frequência
+(ver H5).
+
+**H4 (recuperação) confirmada, com menos censura que o esperado.** A mediana
+de 3,1 horas é High e a cauda é longa. Esperávamos uma proporção "não
+desprezível" de episódios censurados vinda de *workflows* secundários
+quebrados por semanas; ela existe em um terço dos repositórios, mas é só 1,5%
+dos episódios. Episódios curtos e numerosos dominam a mediana, o que
+sugere que muitos são resolvidos reexecutando o *workflow* (falhas
+instáveis), e não por uma correção de código.
+
+**Classificação C1.** O retrato geral é de projetos estáveis, mas lentos para
+entregar: Medium ou High em 87% dos casos, puxados para baixo pela frequência
+e pelo *lead time* e para cima pelo CFR (a) e pela recuperação. Isso reflete
+mais os *proxies* do que os projetos: a *release* subestima a frequência de
+quem entrega por *tags* ou *nightly builds*, e o CFR de CI quase nunca
+penaliza alguém. A RQ07 mede o quanto essa classificação muda com outras
+definições.
+
+**H5 a H8.** *A completar com os resultados das RQ05 a RQ08 (Issues #66 a #69).*
 
 # 5. Ameaças à validade
 
