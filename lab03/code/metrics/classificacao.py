@@ -1,6 +1,6 @@
 import math
 from statistics import median
-from typing import Optional
+from typing import Dict, Optional
 
 ELITE, HIGH, MEDIUM, LOW = "Elite", "High", "Medium", "Low"
 NOTAS = {ELITE: 4, HIGH: 3, MEDIUM: 2, LOW: 1}
@@ -88,3 +88,23 @@ def classificar_repositorio(
         classificar_cfr(cfr),
         classificar_tempo_recuperacao(tempo_recuperacao_horas),
     )
+
+
+def categorias_repositorio(
+    deploy_frequency: Optional[float],
+    lead_time_horas: Optional[float],
+    cfr: Optional[float],
+    tempo_recuperacao_horas: Optional[float],
+) -> Dict[str, Optional[str]]:
+    """
+    Como classificar_repositorio, mas devolve também a categoria de cada métrica:
+    {"deploy_frequency", "lead_time", "cfr", "tempo_recuperacao", "geral"}.
+    """
+    categorias = {
+        "deploy_frequency": classificar_deploy_frequency(deploy_frequency),
+        "lead_time": classificar_lead_time(lead_time_horas),
+        "cfr": classificar_cfr(cfr),
+        "tempo_recuperacao": classificar_tempo_recuperacao(tempo_recuperacao_horas),
+    }
+    categorias["geral"] = classificacao_geral(*categorias.values())
+    return categorias

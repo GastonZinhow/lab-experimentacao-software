@@ -3,6 +3,7 @@ import pytest
 from metrics.classificacao import (
     ELITE, HIGH, MEDIUM, LOW,
     UM_POR_MES_EM_SEMANAS,
+    categorias_repositorio,
     classificacao_geral,
     classificar_cfr,
     classificar_deploy_frequency,
@@ -109,3 +110,15 @@ def test_classificacao_geral_ignora_metricas_ausentes():
 def test_classificar_repositorio_ponta_a_ponta():
     # DF 2/sem (High), LT 12h (Elite), CFR 20% (High), MTTR 10 dias (Low) → (3,4,3,1) → 3 → High
     assert classificar_repositorio(2.0, 12.0, 0.20, 10 * DIA) == HIGH
+
+
+def test_categorias_repositorio_por_metrica_e_geral():
+    assert categorias_repositorio(2.0, 12.0, 0.20, 10 * DIA) == {
+        "deploy_frequency": HIGH,
+        "lead_time": ELITE,
+        "cfr": HIGH,
+        "tempo_recuperacao": LOW,
+        "geral": HIGH,
+    }
+    # Sem episódios de falha: a recuperação fica de fora da mediana (4, 2, 4) → Elite
+    assert categorias_repositorio(10.0, 10 * DIA, 0.0, None)["geral"] == ELITE
