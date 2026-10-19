@@ -49,6 +49,22 @@ def test_client_retry_apos_queda_de_conexao(client):
             assert mock_sleep.called
 
 
+def test_client_retry_apos_resposta_cortada(client):
+    """Conexão que cai no meio do corpo da resposta (IncompleteRead) também é repetida."""
+    url = "https://api.github.com/test-resposta-cortada"
+
+    with requests_mock.Mocker() as m:
+        m.get(url, [
+            {"exc": requests.exceptions.ChunkedEncodingError("Connection broken: IncompleteRead")},
+            {"json": {"status": "ok"}, "status_code": 200},
+        ])
+
+        with patch("time.sleep"):
+            data, _ = client.get_json(url)
+            assert data == {"status": "ok"}
+        assert m.call_count == 2
+
+
 def test_client_queda_de_conexao_persistente_lanca_erro(client):
     url = "https://api.github.com/test-conexao-fora"
 

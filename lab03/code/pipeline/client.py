@@ -105,7 +105,7 @@ class GitHubClient:
         for attempt in range(self.max_retries):
             try:
                 resp = self.session.get(full_url, timeout=60)
-            except (requests.ConnectionError, requests.Timeout) as e:
+            except (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError) as e:
                 # Queda de rede é temporária como um 5xx: mesmo backoff.
                 if attempt == self.max_retries - 1:
                     raise
