@@ -11,9 +11,11 @@ from pipeline.cache import ResponseCache
 from pipeline.client import GitHubClient
 from collections import Counter
 from pipeline.collector_releases import collect_repo_releases, collect_repo_tags
+from pipeline.collector_runs import collect_repo_runs
 from pipeline.selection import (
     build_funnel,
     build_metadata,
+    count_valid_runs,
     search_candidates,
     select_sample,
 )
@@ -38,6 +40,11 @@ def main():
         "--sample-size", type=int,
         help="Sobrescreve selection.sample_size (ex.: 5 para um teste rápido)",
     )
+    parser.add_argument(
+        "--reusar-amostra", action="store_true",
+        help="Usa a amostra de data/metadados.csv, sem refazer a busca e a seleção, "
+             "e coleta só runs, releases, commits e tags",
+    )
     args = parser.parse_args()
 
     cfg = load_config(args.config)
@@ -52,24 +59,48 @@ def main():
     cache = ResponseCache(os.path.join(cfg.get("cache_dir", ".cache"), "api_cache.db"))
     client = GitHubClient(cache=cache, max_retries=cfg.get("max_retries", 5))
 
-    # 1. Candidatos: busca fatiada por faixas de estrelas
-    candidates, slice_log = search_candidates(
-        client, sel["min_stars"], sel["star_breaks"], date.today()
-    )
-    slice_log.to_csv(os.path.join(out_dir, "faixas_busca.csv"), index=False)
-    print(f"[Busca] {len(candidates)} candidatos em {len(slice_log)} faixas.")
+    if args.reusar_amostra:
+        # 1-2. Amostra já fechada: a busca refeita em outro dia traz outros
+        # candidatos (as estrelas mudam), e o embaralhamento daria outra amostra.
+        caminho = os.path.join(out_dir, "metadados.csv")
+        if not os.path.exists(caminho):
+            sys.exit(f"--reusar-amostra precisa de {caminho}")
+        metadata = pd.read_csv(caminho)
+        print(f"[Amostra] {len(metadata)} repositórios reaproveitados de {caminho}.")
 
-    # 2. Critério de inclusão, até atingir o tamanho da amostra
-    selected, runs = select_sample(client, candidates, sel, window, cfg.get("seed", 42))
+        # 3. Workflow runs da amostra (em paralelo, como na seleção: eval_workers)
+        registros = metadata.to_dict(orient="records")
+        with ThreadPoolExecutor(max_workers=max(1, int(sel.get("eval_workers", 1)))) as ex:
+            runs = list(ex.map(
+                lambda r: collect_repo_runs(
+                    client, r["owner"], r["repo"], r["default_branch"], window["start"], window["end"]
+                ),
+                registros,
+            ))
+        for r, df_runs in zip(registros, runs):
+            n_validas = count_valid_runs(df_runs)
+            if n_validas != r["n_runs_validos_janela"]:
+                print(f"  [Aviso] {r['full_name']}: {n_validas} runs válidos agora, "
+                      f"{r['n_runs_validos_janela']} em metadados.csv")
+    else:
+        # 1. Candidatos: busca fatiada por faixas de estrelas
+        candidates, slice_log = search_candidates(
+            client, sel["min_stars"], sel["star_breaks"], date.today()
+        )
+        slice_log.to_csv(os.path.join(out_dir, "faixas_busca.csv"), index=False)
+        print(f"[Busca] {len(candidates)} candidatos em {len(slice_log)} faixas.")
 
-    selected.to_csv(os.path.join(out_dir, "candidatos.csv"), index=False)
-    metadata = build_metadata(selected, window["end"])
-    metadata.to_csv(os.path.join(out_dir, "metadados.csv"), index=False)
-    funnel = build_funnel(selected, sel)
-    funnel.to_csv(os.path.join(out_dir, "funil.csv"), index=False)
+        # 2. Critério de inclusão, até atingir o tamanho da amostra
+        selected, runs = select_sample(client, candidates, sel, window, cfg.get("seed", 42))
 
-    print("\nFunil de seleção:")
-    print(funnel.to_string(index=False))
+        selected.to_csv(os.path.join(out_dir, "candidatos.csv"), index=False)
+        metadata = build_metadata(selected, window["end"])
+        metadata.to_csv(os.path.join(out_dir, "metadados.csv"), index=False)
+        funnel = build_funnel(selected, sel)
+        funnel.to_csv(os.path.join(out_dir, "funil.csv"), index=False)
+
+        print("\nFunil de seleção:")
+        print(funnel.to_string(index=False))
 
     # 3. Workflow runs da amostra final
     if runs:
@@ -78,11 +109,6 @@ def main():
         print(f"Salvo runs.csv com {len(final_df)} execuções coletadas.")
 
     # 4. Releases, commits entre releases e tags da amostra final (#54)
-    repos = metadata[["owner", "repo", "default_branch"]].to_dict(orient="records")
-    releases_dfs, commits_dfs, tags_dfs = [], [], []
-    contadores_total: Counter = Counter()
-
-        # 4. Releases, commits entre releases e tags da amostra final (#54)
     repos = metadata[["owner", "repo", "default_branch"]].to_dict(orient="records")
     releases_dfs, commits_dfs, tags_dfs = [], [], []
     contadores_total: Counter = Counter()
