@@ -25,6 +25,15 @@ def calcular_tempo_recuperacao(runs: List[Dict[str, Any]]) -> Tuple[Optional[flo
       2. Proporção de episódios censurados (iniciados e não recuperados dentro da janela).
     Retorna: (mediana_horas, proporcao_censurados)
     """
+    res = avaliar_tempo_recuperacao(runs)
+    return res["mediana_horas"], res["prop_censurados"]
+
+
+def avaliar_tempo_recuperacao(runs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Igual a calcular_tempo_recuperacao, mas devolve também as contagens:
+    {"mediana_horas", "episodios", "recuperados", "censurados", "prop_censurados"}.
+    """
     # Agrupa por workflow_id descartando execuções com status "ignorar"
     workflows = defaultdict(list)
     for r in runs:
@@ -66,4 +75,10 @@ def calcular_tempo_recuperacao(runs: List[Dict[str, Any]]) -> Tuple[Optional[flo
     prop_censurados = (episodios_censurados / total_episodios) if total_episodios > 0 else 0.0
     mediana_horas = median(duracoes_horas) if duracoes_horas else None
 
-    return mediana_horas, prop_censurados
+    return {
+        "mediana_horas": mediana_horas,
+        "episodios": total_episodios,
+        "recuperados": len(duracoes_horas),
+        "censurados": episodios_censurados,
+        "prop_censurados": prop_censurados,
+    }

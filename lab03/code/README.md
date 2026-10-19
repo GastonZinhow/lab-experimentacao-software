@@ -14,7 +14,17 @@ do próprio `config.yaml`, então os comandos abaixo podem ser rodados de
 ```bash
 python -m pipeline --config config.yaml                  # amostra completa (selection.sample_size)
 python -m pipeline --config config.yaml --sample-size 5  # teste rápido
+python -m pipeline --config config.yaml --reusar-amostra # mesma amostra de data/metadados.csv
 ```
+
+A busca devolve candidatos diferentes a cada dia (as estrelas mudam), e o
+embaralhamento com a mesma semente sobre outra lista de candidatos gera outra
+amostra. Para coletar de novo **a amostra já fechada** (a de `metadados.csv`
+versionado), use `--reusar-amostra`: a busca e a seleção são puladas e só são
+coletados runs, releases, commits e tags; `candidatos.csv`, `metadados.csv`,
+`funil.csv` e `faixas_busca.csv` não são reescritos. Repositórios cujo número
+de runs válidos mudou desde a seleção (runs apagados pela retenção do GitHub)
+aparecem no log com `[Aviso]`.
 
 No Windows, `coletar.cmd` roda a coleta e a conferência em sequência e grava
 o log em `.cache/pipeline.log`; enquanto o pipeline roda, o Windows não entra
@@ -79,8 +89,7 @@ conferir na interface do GitHub. Sai com código 1 se algum valor divergir.
 
 | Arquivo | Conteúdo |
 |---|---|
-| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `indisponivel` (a API não conseguiu gerar um compare muito grande), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. |
-| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. `body` = texto das release notes (usado pela heurística corretiva v3). |
+| `data/releases.csv` | Releases publicadas e pré-releases (drafts são descartados). `status_compare`: `ok`, `404` (tag apagada/reescrita, ignorada no lead time), `indisponivel` (a API não conseguiu gerar um compare muito grande), `sem_anterior` (primeira release da história), `fora_da_janela`, `fora_da_serie` (pré-release fora da série principal). `n_commits` = commits incluídos na release. `body` = texto das release notes (usado pela heurística corretiva v3). |
 | `data/commits_por_release.csv` | Um commit por linha para cada release da janela: `sha`, `commit_author_date`, `commit_committer_date`, primeira linha da `mensagem`, `tag_name` e `tag_anterior`. O `compare` é paginado (100 por página), então releases com mais de 250 commits vêm completas. |
 | `data/tags.csv` | Tags com o SHA e a data do commit apontado (`commit_author_date`). `max_tags_por_repo` no `config.yaml` limita quantas tags recebem data. |
 
@@ -127,6 +136,31 @@ falhou se alguma release publicada até 7 dias depois dela for corretiva;
 releases dos últimos 7 dias da janela são censuradas. `cfr_b.csv` traz, por
 repositório, `cfr_b`, `falhas`, `avaliadas`, `censuradas`, `corretivas` e
 `releases`.
+
+### Dataset final e análises (issues #63, #64 e #65)
+
+```bash
+python gerar_dataset.py --config config.yaml   # data/dataset_dora.csv
+```
+
+`dataset_dora.csv` tem uma linha por repositório com os metadados, todas as
+métricas DORA em todas as variantes (frequência por release, release +
+pré-release e tag; lead time (a)/(b); CFR (a)/(b) com as releases censuradas;
+tempo de recuperação com os episódios censurados) e a classificação de
+referência C1. Cada coluna está no
+[dicionário de dados](../docs/dicionario_de_dados.md).
+
+As análises ficam em `lab03/analise/` e leem só o `dataset_dora.csv`:
+
+```bash
+cd ../analise
+python -m nbconvert --to notebook --execute --inplace rq01_04_descritiva.ipynb  # RQ01 a RQ04 (#64)
+python -m nbconvert --to notebook --execute --inplace classificacao_c1.ipynb    # C1 e data/classificacao_c1.csv (#65)
+```
+
+As figuras vão para `analise/figuras/` e as tabelas para `analise/tabelas/`.
+Os notebooks precisam de `matplotlib`, `scipy` e, para rodar pela linha de
+comando, `nbconvert` e `ipykernel` (todos no `requirements.txt`).
 
 ### Testes
 ```bash

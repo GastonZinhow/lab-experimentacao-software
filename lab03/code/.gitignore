@@ -15,6 +15,8 @@ data/*.csv
 !data/metadados.csv
 !data/funil.csv
 !data/faixas_busca.csv
+!data/dataset_dora.csv
+!data/classificacao_c1.csv
 
 __pycache__/
 *.py[cod]

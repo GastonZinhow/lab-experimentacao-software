@@ -1,6 +1,6 @@
 import pytest
 from metrics.cfr import calcular_cfr_a
-from metrics.recovery import calcular_tempo_recuperacao
+from metrics.recovery import avaliar_tempo_recuperacao, calcular_tempo_recuperacao
 
 # ==========================================
 # Testes de CFR (a)
@@ -104,3 +104,20 @@ def test_recuperacao_sem_episodios():
     mediana, censura = calcular_tempo_recuperacao(runs)
     assert mediana is None
     assert censura == 0.0
+
+def test_recuperacao_contagens_de_episodios():
+    """Dois episódios no WF 1 (um recuperado em 1h, outro censurado) e nenhum no WF 2."""
+    runs = [
+        {"workflow_id": 1, "run_started_at": "2024-05-10T10:00:00Z", "updated_at": "2024-05-10T10:10:00Z", "conclusion": "failure"},
+        {"workflow_id": 1, "run_started_at": "2024-05-10T10:50:00Z", "updated_at": "2024-05-10T11:00:00Z", "conclusion": "success"},
+        {"workflow_id": 2, "run_started_at": "2024-05-10T12:00:00Z", "updated_at": "2024-05-10T12:10:00Z", "conclusion": "success"},
+        {"workflow_id": 1, "run_started_at": "2024-05-11T09:00:00Z", "updated_at": "2024-05-11T09:10:00Z", "conclusion": "timed_out"},
+    ]
+    res = avaliar_tempo_recuperacao(runs)
+    assert res == {
+        "mediana_horas": pytest.approx(1.0),
+        "episodios": 2,
+        "recuperados": 1,
+        "censurados": 1,
+        "prop_censurados": 0.5,
+    }
