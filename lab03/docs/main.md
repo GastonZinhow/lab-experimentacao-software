@@ -539,6 +539,37 @@ escolhida.
 ![Figura 6](../analise/figuras/rq07_matrizes_transicao.png)
 **Figura 6. Matrizes de transição da categoria DORA geral; as linhas são a combinação de origem e as colunas, a combinação de destino.**
 
+## 3.7 RQ08: *deployment rework rate*
+
+A *rework rate* mediana é 14,3% por repositório (Q1 = 2,7%; Q3 = 29,0%;
+IQR = 26,3 pontos percentuais), enquanto o CFR (b) tem mediana de 12,5%
+(Q1 = 0%; Q3 = 30,2%; IQR = 30,2 pontos percentuais; Tabela 5). Embora a
+mediana da *rework rate* seja numericamente maior, a diferença pareada tem
+mediana zero: ela é maior que o CFR (b) em 98 repositórios, igual em 98 e
+menor em 104. O teste de Wilcoxon não identifica deslocamento sistemático
+entre as distribuições pareadas (p = 0,613).
+
+**Tabela 5. Distribuição da rework rate e do CFR (b) por repositório (n = 300).**
+
+| Métrica | Mediana | Q1 | Q3 | IQR |
+|---|---:|---:|---:|---:|
+| *Rework rate* | 14,3% | 2,7% | 29,0% | 26,3 p.p. |
+| CFR (b) | 12,5% | 0,0% | 30,2% | 30,2 p.p. |
+
+As métricas têm associação positiva forte (Spearman ρ = 0,697;
+p < 0,001), mas não são equivalentes (Figura 7). A *rework rate* atribui o
+evento à *release* corretiva e usa todas as 17.859 *releases* publicadas. O
+CFR (b) atribui a falha à *release* anterior quando alguma corretiva aparece
+nos sete dias seguintes e censura as *releases* para as quais essa janela
+não foi inteiramente observada. Assim, uma única corretiva pode marcar mais
+de uma *release* anterior como falha, enquanto uma corretiva tardia entra na
+*rework rate* sem produzir falha no CFR (b). A taxa agregada é 25,2%
+(4.509/17.859), mas não substitui a mediana por repositório: ela dá mais peso
+a projetos que publicam muitas *releases*.
+
+![Figura 7](../analise/figuras/rq08_rework_vs_cfr.png)
+**Figura 7. Distribuição da rework rate e do CFR (b), com quartis, medianas e pontos por repositório; à direita, comparação pareada com a diagonal de igualdade.**
+
 # 4. Discussão
 
 **H1 (frequência) confirmada.** A mediana ficou em Medium (0,35 por semana)
@@ -617,7 +648,16 @@ repetir os testes com as variantes alternativas. Em suma, as conclusões
 descritivas agregadas de RQ01, RQ02 e RQ04 se mantêm, enquanto conclusões
 individuais e as que envolvem CFR dependem da definição operacional.
 
-**H8.** *A completar com o resultado da RQ08 (Issue #69).*
+**H8 (*rework rate*) refutada na unidade de análise.** A hipótese previa uma
+*rework rate* entre 20% e 35% e sistematicamente maior que o CFR (b). A taxa
+agregada de 25,2% cai nessa faixa, mas a unidade de análise das RQs é o
+repositório, cuja mediana foi apenas 14,3%. Também não houve diferença
+pareada significativa: praticamente tantos repositórios têm *rework rate*
+maior quanto menor que o CFR (b). A divergência decorre da posição do evento
+observado: o CFR olha a versão que presumivelmente falhou; a *rework rate*,
+a versão não planejada que a corrige. O prazo de sete dias, a censura e a
+possibilidade de uma corretiva sinalizar várias versões anteriores impedem
+uma relação um-para-um entre as duas taxas.
 
 # 5. Ameaças à validade
 

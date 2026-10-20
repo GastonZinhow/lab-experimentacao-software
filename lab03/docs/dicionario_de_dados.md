@@ -67,6 +67,7 @@ data do commit é `commit.author.date`.
 | `cfr_b_avaliadas` | inteiro | releases | releases da janela publicadas antes de `2026-09-23` (fim da janela − 7 dias) |
 | `cfr_b_censuradas` | inteiro | releases | releases dos últimos 7 dias da janela: fora do numerador e do denominador |
 | `releases_corretivas` | inteiro | releases | releases da janela que a heurística v3 marca como corretivas (base do rework rate, RQ08) |
+| `rework_rate` | real | fração | RQ08: `releases_corretivas ÷ n_releases`; não usa a censura de 7 dias do CFR (b) |
 
 ### RQ04: tempo de recuperação
 

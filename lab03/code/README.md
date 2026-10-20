@@ -157,6 +157,7 @@ cd ../analise
 python -m nbconvert --to notebook --execute --inplace rq01_04_descritiva.ipynb  # RQ01 a RQ04 (#64)
 python -m nbconvert --to notebook --execute --inplace classificacao_c1.ipynb    # C1 e data/classificacao_c1.csv (#65)
 python -m nbconvert --to notebook --execute --inplace rq07_sensibilidade.ipynb  # C1/C2/C3, kappa e transições (#68)
+python -m nbconvert --to notebook --execute --inplace rq08_rework_rate.ipynb     # rework rate × CFR (b) (#69)
 ```
 
 As figuras vão para `analise/figuras/` e as tabelas para `analise/tabelas/`.
@@ -169,6 +170,11 @@ tabelas `rq07_pares.csv` e `rq07_transicao_*.csv` trazem, respectivamente, a
 porcentagem de mudança com kappa ponderado linear e as matrizes de transição.
 O kappa usa explicitamente a ordem ordinal Elite → High → Medium → Low; a
 ordem alfabética padrão atribuiria distâncias incorretas às categorias.
+
+O notebook da RQ08 confere a coluna `rework_rate` do dataset, exporta
+`rq08_resumo.csv` e `rq08_comparacao_cfr_b.csv` para `analise/tabelas/` e
+gera o gráfico de violino com a comparação pareada em
+`analise/figuras/rq08_rework_vs_cfr.png`.
 
 ### Testes
 ```bash

@@ -23,6 +23,7 @@ from metrics.datas import parse_data
 from metrics.deploy import calcular_deploy_frequency, semanas_da_janela
 from metrics.lead_time import calcular_lead_time_a, calcular_lead_time_b
 from metrics.recovery import avaliar_tempo_recuperacao
+from metrics.rework import calcular_rework_rate
 from pipeline.config import load_config
 
 ENTRADAS = ("metadados.csv", "runs.csv", "releases.csv", "commits_por_release.csv", "tags.csv")
@@ -136,6 +137,13 @@ def gerar_dataset(dados: Dict[str, pd.DataFrame], inicio: str, fim: str) -> pd.D
         "censuradas": "cfr_b_censuradas", "corretivas": "releases_corretivas",
     }).drop(columns="releases")
     df = df.merge(cfr_b, on="full_name", how="left")
+    df["rework_rate"] = [
+        calcular_rework_rate(
+            None if pd.isna(corretivas) else int(corretivas),
+            None if pd.isna(releases) else int(releases),
+        )
+        for corretivas, releases in zip(df["releases_corretivas"], df["n_releases"])
+    ]
     df = df.merge(metricas_runs(dados["runs.csv"]), on="full_name", how="left")
     df = pd.concat([df, classificar_c1(df)], axis=1)
 

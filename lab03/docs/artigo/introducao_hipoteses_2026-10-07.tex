@@ -1,206 +1,388 @@
-% =====================================================================
-% Lab03 - Mineracao de metricas DORA
-% Copia datada da Introducao e das hipoteses informais (Issue #53).
-%
-% Data de registro: 2026-10-07
-% As hipoteses abaixo foram escritas ANTES da coleta e da analise dos
-% dados (Lab03S01). Esta copia nao deve ser editada depois que os
-% resultados existirem: alteracoes posteriores vao para o Overleaf e a
-% Discussao compara os resultados com o texto registrado aqui.
-%
-% Para compilar: usar o template SBC do Overleaf
-% (https://www.overleaf.com/latex/templates/sbc-conferences-template/blbxwjwzdngr),
-% que fornece sbc-template.sty e sbc.bst.
-% =====================================================================
 \documentclass[12pt]{article}
 
-\usepackage{sbc-template}
+% O projeto compila tanto dentro do template oficial da SBC quanto de forma
+% autocontida. Se sbc-template.sty estiver disponível, ele será usado.
+\IfFileExists{sbc-template.sty}{
+  \usepackage{sbc-template}
+}{
+  \usepackage[a4paper,top=3.5cm,left=3cm,right=3cm,bottom=2.5cm]{geometry}
+  \usepackage{times}
+  \newenvironment{resumo}
+    {\begin{quote}\noindent\textbf{Resumo.}\ \itshape}
+    {\end{quote}}
+}
+\providecommand{\address}[1]{\date{#1}}
+
 \usepackage{graphicx,url}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[brazil]{babel}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{microtype}
 
+\graphicspath{{figuras/}}
 \sloppy
 
 \title{Minerando métricas DORA em repositórios open-source:\\
 o quanto podemos confiar nos \textit{proxies}?}
 
-% TODO: confirmar a instituicao e os e-mails dos tres integrantes.
 \author{Luisa Clara de Paula Lara Silva, Matheus Gaston, Mirelly Alvarenga}
 
 \address{Curso de Engenharia de Software\\
-  Laboratório de Experimentação de Software
-}
+Laboratório de Experimentação de Software}
 
 \begin{document}
 
 \maketitle
 
-\begin{abstract}
-  % Escrito na entrega final, depois dos resultados.
-\end{abstract}
-
 \begin{resumo}
-  % Escrito na entrega final, depois dos resultados.
+Este estudo minera métricas DORA de 300 repositórios open-source populares
+que usam GitHub Actions, em uma janela de 12 meses. Releases, commits, tags e
+execuções de workflows são empregados como proxies de eventos de produção.
+Os resultados mostram grande variação entre repositórios e, principalmente,
+sensibilidade à definição operacional: entre 21,7\% e 37,7\% dos repositórios
+mudam de categoria entre três configurações plausíveis. A concordância
+ponderada varia de 0,432 a 0,683. A taxa de retrabalho tem mediana de 14,3\% e
+é relacionada, mas conceitualmente distinta, do CFR baseado em releases. Os
+resultados de RQ05 e RQ06 permanecem reservados para a análise final.
 \end{resumo}
 
 \section{Introdução}
 
-As métricas DORA (\textit{DevOps Research and Assessment}) tornaram-se a
-referência mais usada para medir o desempenho de entrega de software.
-Popularizadas por \cite{forsgren2018} e revisadas anualmente pelos relatórios
-\textit{Accelerate State of DevOps}, elas descrevem a entrega em duas
-dimensões: \textbf{velocidade}, medida pela frequência de \textit{deploy} e pelo
-\textit{lead time} das mudanças, e \textbf{estabilidade}, medida pela taxa de
-falha das mudanças (\textit{change failure rate}, CFR) e pelo tempo de
-recuperação após um \textit{deploy} que falhou \cite{dora2024}. Em 2024 o DORA
-acrescentou uma quinta métrica, a \textit{deployment rework rate}, que mede a
-proporção de \textit{deploys} não planejados feitos para corrigir problemas.
-Uma das afirmações centrais desse corpo de pesquisa é que velocidade e
-estabilidade não competem entre si: as equipes de melhor desempenho seriam
-rápidas \emph{e} estáveis ao mesmo tempo.
+As métricas DORA (\textit{DevOps Research and Assessment}) tornaram-se uma
+referência para medir o desempenho da entrega de software. Elas descrevem a
+entrega em duas dimensões: velocidade, medida pela frequência de
+\textit{deploy} e pelo \textit{lead time} das mudanças; e estabilidade, medida
+pela taxa de falha das mudanças (\textit{change failure rate}, CFR) e pelo
+tempo de recuperação \cite{forsgren2018,dora2024}. Em 2024, a DORA passou a
+tratar também a \textit{deployment rework rate}, proporção de implantações não
+planejadas destinadas a corrigir problemas.
 
-Nas organizações, essas métricas costumam ser obtidas de ferramentas internas
-que registram cada \textit{deploy} em produção e cada incidente. Em projetos
-open-source isso não existe. O GitHub não registra ``\textit{deploys} em
-produção'' nem ``falhas em produção''; ele registra \textit{releases},
-\textit{tags}, \textit{commits} e execuções de \textit{workflows} de
-integração contínua (CI). Quem quiser calcular métricas DORA a partir desses
-dados precisa usar \textbf{\textit{proxies}}, isto é, medidas indiretas no
-lugar das que não podem ser observadas. Neste trabalho, uma \textit{release}
-publicada faz o papel de \textit{deploy} e uma execução de CI que falhou faz
-o papel de falha.
+Em organizações, essas métricas podem ser obtidas de sistemas internos que
+registram implantações e incidentes. Em projetos open-source, porém, esses
+eventos normalmente não são observáveis. O GitHub registra releases, tags,
+commits e execuções de integração contínua (CI), exigindo o uso de
+\textit{proxies}. Neste trabalho, por exemplo, uma release representa um
+deploy e uma execução de CI malsucedida representa uma falha.
 
-Esses \textit{proxies} têm limitações conhecidas. Primeiro, \textbf{release
-não é deploy}: uma biblioteca que publica uma versão por mês não coloca nada
-em produção; quem faz isso são os projetos que a utilizam, cada um no seu
-ritmo. Segundo, \textbf{CI não é produção}: uma execução de \textit{pipeline}
-que falha no branch principal indica um teste quebrado, um problema de
-infraestrutura ou um teste instável (\textit{flaky}), e não necessariamente um
-defeito percebido pelo usuário. Terceiro, as datas disponíveis são
-imperfeitas: \textit{rebase} e \textit{squash merge} reescrevem a data dos
-\textit{commits} e distorcem o \textit{lead time}. Por isso, o valor de uma
-métrica DORA minerada depende da definição operacional escolhida, e duas
-definições igualmente razoáveis podem levar a conclusões diferentes sobre o
-mesmo repositório.
+Essas aproximações introduzem ameaças de construto: release não é
+necessariamente deploy; falha de CI não é necessariamente falha em produção;
+e estratégias como \textit{rebase} e \textit{squash merge} podem distorcer as
+datas usadas no \textit{lead time}. Portanto, duas definições razoáveis podem
+levar a classificações diferentes para o mesmo repositório.
 
-O \textbf{objetivo} deste estudo é minerar as métricas DORA de repositórios
-open-source populares que usam GitHub Actions, numa janela de observação de
-12 meses (30/09/2025 a 30/09/2026), e avaliar o quanto esses valores são
-confiáveis. Além de calcular as métricas, (i) validamos o critério automático
-de \textit{release} corretiva contra uma amostra rotulada manualmente por três
-avaliadores e (ii) medimos o quanto a classificação DORA de cada repositório
-muda quando a definição operacional muda. O estudo é guiado pelas seguintes
-questões de pesquisa (RQs):
+O objetivo deste estudo é minerar as métricas DORA de repositórios
+open-source populares que usam GitHub Actions, em uma janela de 12 meses, e
+avaliar o quanto os resultados são confiáveis. As questões de pesquisa são:
 
 \begin{itemize}
-  \item \textbf{RQ01.} Qual a frequência de \textit{deploys} dos repositórios
-    populares que usam CI/CD?
-  \item \textbf{RQ02.} Qual o tempo entre um \textit{commit} e seu respectivo
-    \textit{deploy}?
-  \item \textbf{RQ03.} Qual a taxa de falha das mudanças entregues por esses
-    repositórios?
-  \item \textbf{RQ04.} Qual o tempo de recuperação após uma execução de CI/CD
-    com falha?
-  \item \textbf{RQ05.} Repositórios com maior frequência de \textit{deploy}
-    apresentam maior ou menor taxa de falha?
-  \item \textbf{RQ06.} Quais características dos repositórios estão
-    associadas a um melhor desempenho DORA?
-  \item \textbf{RQ07.} O quanto a classificação DORA de um repositório
-    depende da definição operacional escolhida?
-  \item \textbf{RQ08 (bônus).} Qual a \textit{rework rate} dos repositórios
-    e em que ela difere do CFR baseado em \textit{releases}?
+  \item \textbf{RQ01.} Qual a frequência de deploy dos repositórios?
+  \item \textbf{RQ02.} Qual o tempo entre um commit e seu respectivo deploy?
+  \item \textbf{RQ03.} Qual a taxa de falha das mudanças entregues?
+  \item \textbf{RQ04.} Qual o tempo de recuperação após falha de CI/CD?
+  \item \textbf{RQ05.} Frequência de deploy e CFR estão associados?
+  \item \textbf{RQ06.} Quais características estão associadas ao desempenho?
+  \item \textbf{RQ07.} A classificação depende da definição operacional?
+  \item \textbf{RQ08.} Qual a taxa de retrabalho e como ela difere do CFR?
 \end{itemize}
 
-\subsection{Hipóteses informais}
+As hipóteses foram registradas antes da análise. Em síntese, esperava-se
+frequência mediana de releases, \textit{lead time} de semanas, CFR entre 10\%
+e 25\%, recuperação em horas, associação fraca entre velocidade e
+estabilidade, efeitos pequenos das características dos repositórios,
+sensibilidade superior a 30\% nas classificações e \textit{rework rate} entre
+20\% e 35\%. A cópia datada preservada no repositório contém a formulação
+integral de H1--H8.
 
-As hipóteses abaixo foram registradas em 07/10/2026, antes da coleta e da
-análise dos dados, e expressam o que o grupo \emph{espera} encontrar. Uma
-cópia datada está no repositório do grupo; a Seção de Discussão as confronta
-com os resultados. As categorias citadas (Elite, High, Medium, Low) seguem a
-tabela de referência da disciplina.
+\section{Metodologia}
 
-\textbf{H1 (RQ01, frequência de \textit{deploy}).} Esperamos uma mediana
-entre uma \textit{release} por mês e uma por semana (categoria Medium), com
-distribuição muito assimétrica à direita. A maior parte dos projetos
-populares é biblioteca ou \textit{framework} e agrupa mudanças em versões
-planejadas; só uma cauda pequena, com publicação automatizada a cada
-\textit{merge} (\textit{nightly builds} ou ferramentas como
-\textit{semantic-release}), deve chegar a Elite.
+\subsection{Amostra e coleta}
 
-\textbf{H2 (RQ02, \textit{lead time}).} Esperamos \textit{lead times} da ordem
-de semanas, com a variante (a), por \textit{release}, sistematicamente maior
-que a variante (b), por \textit{commit}, em praticamente todos os
-repositórios. A variante (a) é determinada pelo \textit{commit} mais antigo
-incluído na \textit{release}, e basta um \textit{commit} ``esquecido'' para
-inflá-la; a (b) é dominada pela massa de \textit{commits} feitos pouco antes
-da publicação. Assim, a variante (a) deve situar a maioria dos repositórios
-em Medium ou Low, e a (b), em High ou Medium.
+A unidade de análise é o repositório. A amostra contém 300 repositórios
+open-source populares que utilizam GitHub Actions. A janela de observação vai
+de 30/09/2025 a 30/09/2026. O conjunto analisado reúne 17.859 releases,
+1.361.066 commits e 491.249 execuções válidas de workflows. A coleta e o
+processamento foram automatizados, e os artefatos intermediários foram
+preservados para auditoria e replicação.
 
-\textbf{H3 (RQ03, taxa de falha).} Esperamos CFR (a), o \textit{proxy} de CI,
-com mediana entre 10\% e 25\%. As execuções consideradas são as de
-\textit{push} no branch principal, e boa parte das mudanças já passou pelos
-\textit{checks} do \textit{pull request} antes do \textit{merge}; ainda
-assim, testes instáveis e falhas de infraestrutura mantêm a taxa acima de
-zero. Para o CFR (b), o \textit{proxy} de entrega, esperamos valores de mesma
-ordem, mas pouco correlacionados com o CFR (a), porque as duas variantes
-medem fenômenos diferentes: quebra de \textit{pipeline} e correção rápida de
-uma versão publicada.
+\subsection{Definições operacionais}
 
-\textbf{H4 (RQ04, tempo de recuperação).} Esperamos mediana de algumas horas
-(categoria High). Em projetos ativos, uma falha no branch principal costuma
-ser corrigida pelo \textit{commit} seguinte ou resolvida reexecutando o
-\textit{workflow}. Esperamos também uma cauda longa e uma proporção não
-desprezível de episódios censurados, vindos de \textit{workflows} secundários
-(documentação, \textit{lint}, \textit{benchmarks}) que permanecem quebrados
-por semanas sem bloquear o desenvolvimento.
+A Tabela~\ref{tab:definicoes} resume os proxies usados. As análises
+descritivas apresentam mediana e intervalo interquartil (IQR), adequados às
+distribuições assimétricas observadas.
 
-\textbf{H5 (RQ05, velocidade $\times$ estabilidade).} Para o CFR (a),
-esperamos correlação de Spearman fraca ou nula ($|\rho| < 0{,}3$), o que seria
-compatível com a afirmação do DORA de que velocidade e estabilidade não são
-um \textit{trade-off}. Para o CFR (b), esperamos correlação positiva, mas por
-um artefato da definição: quem publica \textit{releases} com muita
-frequência tem mais chance de ter qualquer \textit{release} seguida, em até 7
-dias, por outra que só muda o \textit{patch}, mesmo que nenhuma delas corrija
-um defeito.
+\begin{table}[htbp]
+  \centering
+  \caption{Definições operacionais das métricas.}
+  \label{tab:definicoes}
+  \small
+  \begin{tabular}{p{1.6cm}p{4.1cm}p{6.2cm}}
+    \toprule
+    Métrica & Unidade observável & Definição resumida \\
+    \midrule
+    RQ01 & releases, pré-releases e tags &
+      quantidade de eventos por semana na janela observada \\
+    RQ02(a) & release &
+      intervalo entre a publicação e o commit mais antigo associado \\
+    RQ02(b) & commit &
+      intervalo entre cada commit e a release que o contém \\
+    RQ03(a) & workflow &
+      execuções malsucedidas de push no branch principal sobre execuções válidas \\
+    RQ03(b) & release &
+      release seguida em até sete dias por uma versão apenas de patch \\
+    RQ04 & episódio de CI &
+      tempo entre uma execução malsucedida e a próxima execução bem-sucedida \\
+    RQ08 & release &
+      releases classificadas como corretivas sobre o total de releases \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-\textbf{H6 (RQ06, fatores associados ao desempenho).} Esperamos que o número
-de contribuidores esteja associado a maior frequência de \textit{deploy} e a
-menor tempo de recuperação, porque mais pessoas produzem mais mudanças e
-reagem mais rápido a quebras. Esperamos também diferenças por linguagem,
-com ecossistemas de publicação automatizada (JavaScript/TypeScript, Go e
-Rust) publicando com mais frequência, e repositórios mais antigos com
-processos de \textit{release} mais lentos e cerimoniosos. Mesmo quando as
-diferenças forem significativas após a correção de Holm, esperamos tamanhos
-de efeito pequenos ($\varepsilon^2 < 0{,}06$), já que nenhum fator isolado
-deve explicar muito da variação.
+Para a análise de sensibilidade (RQ07), foram montadas três combinações:
+C1 usa releases, \textit{lead time} (a) e CFR (a); C2 inclui releases e
+pré-releases, \textit{lead time} (b) e CFR (b); C3 usa tags, \textit{lead
+time} (b) e CFR (a). Cada repositório foi classificado nas categorias Elite,
+High, Medium ou Low. Para cada par, calculou-se a proporção que mudou de
+categoria e o kappa de Cohen ponderado linearmente.
 
-\textbf{H7 (RQ07, sensibilidade às definições).} Esperamos que a
-classificação DORA seja sensível à definição operacional: pelo menos 30\% dos
-repositórios devem mudar de categoria em algum par de combinações, com kappa
-de Cohen ponderado apenas moderado (entre 0,4 e 0,6). A troca mais
-instável deve ser a que usa \textit{tags} como unidade de \textit{deploy},
-pois muitos projetos criam \textit{tags} sem publicar \textit{release}, o que
-altera a frequência e, por consequência, o \textit{lead time}.
+A RQ08 aplica a mesma heurística final de release corretiva usada na RQ03(b).
+A diferença está no objeto contado: o CFR atribui a falha à release anterior
+quando uma correção chega em até sete dias; o \textit{rework rate} conta a
+própria release corretiva, sem restringir sua publicação a essa janela.
 
-\textbf{H8 (RQ08, \textit{rework rate}).} Esperamos \textit{rework rate}
-maior que o CFR (b), na faixa de 20\% a 35\% das \textit{releases}. A
-\textit{rework rate} conta todas as \textit{releases} corretivas, inclusive as
-publicadas mais de 7 dias depois da versão que corrigem e as que corrigem
-outra \textit{release} corretiva; o CFR (b) só conta a \textit{release}
-original quando a correção chega dentro da janela de 7 dias.
+\section{Resultados}
 
-O restante do artigo está organizado da seguinte forma: a Seção~2 descreve a
-metodologia (fonte de dados, funil de seleção, definições operacionais e
-validação manual); a Seção~3 apresenta os resultados por RQ; a Seção~4
-discute os resultados frente às hipóteses; a Seção~5 trata das ameaças à
-validade; e a Seção~6 relata a replicação cruzada do estudo.
+\subsection{RQ01--RQ04: panorama das quatro métricas}
 
-% \section{Metodologia}            % Lab03S02
-% \section{Resultados}             % Lab03S03
-% \section{Discussão}              % Lab03S03
-% \section{Ameaças à validade}     % entrega final
-% \section{Replicação cruzada}     % entrega final
+A Tabela~\ref{tab:rq01-rq04} reúne os principais resultados. A frequência
+baseada somente em releases tem mediana de 0,35 evento por semana (IQR
+0,17--0,77). Quando pré-releases são incluídas, a mediana sobe para 0,38; com
+tags, chega a 0,45. A Figura~\ref{fig:rq01} mostra a assimetria e a
+sensibilidade à unidade de deploy.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Síntese dos resultados de RQ01--RQ04.}
+  \label{tab:rq01-rq04}
+  \small
+  \begin{tabular}{p{2cm}p{3.7cm}rrr}
+    \toprule
+    RQ & Medida & Mediana & Q1 & Q3 \\
+    \midrule
+    RQ01 & releases por semana & 0,35 & 0,17 & 0,77 \\
+    RQ01 & release + pré-release & 0,38 & 0,19 & 0,88 \\
+    RQ01 & tags por semana & 0,45 & 0,23 & 1,02 \\
+    RQ02 & lead time (a), dias & 10,6 & 2,2 & 33,3 \\
+    RQ02 & lead time (b), dias & 8,1 & 2,0 & 29,6 \\
+    RQ03 & CFR (a), \% & 5,7 & 2,0 & 13,5 \\
+    RQ03 & CFR (b), \% & 12,5 & 0,0 & 30,2 \\
+    RQ04 & recuperação, horas & 3,1 & 0,9 & 17,4 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{rq01_deploy_frequency.png}
+  \caption{Distribuição da frequência de deploy sob três proxies.}
+  \label{fig:rq01}
+\end{figure}
+
+O \textit{lead time} (a) apresenta mediana de 10,6 dias, contra 8,1 dias na
+variante (b). A correlação de Spearman entre as variantes é 0,72, mas apenas
+55,2\% dos repositórios permanecem na mesma categoria DORA. Logo, associação
+alta entre valores não implica estabilidade da classificação.
+
+Na RQ03, o CFR (a) tem mediana de 5,7\%, enquanto o CFR (b) tem mediana de
+12,5\%. A correlação entre os proxies é praticamente nula
+($\rho=0{,}06$, $p=0{,}27$), e somente 49,7\% dos repositórios recebem a mesma
+categoria. A Figura~\ref{fig:rq03} evidencia que os proxies capturam fenômenos
+diferentes. Houve ainda 400 releases censuradas na borda da janela.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{rq03_cfr.png}
+  \caption{Distribuição e comparação dos dois proxies de CFR.}
+  \label{fig:rq03}
+\end{figure}
+
+Na RQ04, a mediana do tempo de recuperação é 3,1 horas, com IQR de
+0,9--17,4 horas. A métrica pôde ser calculada para 276 repositórios. Dos
+episódios observados, 204 (1,5\%) permaneceram censurados por não haver uma
+execução bem-sucedida posterior dentro da janela.
+
+\subsection{RQ05 e RQ06: espaço reservado}
+
+\begin{center}
+\fbox{\begin{minipage}{0.91\linewidth}
+\textbf{Resultados pendentes.} Inserir aqui, quando concluída a análise:
+(i) para RQ05, correlações de Spearman entre frequência de deploy e cada
+variante de CFR, com tamanho amostral, intervalo de confiança e gráfico de
+dispersão; (ii) para RQ06, testes por linguagem e associações com idade,
+estrelas e número de contribuidores, incluindo correção de Holm, tamanho de
+efeito e gráficos de violino. Não inferir conclusões antes desses cálculos.
+\end{minipage}}
+\end{center}
+
+\subsection{RQ07: sensibilidade das definições}
+
+A configuração-base C1 classifica 5,7\% da amostra como Elite, 41,7\% como
+High, 45,7\% como Medium e 7,0\% como Low. Assim, 87,3\% dos repositórios
+ficam concentrados nas duas categorias intermediárias.
+
+A Tabela~\ref{tab:rq07} confirma que a classificação depende da definição
+operacional. C1 e C2 produzem a maior instabilidade: 37,7\% dos repositórios
+mudam de categoria e o kappa ponderado é 0,432. C2 e C3 apresentam a maior
+concordância, embora 21,7\% ainda mudem de categoria.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Mudança de categoria e concordância entre configurações.}
+  \label{tab:rq07}
+  \begin{tabular}{lrrr}
+    \toprule
+    Comparação & Mudaram & Mudança (\%) & Kappa ponderado \\
+    \midrule
+    C1 $\times$ C2 & 113/300 & 37,7 & 0,432 \\
+    C1 $\times$ C3 & 90/300  & 30,0 & 0,594 \\
+    C2 $\times$ C3 & 65/300  & 21,7 & 0,683 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Das 113 mudanças entre C1 e C2, 107 ocorrem entre categorias adjacentes e
+nenhuma salta diretamente entre Elite e Low. A matriz de transição da
+Figura~\ref{fig:rq07} mostra que a sensibilidade é substantiva, mas não
+arbitrária.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{rq07_matrizes_transicao.png}
+  \caption{Matrizes de transição entre as classificações C1, C2 e C3.}
+  \label{fig:rq07}
+\end{figure}
+
+\subsection{RQ08: taxa de retrabalho}
+
+A taxa de retrabalho apresenta mediana de 14,3\% (IQR 2,7--29,0\%). No total
+agrupado, 4.509 das 17.859 releases foram classificadas como corretivas
+(25,2\%). A comparação com o CFR (b) aparece na
+Tabela~\ref{tab:rq08} e na Figura~\ref{fig:rq08}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Comparação entre \textit{rework rate} e CFR (b).}
+  \label{tab:rq08}
+  \begin{tabular}{lrrr}
+    \toprule
+    Métrica & Mediana (\%) & Q1 (\%) & Q3 (\%) \\
+    \midrule
+    Rework rate & 14,3 & 2,7 & 29,0 \\
+    CFR (b) & 12,5 & 0,0 & 30,2 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+As métricas têm correlação de Spearman de 0,697 ($p<0{,}001$), mas não são
+intercambiáveis. O teste pareado de Wilcoxon não identifica diferença
+sistemática nas medianas ($p=0{,}613$): o rework é maior em 98 repositórios,
+igual em 98 e menor em 104. O CFR (b) olha para a release que presumivelmente
+falhou; a taxa de retrabalho olha para a release que presumivelmente corrige.
+Além disso, o CFR exige que a correção chegue em até sete dias, enquanto o
+rework não aplica essa restrição temporal.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{rq08_rework_vs_cfr.png}
+  \caption{Distribuição e relação entre \textit{rework rate} e CFR (b).}
+  \label{fig:rq08}
+\end{figure}
+
+\section{Discussão}
+
+Os resultados disponíveis sustentam parcialmente as hipóteses registradas.
+A frequência mediana baseada em releases é inferior a uma publicação por
+semana e tem forte assimetria, em linha com H1. Em H2, confirmou-se que o
+\textit{lead time} por release tende a ser maior que o calculado por commit;
+porém, a relação não é sistemática: a variante (b) supera a (a) em 37\% dos
+repositórios porque as variantes atribuem pesos diferentes a releases e
+commits. A diferença de classificação mostra que a escolha não é apenas
+técnica. H3 não foi sustentada para o CFR de CI, cuja mediana ficou abaixo da
+faixa esperada, e a associação quase nula entre os CFRs reforça que eles
+medem fenômenos distintos. H4 foi compatível com a recuperação mediana em
+poucas horas, embora exista uma cauda longa.
+
+H7 foi parcialmente sustentada. A comparação C1--C2 supera o limiar esperado
+de 30\% de mudanças e apresenta concordância moderada; C1--C3 atinge
+exatamente 30\%, enquanto C2--C3 é mais estável. A troca envolvendo tags não
+foi, portanto, a mais instável. A maior mudança ocorreu na combinação que
+troca simultaneamente pré-releases, a ponderação do \textit{lead time} e o
+proxy do CFR; por isso, o experimento mede sensibilidade conjunta, não o
+efeito causal isolado de cada escolha.
+
+H8 não foi sustentada na mediana: a taxa de retrabalho de 14,3\% ficou abaixo
+dos 20\%--35\% esperados e próxima do CFR (b). Ainda assim, a diferença
+conceitual permanece importante. Métricas com distribuições semelhantes
+podem atribuir significado distinto aos mesmos eventos.
+
+\begin{center}
+\fbox{\begin{minipage}{0.91\linewidth}
+\textbf{Discussão de RQ05 e RQ06 a completar.} Confrontar os coeficientes de
+RQ05 com H5 e os testes, efeitos e intervalos de RQ06 com H6. Depois, revisar
+o resumo, o abstract e a conclusão para incorporar esses achados sem alterar
+o registro original das hipóteses.
+\end{minipage}}
+\end{center}
+
+Em conjunto, RQ01--RQ04, RQ07 e RQ08 mostram que as conclusões descritivas
+gerais se mantêm: há grande heterogeneidade entre projetos, distribuições
+assimétricas e diferenças entre velocidade e estabilidade. Contudo,
+conclusões sobre a categoria DORA de um repositório e sobre o nível absoluto
+de CFR dependem fortemente da definição. Assim, os resultados devem ser
+interpretados como propriedades dos proxies escolhidos, não como medidas
+diretas de desempenho em produção.
+
+\section{Ameaças à validade}
+
+A principal ameaça de construto é a distância entre eventos do GitHub e
+eventos de produção. Releases e tags podem representar apenas publicação de
+pacotes; falhas de CI podem vir de testes instáveis ou infraestrutura; e uma
+mudança de patch nem sempre corrige defeito. A validação manual da heurística
+de releases corretivas reduz, mas não elimina, esse risco.
+
+Quanto à validade interna, datas reescritas, paginação da API, dados ausentes
+e censura nas bordas da janela podem alterar as métricas. Foram usados
+critérios determinísticos, cache de coleta e contagens de censura para tornar
+essas decisões auditáveis.
+
+A validade externa é limitada a repositórios populares, públicos e que usam
+GitHub Actions. Os resultados não devem ser generalizados diretamente para
+equipes privadas, outros provedores de CI/CD ou sistemas com telemetria real
+de produção. Para a validade de conclusão, a multiplicidade dos testes de
+RQ06 deverá ser controlada por Holm, com apresentação de tamanhos de efeito e
+intervalos de confiança, além dos valores de $p$.
+
+\section{Replicação}
+
+O repositório contém o código de coleta, geração do conjunto consolidado,
+notebooks de análise, tabelas intermediárias e figuras. A separação entre
+dados brutos, processados e resultados permite refazer cada etapa e inspecionar
+as decisões operacionais. Seeds, versões das dependências e comandos de
+execução devem permanecer documentados junto à entrega final.
+
+\section{Conclusão}
+
+A mineração de métricas DORA em repositórios open-source é viável, mas as
+medidas resultantes são sensíveis aos proxies disponíveis. Entre 21,7\% e
+37,7\% dos repositórios mudaram de categoria sob definições plausíveis, e os
+dois CFRs apresentaram correlação praticamente nula. A taxa de retrabalho,
+com mediana de 14,3\%, complementa o CFR ao contar a ação corretiva em vez da
+release presumivelmente falha. Esses resultados recomendam explicitar as
+definições, publicar análises de sensibilidade e evitar interpretar
+categorias como atributos absolutos dos projetos. Esta conclusão é
+provisória até a incorporação de RQ05 e RQ06.
 
 \begin{thebibliography}{9}
 
