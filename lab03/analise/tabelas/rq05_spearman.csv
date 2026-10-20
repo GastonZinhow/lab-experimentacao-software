@@ -1,0 +1,4 @@
+variante,coluna,n,rho,p
+CFR (a): proxy de CI,cfr_a,300,0.010411806402726553,0.8574746184333886
+CFR (b): proxy de entrega,cfr_b,300,0.6017149203692654,6.232635904353848e-31
+Rework rate (controle do CFR b),rework_rate,300,0.195428097816281,0.0006648944041074324
