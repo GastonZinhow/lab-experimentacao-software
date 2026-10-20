@@ -1,0 +1,17 @@
+fator,metrica,teste,n,grupos,estatistica,p,p_holm,significativo_holm,efeito,tamanho_efeito,interpretacao_efeito,comparacao_delta,cliffs_delta,interpretacao_delta,melhor_desempenho,grupos_poucos_repositorios
+Linguagem,Frequência de deploy,Kruskal-Wallis,300,7,6.307063270006299,0.38968609904786383,1.0,False,ε²,0.021093857090322073,pequeno,TypeScript × Outras,0.18557874762808346,pequeno,TypeScript,"C# (15), C++ (15)"
+Linguagem,Lead time (a),Kruskal-Wallis,299,7,22.95195687551154,0.0008127302019029865,0.010565492624738824,True,ε²,0.0770199895151394,pequeno,C++ × Python,0.38245614035087727,médio,Python,"C# (15), C++ (15)"
+Linguagem,CFR (a),Kruskal-Wallis,300,7,2.0900038123074793,0.9112375341208575,1.0,False,ε²,0.006989979305376185,desprezível,TypeScript × C#,0.053763440860215006,desprezível,C#,"C# (15), C++ (15)"
+Linguagem,Tempo de recuperação,Kruskal-Wallis,276,7,5.65407243416837,0.4630339391227708,1.0,False,ε²,0.020560263396975892,pequeno,C++ × Rust,0.44047619047619047,médio,Rust,"C# (15), C++ (14)"
+Estrelas (quartis),Frequência de deploy,Kruskal-Wallis,300,4,11.811002564204047,0.008059440224524206,0.08865384246976626,False,ε²,0.03950168081673595,pequeno,Q4 × Q1,0.17475555555555555,pequeno,Q4,
+Estrelas (quartis),Lead time (a),Kruskal-Wallis,299,4,6.006321540269482,0.11130307314310649,1.0,False,ε²,0.020155441410300276,pequeno,Q4 × Q1,0.07135135135135129,desprezível,Q1,
+Estrelas (quartis),CFR (a),Kruskal-Wallis,300,4,1.99790212655635,0.5728422401308331,1.0,False,ε²,0.006681946911559699,desprezível,Q4 × Q1,0.04960000000000009,desprezível,Q1,
+Estrelas (quartis),Tempo de recuperação,Kruskal-Wallis,276,4,1.7203263597110663,0.6324242760756114,1.0,False,ε²,0.00625573221713115,desprezível,Q4 × Q1,0.024154589371980784,desprezível,Q1,
+Contribuidores (quartis),Frequência de deploy,Kruskal-Wallis,300,4,1.4411866994110503,0.6959093689122495,1.0,False,ε²,0.004820022406057024,desprezível,Q4 × Q1,-0.0054385964912280205,desprezível,Q1,
+Contribuidores (quartis),Lead time (a),Kruskal-Wallis,299,4,35.54453490011758,9.346926457175729e-08,1.4020389685763593e-06,True,ε²,0.11927696275207242,médio,Q4 × Q1,0.5086222222222223,grande,Q1,
+Contribuidores (quartis),CFR (a),Kruskal-Wallis,300,4,2.450261983953006,0.4843469511318994,1.0,False,ε²,0.008194856133622093,desprezível,Q4 × Q1,0.08210526315789468,desprezível,Q1,
+Contribuidores (quartis),Tempo de recuperação,Kruskal-Wallis,276,4,5.405824042063728,0.14438115189295098,1.0,False,ε²,0.019657541971140828,pequeno,Q4 × Q1,0.21241830065359468,pequeno,Q1,
+Idade (quartis),Frequência de deploy,Kruskal-Wallis,300,4,29.885630251764326,1.4586571151024197e-06,2.0421199611433875e-05,True,ε²,0.09995194064135227,médio,Q4 × Q1,-0.4243555555555556,médio,Q1,
+Idade (quartis),Lead time (a),Kruskal-Wallis,299,4,62.64388121365516,1.6003217931268686e-13,2.5605148690029898e-12,True,ε²,0.21021436648877573,médio,Q4 × Q1,0.6814414414414414,grande,Q1,
+Idade (quartis),CFR (a),Kruskal-Wallis,300,4,1.0912250892996282,0.7791927932926317,1.0,False,ε²,0.003649582238460295,desprezível,Q4 × Q1,-0.08640000000000003,desprezível,Q4,
+Idade (quartis),Tempo de recuperação,Kruskal-Wallis,276,4,12.114960212547999,0.00699955324288373,0.08399463891460476,False,ε²,0.04405440077290181,pequeno,Q4 × Q1,0.3308838538477241,médio,Q1,
