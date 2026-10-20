@@ -156,11 +156,19 @@ As análises ficam em `lab03/analise/` e leem só o `dataset_dora.csv`:
 cd ../analise
 python -m nbconvert --to notebook --execute --inplace rq01_04_descritiva.ipynb  # RQ01 a RQ04 (#64)
 python -m nbconvert --to notebook --execute --inplace classificacao_c1.ipynb    # C1 e data/classificacao_c1.csv (#65)
+python -m nbconvert --to notebook --execute --inplace rq07_sensibilidade.ipynb  # C1/C2/C3, kappa e transições (#68)
 ```
 
 As figuras vão para `analise/figuras/` e as tabelas para `analise/tabelas/`.
 Os notebooks precisam de `matplotlib`, `scipy` e, para rodar pela linha de
 comando, `nbconvert` e `ipykernel` (todos no `requirements.txt`).
+
+O notebook da RQ07 também grava `data/classificacao_rq07.csv`, com as
+categorias por métrica e geral de cada repositório nas três combinações. As
+tabelas `rq07_pares.csv` e `rq07_transicao_*.csv` trazem, respectivamente, a
+porcentagem de mudança com kappa ponderado linear e as matrizes de transição.
+O kappa usa explicitamente a ordem ordinal Elite → High → Medium → Low; a
+ordem alfabética padrão atribuiria distâncias incorretas às categorias.
 
 ### Testes
 ```bash

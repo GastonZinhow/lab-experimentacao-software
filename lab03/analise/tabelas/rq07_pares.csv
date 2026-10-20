@@ -1,0 +1,4 @@
+comparacao,n_repositorios,n_mudaram,percentual_mudanca,kappa_ponderado_linear,n_mudancas_adjacentes,n_mudancas_distantes
+C1 × C2,300,113,37.666666666666664,0.43199898173486917,107,6
+C1 × C3,300,90,30.0,0.5938189845474613,88,2
+C2 × C3,300,65,21.666666666666668,0.6828946965286926,61,4

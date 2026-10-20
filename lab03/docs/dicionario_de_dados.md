@@ -109,3 +109,23 @@ análise de sensibilidade (RQ07).
 | `n_metricas_classificadas` | inteiro | 0 a 4 | métricas com valor |
 | `mediana_notas` | real | 1 a 4 | mediana das notas, antes do arredondamento |
 | `categoria_geral` | categoria | Elite…Low | `floor(mediana_notas)` convertido em categoria (= `c1_geral`) |
+
+## `code/data/classificacao_rq07.csv`
+
+Exportado pelo notebook `analise/rq07_sensibilidade.ipynb` (Issue #68), com
+uma linha para cada um dos 300 repositórios. Para cada combinação `c1`, `c2`
+e `c3`, contém as colunas `*_deploy_frequency`, `*_lead_time`, `*_cfr`,
+`*_tempo_recuperacao` e `*_geral`, todas categóricas (Elite, High, Medium ou
+Low). As combinações são:
+
+| Combinação | Frequência | Lead time | CFR | Recuperação |
+|---|---|---|---|---|
+| C1 | `deploy_freq_release` | `lead_time_a_horas` | `cfr_a` | `tempo_recuperacao_horas` |
+| C2 | `deploy_freq_release_pre` | `lead_time_b_horas` | `cfr_b` | `tempo_recuperacao_horas` |
+| C3 | `deploy_freq_tag` | `lead_time_b_horas` | `cfr_a` | `tempo_recuperacao_horas` |
+
+As tabelas derivadas ficam em `analise/tabelas/`: `rq07_pares.csv` registra
+o número e a porcentagem de mudanças, o kappa de Cohen ponderado linearmente
+e a distância ordinal das mudanças; `rq07_transicao_c1_c2.csv`,
+`rq07_transicao_c1_c3.csv` e `rq07_transicao_c2_c3.csv` são as matrizes de
+transição em contagens de repositórios.

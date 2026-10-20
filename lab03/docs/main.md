@@ -509,6 +509,36 @@ ausente fica fora da mediana. A classificação por repositório está em
 ![Figura 5](../analise/figuras/c1_distribuicao.png)
 **Figura 5. Distribuição das categorias DORA da combinação C1 por métrica e geral.**
 
+## 3.6 RQ07: sensibilidade às definições operacionais
+
+A classificação geral muda para uma parcela relevante da amostra quando as
+definições operacionais são trocadas (Tabela 4; notebook
+`analise/rq07_sensibilidade.ipynb`, Issue #68). C1 × C2 é o par mais
+instável: 113 dos 300 repositórios (37,7%) mudam de categoria e o kappa de
+Cohen ponderado linearmente é 0,432. Entre C1 e C3, 30,0% mudam e o kappa é
+0,594; entre C2 e C3, 21,7% mudam e o kappa chega a 0,683. Portanto, a
+concordância varia de moderada a substancial, mas não é suficiente para
+tratar as definições como intercambiáveis.
+
+**Tabela 4. Sensibilidade da categoria DORA geral entre as combinações (n = 300 em todos os pares).**
+
+| Par | Repositórios que mudaram | Mudança | Kappa ponderado linear |
+|---|---:|---:|---:|
+| C1 × C2 | 113 | 37,7% | 0,432 |
+| C1 × C3 | 90 | 30,0% | 0,594 |
+| C2 × C3 | 65 | 21,7% | 0,683 |
+
+As mudanças são quase sempre locais na escala ordinal (Figura 6). No par
+C1 × C2, 107 das 113 trocas (94,7%) ocorrem entre categorias vizinhas, seis
+percorrem duas categorias e nenhuma vai diretamente de Elite para Low ou de
+Low para Elite. A distribuição agregada também preserva o mesmo retrato:
+87,3% estão em Medium/High em C1, 91,3% em C2 e 85,7% em C3. Ainda assim, a
+categoria de um repositório individual depende materialmente da combinação
+escolhida.
+
+![Figura 6](../analise/figuras/rq07_matrizes_transicao.png)
+**Figura 6. Matrizes de transição da categoria DORA geral; as linhas são a combinação de origem e as colunas, a combinação de destino.**
+
 # 4. Discussão
 
 **H1 (frequência) confirmada.** A mediana ficou em Medium (0,35 por semana)
@@ -560,7 +590,34 @@ quem entrega por *tags* ou *nightly builds*, e o CFR de CI quase nunca
 penaliza alguém. A RQ07 mede o quanto essa classificação muda com outras
 definições.
 
-**H5 a H8.** *A completar com os resultados das RQ05 a RQ08 (Issues #66 a #69).*
+**H5 e H6.** *A completar com os resultados das RQ05 e RQ06 (Issues #66 e #67).*
+
+**H7 (sensibilidade) confirmada.** Pelo menos 30% da amostra muda em C1 × C2
+e C1 × C3, e os respectivos kappas (0,432 e 0,594) ficam na faixa moderada
+prevista. A hipótese errou, porém, ao apontar a combinação com *tags* como a
+mais instável: a maior mudança ocorreu em C1 × C2, que troca simultaneamente
+pré-*releases*, a ponderação do *lead time* e o proxy do CFR. Como as
+combinações alteram mais de uma métrica de uma vez, o experimento identifica
+sensibilidade conjunta, não o efeito causal isolado de cada escolha.
+
+**Robustez das RQ01 a RQ06.** O retrato de RQ01 permanece robusto em nível
+agregado: as três contagens de *deploy* mantêm a distribuição assimétrica e
+a predominância de frequências Medium/Low, embora contar *tags* eleve a
+frequência. Em RQ02, as variantes preservam a ordem de grandeza de dias ou
+semanas, mas só 55,2% dos repositórios mantêm a mesma categoria de *lead
+time*. RQ03 é a conclusão mais dependente da definição: CFR (a) e CFR (b)
+quase não se correlacionam e concordam na categoria em apenas 49,7% da
+amostra, pois medem falha de CI e correção rápida de versão, respectivamente.
+RQ04 é invariável nesta análise, porque o tempo de recuperação é idêntico em
+C1, C2 e C3. RQ05 já deve ser interpretada separadamente por variante, como
+previsto no protocolo, e não como uma única relação entre velocidade e
+estabilidade. Por fim, a RQ07 não testa os agrupamentos por características
+da RQ06; assim, associações de RQ06 só podem ser chamadas de robustas após
+repetir os testes com as variantes alternativas. Em suma, as conclusões
+descritivas agregadas de RQ01, RQ02 e RQ04 se mantêm, enquanto conclusões
+individuais e as que envolvem CFR dependem da definição operacional.
+
+**H8.** *A completar com o resultado da RQ08 (Issue #69).*
 
 # 5. Ameaças à validade
 

@@ -17,6 +17,7 @@ data/*.csv
 !data/faixas_busca.csv
 !data/dataset_dora.csv
 !data/classificacao_c1.csv
+!data/classificacao_rq07.csv
 
 __pycache__/
 *.py[cod]
