@@ -224,9 +224,10 @@ dias), *default branch*, número de *workflows*, número de *releases* e
 pré-*releases* na janela, número de execuções válidas na janela e número de
 contribuidores. Os contribuidores são contados com uma única chamada a
 `/contributors?per_page=1&anon=true`, lendo o número da última página no
-cabeçalho `Link`. Esses metadados e o tipo do projeto rotulado manualmente
-(Seção 2.6) são os fatores da RQ06; fatores numéricos são agrupados por
-quartis.
+cabeçalho `Link`. A linguagem, as estrelas, os contribuidores e a idade são
+os fatores da RQ06; fatores numéricos são agrupados por quartis. O tipo do
+projeto rotulado manualmente (Seção 2.6) ficou de fora, porque os
+repositórios da amostra-ouro não estão na amostra final (Seção 3.7).
 
 ## 2.4 Definições operacionais
 
@@ -286,7 +287,8 @@ distribuições.
   *deploy* e o CFR, separadamente para as variantes (a) e (b).
 - **RQ06:** Kruskal-Wallis (ou Mann-Whitney, com dois grupos) para cada par
   fator × métrica, com correção de Holm para comparações múltiplas e tamanho
-  de efeito (ε² = H/(n − 1) ou *Cliff's delta*).
+  de efeito (ε² = H/(n − 1) para o teste e *Cliff's delta* entre os grupos
+  extremos).
 - **RQ07:** cada repositório é classificado em Elite, High, Medium ou Low em
   cada métrica pela tabela de referência da disciplina, e a categoria geral é
   a mediana das notas (Elite = 4, …, Low = 1) arredondada para baixo. A
@@ -336,7 +338,8 @@ são decididos em reunião, e cada decisão fica registrada com a sua
 justificativa em `validacao/decisoes_reuniao.csv`. O resultado,
 `validacao/rotulos_consenso.csv`, é a referência para avaliar a heurística de
 *release* corretiva com precisão, *recall* e F1 (refinando-a enquanto o F1
-ficar abaixo de 0,70) e fornece o tipo do projeto usado na RQ06.
+ficar abaixo de 0,70) e registra o tipo do projeto dos 60 repositórios
+rotulados.
 
 ## 2.7 Heurística de *release* corretiva
 
@@ -509,10 +512,113 @@ ausente fica fora da mediana. A classificação por repositório está em
 ![Figura 5](../analise/figuras/c1_distribuicao.png)
 **Figura 5. Distribuição das categorias DORA da combinação C1 por métrica e geral.**
 
-## 3.6 RQ07: sensibilidade às definições operacionais
+## 3.6 RQ05: frequência de *deploy* × taxa de falha
+
+A relação entre velocidade e estabilidade depende da variante do CFR
+(Tabela 4, Figura 6; notebook `analise/rq05_spearman.ipynb`, Issue #66). Com
+o CFR (a), *proxy* de CI, não há relação monotônica: ρ = 0,01 (p = 0,86). A
+mediana do CFR (a) em cada decil de frequência fica entre 4% e 10% em toda a
+faixa, de uma *release* a cada dez semanas a várias por semana. Com o CFR (b),
+*proxy* de entrega, a correlação é positiva e forte (ρ = 0,60; p < 0,001): a
+mediana é 0% em três dos quatro decis de menor frequência e passa de 70% no
+decil mais alto.
+
+**Tabela 4. Correlação de Spearman entre a frequência de *deploy* (*releases* por semana) e a taxa de falha.**
+
+| Taxa de falha | n | ρ | p-valor |
+|---|---:|---:|---:|
+| CFR (a) *proxy* de CI | 300 | 0,010 | 0,857 |
+| CFR (b) *proxy* de entrega | 300 | 0,602 | < 0,001 |
+| *Rework rate* (controle do CFR (b)) | 300 | 0,195 | < 0,001 |
+
+Duas verificações ajudam a separar o que é comportamento dos projetos do que
+é efeito da definição do CFR (b). A primeira descarta a discretização: com
+poucas *releases* avaliadas, o CFR (b) só assume valores como 0%, 50% ou
+100%, mas restringir a análise aos 215 repositórios com pelo menos 10
+*releases* avaliadas mantém ρ = 0,55 (p < 0,001); o CFR (a) continua sem
+relação (ρ = 0,11; p = 0,10). A segunda isola o prazo de 7 dias: a *rework
+rate* (RQ08) usa a mesma heurística de *release* corretiva, mas mede só a
+proporção de corretivas, sem olhar o que acontece depois de cada *release*.
+Sua correlação com a frequência é bem mais fraca (ρ = 0,20). A maior parte da
+associação do CFR (b) vem, portanto, do prazo fixo: quem publica uma vez por
+mês raramente tem outra *release* nos 7 dias seguintes, e quem publica várias
+por semana quase sempre tem.
+
+![Figura 6](../analise/figuras/rq05_freq_vs_cfr.png)
+**Figura 6. Frequência de *deploy* (escala log) × CFR (a), à esquerda, e × CFR (b), à direita; cada ponto é um repositório e a linha liga a mediana do CFR em cada decil de frequência.**
+
+## 3.7 RQ06: características associadas ao desempenho DORA
+
+Comparamos as quatro métricas da combinação de referência C1 (frequência,
+*lead time* (a), CFR (a) e tempo de recuperação) entre os grupos de quatro
+fatores: linguagem principal e quartis de estrelas, de contribuidores e de
+idade (notebook `analise/rq06_fatores.ipynb`, Issue #67). Na linguagem, as
+seis com pelo menos 15 repositórios formam grupos próprios e as demais, com o
+único repositório sem linguagem detectada, formam o grupo Outras (85). O tipo
+do projeto, previsto como fator, não pôde ser usado: nenhum dos 60
+repositórios rotulados na amostra-ouro está na amostra final de 300, porque o
+sorteio foi feito sobre a seleção anterior à coleta de 14/10. Todos os
+fatores têm mais de dois grupos, então os 16 testes são de Kruskal-Wallis, e
+os 16 p-valores foram corrigidos juntos pelo método de Holm. Além do ε² do
+teste, a Tabela 5 traz o *Cliff's delta* entre os grupos extremos (Q4 × Q1
+nos quartis; na linguagem, o grupo de maior mediana × o de menor), com a
+interpretação de Romano et al. (2006). O ε² segue a escala de Tomczak e
+Tomczak (2014): 0,01 pequeno, 0,08 médio e 0,26 grande.
+
+**Tabela 5. Kruskal-Wallis por fator × métrica, com p-valor corrigido por Holm e tamanhos de efeito (em negrito, significativos após a correção).**
+
+| Fator | Métrica | n | H | p | p (Holm) | ε² | δ (grupos extremos) |
+|---|---|---:|---:|---:|---:|---:|---|
+| Linguagem | Frequência | 300 | 6,31 | 0,390 | 1,000 | 0,021 | 0,19 pequeno (TypeScript × Outras) |
+| **Linguagem** | ***Lead time* (a)** | 299 | 22,95 | < 0,001 | **0,011** | 0,077 | 0,38 médio (C++ × Python) |
+| Linguagem | CFR (a) | 300 | 2,09 | 0,911 | 1,000 | 0,007 | 0,05 desprezível (TypeScript × C#) |
+| Linguagem | Recuperação | 276 | 5,65 | 0,463 | 1,000 | 0,021 | 0,44 médio (C++ × Rust) |
+| Estrelas | Frequência | 300 | 11,81 | 0,008 | 0,089 | 0,040 | 0,17 pequeno |
+| Estrelas | *Lead time* (a) | 299 | 6,01 | 0,111 | 1,000 | 0,020 | 0,07 desprezível |
+| Estrelas | CFR (a) | 300 | 2,00 | 0,573 | 1,000 | 0,007 | 0,05 desprezível |
+| Estrelas | Recuperação | 276 | 1,72 | 0,632 | 1,000 | 0,006 | 0,02 desprezível |
+| Contribuidores | Frequência | 300 | 1,44 | 0,696 | 1,000 | 0,005 | −0,01 desprezível |
+| **Contribuidores** | ***Lead time* (a)** | 299 | 35,54 | < 0,001 | **< 0,001** | 0,119 | 0,51 grande |
+| Contribuidores | CFR (a) | 300 | 2,45 | 0,484 | 1,000 | 0,008 | 0,08 desprezível |
+| Contribuidores | Recuperação | 276 | 5,41 | 0,144 | 1,000 | 0,020 | 0,21 pequeno |
+| **Idade** | **Frequência** | 300 | 29,89 | < 0,001 | **< 0,001** | 0,100 | −0,42 médio |
+| **Idade** | ***Lead time* (a)** | 299 | 62,64 | < 0,001 | **< 0,001** | 0,210 | 0,68 grande |
+| Idade | CFR (a) | 300 | 1,09 | 0,779 | 1,000 | 0,004 | −0,09 desprezível |
+| Idade | Recuperação | 276 | 12,11 | 0,007 | 0,084 | 0,044 | 0,33 médio |
+
+Quatro das 16 associações sobrevivem à correção (Figuras 7 e 8). A idade tem
+os maiores efeitos. Os repositórios do quartil mais novo (até 963 dias)
+publicam 0,73 *release* por semana, contra 0,25 a 0,33 nos demais quartis, e
+têm *lead time* (a) mediano de 2,3 dias, contra 28,7 dias no quartil mais
+antigo (δ = 0,68, grande). O número de contribuidores também se associa ao
+*lead time*: 3,9 dias no quartil com até 31 contribuidores e 25,7 dias no
+quartil com mais de 177 (δ = 0,51), sem diferença na frequência
+(ε² = 0,005). Na linguagem, Python e TypeScript têm os menores *lead times*
+(6,3 e 6,5 dias) e C++ e Outras, os maiores (cerca de 22 dias). As estrelas
+não se associam a nenhuma métrica depois da correção: a diferença na
+frequência (p = 0,008) não resiste ao ajuste (p = 0,089). As métricas de
+estabilidade praticamente não variam: no CFR (a), todos os ε² ficam abaixo de
+0,01, e no tempo de recuperação nenhum teste é significativo após a correção.
+
+Três ressalvas limitam essas conclusões. Os grupos C# e C++ têm só 15
+repositórios cada (14 no tempo de recuperação); com tão poucos casos, o teste
+tem pouco poder e a mediana do grupo é instável, e o *delta* de C++ × Python
+no *lead time* depende de um desses grupos. O grupo Outras reúne linguagens
+muito diferentes. E idade e contribuidores não são independentes
+(Spearman ρ = 0,45 entre eles), de modo que os dois efeitos sobre o *lead
+time* podem ser, em parte, o mesmo efeito. As comparações são
+observacionais e não estabelecem causa.
+
+![Figura 7](../analise/figuras/rq06_tamanho_efeito.png)
+**Figura 7. ε² de cada teste fator × métrica; o asterisco marca os significativos após a correção de Holm.**
+
+![Figura 8](../analise/figuras/rq06_significativos.png)
+**Figura 8. Distribuição das métricas por grupo nas quatro associações significativas (escala log). Entre parênteses, o número de repositórios; † marca grupos com menos de 20.**
+
+## 3.8 RQ07: sensibilidade às definições operacionais
 
 A classificação geral muda para uma parcela relevante da amostra quando as
-definições operacionais são trocadas (Tabela 4; notebook
+definições operacionais são trocadas (Tabela 6; notebook
 `analise/rq07_sensibilidade.ipynb`, Issue #68). C1 × C2 é o par mais
 instável: 113 dos 300 repositórios (37,7%) mudam de categoria e o kappa de
 Cohen ponderado linearmente é 0,432. Entre C1 e C3, 30,0% mudam e o kappa é
@@ -520,7 +626,7 @@ Cohen ponderado linearmente é 0,432. Entre C1 e C3, 30,0% mudam e o kappa é
 concordância varia de moderada a substancial, mas não é suficiente para
 tratar as definições como intercambiáveis.
 
-**Tabela 4. Sensibilidade da categoria DORA geral entre as combinações (n = 300 em todos os pares).**
+**Tabela 6. Sensibilidade da categoria DORA geral entre as combinações (n = 300 em todos os pares).**
 
 | Par | Repositórios que mudaram | Mudança | Kappa ponderado linear |
 |---|---:|---:|---:|
@@ -528,7 +634,7 @@ tratar as definições como intercambiáveis.
 | C1 × C3 | 90 | 30,0% | 0,594 |
 | C2 × C3 | 65 | 21,7% | 0,683 |
 
-As mudanças são quase sempre locais na escala ordinal (Figura 6). No par
+As mudanças são quase sempre locais na escala ordinal (Figura 9). No par
 C1 × C2, 107 das 113 trocas (94,7%) ocorrem entre categorias vizinhas, seis
 percorrem duas categorias e nenhuma vai diretamente de Elite para Low ou de
 Low para Elite. A distribuição agregada também preserva o mesmo retrato:
@@ -536,20 +642,20 @@ Low para Elite. A distribuição agregada também preserva o mesmo retrato:
 categoria de um repositório individual depende materialmente da combinação
 escolhida.
 
-![Figura 6](../analise/figuras/rq07_matrizes_transicao.png)
-**Figura 6. Matrizes de transição da categoria DORA geral; as linhas são a combinação de origem e as colunas, a combinação de destino.**
+![Figura 9](../analise/figuras/rq07_matrizes_transicao.png)
+**Figura 9. Matrizes de transição da categoria DORA geral; as linhas são a combinação de origem e as colunas, a combinação de destino.**
 
-## 3.7 RQ08: *deployment rework rate*
+## 3.9 RQ08: *deployment rework rate*
 
 A *rework rate* mediana é 14,3% por repositório (Q1 = 2,7%; Q3 = 29,0%;
 IQR = 26,3 pontos percentuais), enquanto o CFR (b) tem mediana de 12,5%
-(Q1 = 0%; Q3 = 30,2%; IQR = 30,2 pontos percentuais; Tabela 5). Embora a
+(Q1 = 0%; Q3 = 30,2%; IQR = 30,2 pontos percentuais; Tabela 7). Embora a
 mediana da *rework rate* seja numericamente maior, a diferença pareada tem
 mediana zero: ela é maior que o CFR (b) em 98 repositórios, igual em 98 e
 menor em 104. O teste de Wilcoxon não identifica deslocamento sistemático
 entre as distribuições pareadas (p = 0,613).
 
-**Tabela 5. Distribuição da rework rate e do CFR (b) por repositório (n = 300).**
+**Tabela 7. Distribuição da rework rate e do CFR (b) por repositório (n = 300).**
 
 | Métrica | Mediana | Q1 | Q3 | IQR |
 |---|---:|---:|---:|---:|
@@ -557,7 +663,7 @@ entre as distribuições pareadas (p = 0,613).
 | CFR (b) | 12,5% | 0,0% | 30,2% | 30,2 p.p. |
 
 As métricas têm associação positiva forte (Spearman ρ = 0,697;
-p < 0,001), mas não são equivalentes (Figura 7). A *rework rate* atribui o
+p < 0,001), mas não são equivalentes (Figura 10). A *rework rate* atribui o
 evento à *release* corretiva e usa todas as 17.859 *releases* publicadas. O
 CFR (b) atribui a falha à *release* anterior quando alguma corretiva aparece
 nos sete dias seguintes e censura as *releases* para as quais essa janela
@@ -567,8 +673,8 @@ de uma *release* anterior como falha, enquanto uma corretiva tardia entra na
 (4.509/17.859), mas não substitui a mediana por repositório: ela dá mais peso
 a projetos que publicam muitas *releases*.
 
-![Figura 7](../analise/figuras/rq08_rework_vs_cfr.png)
-**Figura 7. Distribuição da rework rate e do CFR (b), com quartis, medianas e pontos por repositório; à direita, comparação pareada com a diagonal de igualdade.**
+![Figura 10](../analise/figuras/rq08_rework_vs_cfr.png)
+**Figura 10. Distribuição da rework rate e do CFR (b), com quartis, medianas e pontos por repositório; à direita, comparação pareada com a diagonal de igualdade.**
 
 # 4. Discussão
 
@@ -621,7 +727,41 @@ quem entrega por *tags* ou *nightly builds*, e o CFR de CI quase nunca
 penaliza alguém. A RQ07 mede o quanto essa classificação muda com outras
 definições.
 
-**H5 e H6.** *A completar com os resultados das RQ05 e RQ06 (Issues #66 e #67).*
+**H5 (velocidade × estabilidade) confirmada.** Como previsto, o CFR (a) não
+se correlaciona com a frequência (ρ = 0,01), e o CFR (b) se correlaciona
+positivamente (ρ = 0,60). Pelo *proxy* de CI, os dados são compatíveis com a
+afirmação do DORA de que velocidade e estabilidade não são um *trade-off*:
+quem publica mais não quebra mais o *pipeline*. Eles não confirmam, porém, a
+versão mais forte da afirmação, de que as equipes mais rápidas também são as
+mais estáveis; o que se observa é independência, não associação positiva.
+Pelo *proxy* de entrega, à primeira vista os dados contradizem o DORA, mas
+as verificações da Seção 3.6 indicam que a maior parte dessa correlação é um
+artefato da definição. Sem o prazo de 7 dias (*rework rate*), ela cai de
+0,60 para 0,20. O resíduo também admite uma leitura que não é de
+instabilidade: em projetos que publicam com frequência, uma correção vira a
+sua própria *release*, enquanto em projetos lentos ela entra na próxima
+versão planejada. Em ambos os casos, correlação não implica causalidade:
+tamanho, idade e maturidade do processo podem influir nas duas medidas ao
+mesmo tempo.
+
+**H6 (fatores associados ao desempenho) confirmada em parte.** A idade se
+comportou como esperado: repositórios mais antigos publicam com menos
+frequência e têm *lead times* maiores, e esses são os maiores efeitos da
+análise. O número de contribuidores, ao contrário do previsto, não se
+associa à frequência nem ao tempo de recuperação; associa-se a *lead times*
+**maiores**, e não menores. Na linguagem, TypeScript (0,47 por semana) e Rust
+(0,40) têm as maiores medianas de frequência, na direção prevista, mas sem
+significância (p corrigido = 1,0); a única diferença por linguagem é no
+*lead time*. A previsão de efeitos pequenos (ε² < 0,06) valeu para 12 dos 16
+testes, mas três das quatro associações significativas têm efeito médio
+(ε² de 0,10 a 0,21). Dois padrões se destacam. Primeiro, o *lead time* (a)
+concentra três dos quatro resultados; como ele parte do *commit* mais antigo
+da *release*, projetos antigos e grandes, com mais ramos de manutenção e
+séries paralelas de versões (Seção 3.2), tendem a inflá-lo, e parte do
+efeito pode ser da métrica, não do processo. Segundo, nenhuma
+característica se associa às métricas de estabilidade, coerente com o CFR (a)
+concentrado em Elite. Como só a combinação C1 foi testada, a robustez dessas
+associações às outras definições continua em aberto.
 
 **H7 (sensibilidade) confirmada.** Pelo menos 30% da amostra muda em C1 × C2
 e C1 × C3, e os respectivos kappas (0,432 e 0,594) ficam na faixa moderada
@@ -671,3 +811,5 @@ uma relação um-para-um entre as duas taxas.
 
 - **[forsgren2018]** Forsgren, N., Humble, J. e Kim, G. (2018). *Accelerate: The Science of Lean Software and DevOps*. IT Revolution.
 - **[dora2024]** DORA (2024). DORA's software delivery metrics: the four keys. <https://dora.dev/guides/dora-metrics-four-keys/>.
+- **[romano2006]** Romano, J., Kromrey, J. D., Coraggio, J. e Skowronek, J. (2006). Appropriate statistics for ordinal level data: Should we really be using t-test and Cohen's d for evaluating group differences on the NSSE and other surveys? *Annual Meeting of the Florida Association of Institutional Research*.
+- **[tomczak2014]** Tomczak, M. e Tomczak, E. (2014). The need to report effect size estimates revisited. An overview of some recommended measures of effect size. *Trends in Sport Sciences*, 1(21), 19–25.
