@@ -1,11 +1,15 @@
+import numpy as np
 import pandas as pd
 import pytest
-from scipy.stats import kruskal
+from scipy.stats import kruskal, spearmanr
 
 from metrics.estatistica import (
     cliffs_delta,
     comparar_grupos,
     epsilon_quadrado,
+    ic_cliffs_delta,
+    ic_epsilon_quadrado,
+    ic_spearman,
     interpretar_cliffs_delta,
     interpretar_epsilon_quadrado,
     quartis,
@@ -83,3 +87,30 @@ def test_comparar_dois_grupos_usa_mann_whitney():
 def test_comparar_um_grupo_falha():
     with pytest.raises(ValueError):
         comparar_grupos({"a": [1, 2], "b": []})
+
+
+@pytest.fixture
+def amostras():
+    rng = np.random.default_rng(0)
+    x = rng.normal(size=80)
+    return x, x + rng.normal(size=80), [rng.normal(i * 0.5, 1, 30) for i in range(3)]
+
+
+def test_ic_spearman_contem_estimativa_e_e_reprodutivel(amostras):
+    x, y, _ = amostras
+    inf, sup = ic_spearman(x, y, n_reamostras=300)
+    assert inf < spearmanr(x, y).statistic < sup
+    assert (inf, sup) == ic_spearman(x, y, n_reamostras=300)
+
+
+def test_ic_epsilon_quadrado_contem_estimativa(amostras):
+    *_, grupos = amostras
+    inf, sup = ic_epsilon_quadrado(grupos, n_reamostras=300)
+    estimativa = epsilon_quadrado(kruskal(*grupos).statistic, 90)
+    assert 0 <= inf < estimativa < sup
+
+
+def test_ic_cliffs_delta_contem_estimativa_e_fica_entre_menos_um_e_um(amostras):
+    *_, grupos = amostras
+    inf, sup = ic_cliffs_delta(grupos[2], grupos[0], n_reamostras=300)
+    assert -1 <= inf < cliffs_delta(grupos[2], grupos[0]) < sup <= 1

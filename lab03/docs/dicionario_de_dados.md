@@ -134,12 +134,13 @@ transição em contagens de repositórios.
 ## Tabelas das RQ05 e RQ06 (`analise/tabelas/`)
 
 Exportadas por `analise/rq05_spearman.ipynb` (Issue #66) e
-`analise/rq06_fatores.ipynb` (Issue #67). Os tamanhos de efeito estão em
-`code/metrics/estatistica.py`.
+`analise/rq06_fatores.ipynb` (Issue #67). Os tamanhos de efeito e os intervalos
+de confiança (*bootstrap* percentil, 2.000 reamostragens, semente 42) estão
+em `code/metrics/estatistica.py`.
 
 | Arquivo | Conteúdo |
 |---|---|
-| `rq05_spearman.csv` | Uma linha por taxa de falha (`cfr_a`, `cfr_b` e o controle `rework_rate`): `n`, `rho` e `p` de Spearman contra `deploy_freq_release`. |
+| `rq05_spearman.csv` | Uma linha por taxa de falha (`cfr_a`, `cfr_b` e o controle `rework_rate`): `n`, `rho`, `ic95_inf` e `ic95_sup` (IC 95% por *bootstrap* percentil, 2.000 reamostragens dos repositórios) e `p` de Spearman contra `deploy_freq_release`. |
 | `rq05_robustez.csv` | As mesmas correlações do CFR (a) e (b) restritas a repositórios com pelo menos `min_avaliadas` releases avaliadas no CFR (b) (1, 5, 10 e 20). |
 | `rq06_grupos.csv` | Um grupo por linha: `fator`, `grupo`, `n`, `faixa` dos valores (fatores em quartis), mediana de cada métrica e `poucos_repositorios` (n < 20). |
-| `rq06_testes.csv` | Um teste por linha (fator × métrica): `teste`, `n`, `grupos`, `estatistica` (H), `p`, `p_holm` (Holm sobre os 16 testes), `significativo_holm`, `tamanho_efeito` (ε² = H/(n − 1)) e sua interpretação (Tomczak e Tomczak, 2014), `cliffs_delta` entre os grupos de `comparacao_delta` (Q4 × Q1, ou maior × menor mediana na linguagem) e sua interpretação (Romano et al., 2006), `melhor_desempenho` e `grupos_poucos_repositorios`. |
+| `rq06_testes.csv` | Um teste por linha (fator × métrica): `teste`, `n`, `grupos`, `estatistica` (H), `p`, `p_holm` (Holm sobre os 16 testes), `significativo_holm`, `tamanho_efeito` (ε² = H/(n − 1)) com `ic95_efeito_inf`/`ic95_efeito_sup` e sua interpretação (Tomczak e Tomczak, 2014), `cliffs_delta` entre os grupos de `comparacao_delta` (Q4 × Q1, ou maior × menor mediana na linguagem) com `ic95_delta_inf`/`ic95_delta_sup` e sua interpretação (Romano et al., 2006), `melhor_desempenho` e `grupos_poucos_repositorios`. |
