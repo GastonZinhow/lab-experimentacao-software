@@ -516,20 +516,22 @@ ausente fica fora da mediana. A classificação por repositório está em
 
 A relação entre velocidade e estabilidade depende da variante do CFR
 (Tabela 4, Figura 6; notebook `analise/rq05_spearman.ipynb`, Issue #66). Com
-o CFR (a), *proxy* de CI, não há relação monotônica: ρ = 0,01 (p = 0,86). A
-mediana do CFR (a) em cada decil de frequência fica entre 4% e 10% em toda a
+o CFR (a), *proxy* de CI, não há relação monotônica: ρ = 0,01 (p = 0,86), e
+o intervalo de confiança de 95% (−0,10 a 0,12) descarta uma relação mais que
+fraca em qualquer direção. A mediana do CFR (a) em cada decil de frequência fica entre 4% e 10% em toda a
 faixa, de uma *release* a cada dez semanas a várias por semana. Com o CFR (b),
-*proxy* de entrega, a correlação é positiva e forte (ρ = 0,60; p < 0,001): a
+*proxy* de entrega, a correlação é positiva e forte (ρ = 0,60; IC 95% 0,51 a
+0,68; p < 0,001): a
 mediana é 0% em três dos quatro decis de menor frequência e passa de 70% no
 decil mais alto.
 
-**Tabela 4. Correlação de Spearman entre a frequência de *deploy* (*releases* por semana) e a taxa de falha.**
+**Tabela 4. Correlação de Spearman entre a frequência de *deploy* (*releases* por semana) e a taxa de falha. IC 95%: *bootstrap* percentil com 2.000 reamostragens dos repositórios.**
 
-| Taxa de falha | n | ρ | p-valor |
-|---|---:|---:|---:|
-| CFR (a) *proxy* de CI | 300 | 0,010 | 0,857 |
-| CFR (b) *proxy* de entrega | 300 | 0,602 | < 0,001 |
-| *Rework rate* (controle do CFR (b)) | 300 | 0,195 | < 0,001 |
+| Taxa de falha | n | ρ | IC 95% de ρ | p-valor |
+|---|---:|---:|---|---:|
+| CFR (a) *proxy* de CI | 300 | 0,010 | [−0,10; 0,12] | 0,857 |
+| CFR (b) *proxy* de entrega | 300 | 0,602 | [0,51; 0,68] | < 0,001 |
+| *Rework rate* (controle do CFR (b)) | 300 | 0,195 | [0,07; 0,31] | < 0,001 |
 
 Duas verificações ajudam a separar o que é comportamento dos projetos do que
 é efeito da definição do CFR (b). A primeira descarta a discretização: com
@@ -539,7 +541,8 @@ poucas *releases* avaliadas, o CFR (b) só assume valores como 0%, 50% ou
 relação (ρ = 0,11; p = 0,10). A segunda isola o prazo de 7 dias: a *rework
 rate* (RQ08) usa a mesma heurística de *release* corretiva, mas mede só a
 proporção de corretivas, sem olhar o que acontece depois de cada *release*.
-Sua correlação com a frequência é bem mais fraca (ρ = 0,20). A maior parte da
+Sua correlação com a frequência é bem mais fraca (ρ = 0,20; IC 95% 0,07 a
+0,31), e os dois intervalos não se sobrepõem. A maior parte da
 associação do CFR (b) vem, portanto, do prazo fixo: quem publica uma vez por
 mês raramente tem outra *release* nos 7 dias seguintes, e quem publica várias
 por semana quase sempre tem.
@@ -563,28 +566,32 @@ os 16 p-valores foram corrigidos juntos pelo método de Holm. Além do ε² do
 teste, a Tabela 5 traz o *Cliff's delta* entre os grupos extremos (Q4 × Q1
 nos quartis; na linguagem, o grupo de maior mediana × o de menor), com a
 interpretação de Romano et al. (2006). O ε² segue a escala de Tomczak e
-Tomczak (2014): 0,01 pequeno, 0,08 médio e 0,26 grande.
+Tomczak (2014): 0,01 pequeno, 0,08 médio e 0,26 grande. Os dois tamanhos de
+efeito têm intervalo de confiança de 95% por *bootstrap* percentil (2.000
+reamostragens dentro de cada grupo, semente fixa). Como o ε² nunca é
+negativo, o seu intervalo nunca inclui zero e não serve como teste; a
+significância é decidida pelo p corrigido.
 
-**Tabela 5. Kruskal-Wallis por fator × métrica, com p-valor corrigido por Holm e tamanhos de efeito (em negrito, significativos após a correção).**
+**Tabela 5. Kruskal-Wallis por fator × métrica, com p-valor corrigido por Holm e tamanhos de efeito com IC 95% (*bootstrap* percentil, 2.000 reamostragens dentro de cada grupo). Em negrito, os significativos após a correção.**
 
-| Fator | Métrica | n | H | p | p (Holm) | ε² | δ (grupos extremos) |
-|---|---|---:|---:|---:|---:|---:|---|
-| Linguagem | Frequência | 300 | 6,31 | 0,390 | 1,000 | 0,021 | 0,19 pequeno (TypeScript × Outras) |
-| **Linguagem** | ***Lead time* (a)** | 299 | 22,95 | < 0,001 | **0,011** | 0,077 | 0,38 médio (C++ × Python) |
-| Linguagem | CFR (a) | 300 | 2,09 | 0,911 | 1,000 | 0,007 | 0,05 desprezível (TypeScript × C#) |
-| Linguagem | Recuperação | 276 | 5,65 | 0,463 | 1,000 | 0,021 | 0,44 médio (C++ × Rust) |
-| Estrelas | Frequência | 300 | 11,81 | 0,008 | 0,089 | 0,040 | 0,17 pequeno |
-| Estrelas | *Lead time* (a) | 299 | 6,01 | 0,111 | 1,000 | 0,020 | 0,07 desprezível |
-| Estrelas | CFR (a) | 300 | 2,00 | 0,573 | 1,000 | 0,007 | 0,05 desprezível |
-| Estrelas | Recuperação | 276 | 1,72 | 0,632 | 1,000 | 0,006 | 0,02 desprezível |
-| Contribuidores | Frequência | 300 | 1,44 | 0,696 | 1,000 | 0,005 | −0,01 desprezível |
-| **Contribuidores** | ***Lead time* (a)** | 299 | 35,54 | < 0,001 | **< 0,001** | 0,119 | 0,51 grande |
-| Contribuidores | CFR (a) | 300 | 2,45 | 0,484 | 1,000 | 0,008 | 0,08 desprezível |
-| Contribuidores | Recuperação | 276 | 5,41 | 0,144 | 1,000 | 0,020 | 0,21 pequeno |
-| **Idade** | **Frequência** | 300 | 29,89 | < 0,001 | **< 0,001** | 0,100 | −0,42 médio |
-| **Idade** | ***Lead time* (a)** | 299 | 62,64 | < 0,001 | **< 0,001** | 0,210 | 0,68 grande |
-| Idade | CFR (a) | 300 | 1,09 | 0,779 | 1,000 | 0,004 | −0,09 desprezível |
-| Idade | Recuperação | 276 | 12,11 | 0,007 | 0,084 | 0,044 | 0,33 médio |
+| Fator | Métrica | n | H | p | p (Holm) | ε² [IC 95%] | δ [IC 95%] (grupos extremos) |
+|---|---|---:|---:|---:|---:|---|---|
+| Linguagem | Frequência | 300 | 6,31 | 0,390 | 1,000 | 0,021 [0,009; 0,086] | 0,19 [0,00; 0,38] pequeno (TypeScript × Outras) |
+| **Linguagem** | ***Lead time* (a)** | 299 | 22,95 | < 0,001 | **0,011** | 0,077 [0,042; 0,166] | 0,38 [0,08; 0,66] médio (C++ × Python) |
+| Linguagem | CFR (a) | 300 | 2,09 | 0,911 | 1,000 | 0,007 [0,006; 0,063] | 0,05 [−0,27; 0,39] desprezível (TypeScript × C#) |
+| Linguagem | Recuperação | 276 | 5,65 | 0,463 | 1,000 | 0,021 [0,011; 0,085] | 0,44 [0,08; 0,76] médio (C++ × Rust) |
+| Estrelas | Frequência | 300 | 11,81 | 0,008 | 0,089 | 0,040 [0,012; 0,099] | 0,17 [−0,02; 0,35] pequeno |
+| Estrelas | *Lead time* (a) | 299 | 6,01 | 0,111 | 1,000 | 0,020 [0,004; 0,075] | 0,07 [−0,12; 0,25] desprezível |
+| Estrelas | CFR (a) | 300 | 2,00 | 0,573 | 1,000 | 0,007 [0,001; 0,050] | 0,05 [−0,13; 0,24] desprezível |
+| Estrelas | Recuperação | 276 | 1,72 | 0,632 | 1,000 | 0,006 [0,001; 0,050] | 0,02 [−0,16; 0,21] desprezível |
+| Contribuidores | Frequência | 300 | 1,44 | 0,696 | 1,000 | 0,005 [0,001; 0,043] | −0,01 [−0,20; 0,18] desprezível |
+| **Contribuidores** | ***Lead time* (a)** | 299 | 35,54 | < 0,001 | **< 0,001** | 0,119 [0,065; 0,201] | 0,51 [0,35; 0,66] grande |
+| Contribuidores | CFR (a) | 300 | 2,45 | 0,484 | 1,000 | 0,008 [0,001; 0,051] | 0,08 [−0,10; 0,27] desprezível |
+| Contribuidores | Recuperação | 276 | 5,41 | 0,144 | 1,000 | 0,020 [0,004; 0,076] | 0,21 [0,03; 0,40] pequeno |
+| **Idade** | **Frequência** | 300 | 29,89 | < 0,001 | **< 0,001** | 0,100 [0,048; 0,177] | −0,42 [−0,58; −0,25] médio |
+| **Idade** | ***Lead time* (a)** | 299 | 62,64 | < 0,001 | **< 0,001** | 0,210 [0,142; 0,301] | 0,68 [0,54; 0,81] grande |
+| Idade | CFR (a) | 300 | 1,09 | 0,779 | 1,000 | 0,004 [0,001; 0,043] | −0,09 [−0,27; 0,10] desprezível |
+| Idade | Recuperação | 276 | 12,11 | 0,007 | 0,084 | 0,044 [0,014; 0,110] | 0,33 [0,15; 0,51] médio |
 
 Quatro das 16 associações sobrevivem à correção (Figuras 7 e 8). A idade tem
 os maiores efeitos. Os repositórios do quartil mais novo (até 963 dias)
@@ -602,8 +609,9 @@ estabilidade praticamente não variam: no CFR (a), todos os ε² ficam abaixo de
 
 Três ressalvas limitam essas conclusões. Os grupos C# e C++ têm só 15
 repositórios cada (14 no tempo de recuperação); com tão poucos casos, o teste
-tem pouco poder e a mediana do grupo é instável, e o *delta* de C++ × Python
-no *lead time* depende de um desses grupos. O grupo Outras reúne linguagens
+tem pouco poder e a mediana do grupo é instável. O *delta* de C++ × Python no
+*lead time* depende de um desses grupos, e o seu intervalo (0,08 a 0,66) vai
+de quase desprezível a grande. O grupo Outras reúne linguagens
 muito diferentes. E idade e contribuidores não são independentes
 (Spearman ρ = 0,45 entre eles), de modo que os dois efeitos sobre o *lead
 time* podem ser, em parte, o mesmo efeito. As comparações são
@@ -613,7 +621,7 @@ observacionais e não estabelecem causa.
 **Figura 7. ε² de cada teste fator × métrica; o asterisco marca os significativos após a correção de Holm.**
 
 ![Figura 8](../analise/figuras/rq06_significativos.png)
-**Figura 8. Distribuição das métricas por grupo nas quatro associações significativas (escala log). Entre parênteses, o número de repositórios; † marca grupos com menos de 20.**
+**Figura 8. Violinos das métricas por grupo nas quatro associações significativas (escala log); a linha preta é a mediana e as cinzas, Q1 e Q3. Entre parênteses, o número de repositórios; † marca grupos com menos de 20.**
 
 ## 3.8 RQ07: sensibilidade às definições operacionais
 

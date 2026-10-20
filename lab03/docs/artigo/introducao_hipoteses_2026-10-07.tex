@@ -45,8 +45,13 @@ Os resultados mostram grande variação entre repositórios e, principalmente,
 sensibilidade à definição operacional: entre 21,7\% e 37,7\% dos repositórios
 mudam de categoria entre três configurações plausíveis. A concordância
 ponderada varia de 0,432 a 0,683. A taxa de retrabalho tem mediana de 14,3\% e
-é relacionada, mas conceitualmente distinta, do CFR baseado em releases. Os
-resultados de RQ05 e RQ06 permanecem reservados para a análise final.
+é relacionada, mas conceitualmente distinta, do CFR baseado em releases. A
+frequência de deploy não se correlaciona com o CFR de CI ($\rho=0{,}01$),
+mas se correlaciona com o CFR de entrega ($\rho=0{,}60$), em grande parte por
+efeito do prazo de sete dias da definição. Entre as características dos
+repositórios, a idade é a mais associada ao desempenho, com projetos mais
+antigos publicando menos e com \textit{lead time} maior; nenhuma
+característica se associa às métricas de estabilidade.
 \end{resumo}
 
 \section{Introdução}
@@ -213,18 +218,143 @@ Na RQ04, a mediana do tempo de recuperação é 3,1 horas, com IQR de
 episódios observados, 204 (1,5\%) permaneceram censurados por não haver uma
 execução bem-sucedida posterior dentro da janela.
 
-\subsection{RQ05 e RQ06: espaço reservado}
+\subsection{RQ05: frequência de deploy e taxa de falha}
 
-\begin{center}
-\fbox{\begin{minipage}{0.91\linewidth}
-\textbf{Resultados pendentes.} Inserir aqui, quando concluída a análise:
-(i) para RQ05, correlações de Spearman entre frequência de deploy e cada
-variante de CFR, com tamanho amostral, intervalo de confiança e gráfico de
-dispersão; (ii) para RQ06, testes por linguagem e associações com idade,
-estrelas e número de contribuidores, incluindo correção de Holm, tamanho de
-efeito e gráficos de violino. Não inferir conclusões antes desses cálculos.
-\end{minipage}}
-\end{center}
+A Tabela~\ref{tab:rq05} traz a correlação de Spearman entre a frequência de
+deploy (releases por semana) e cada variante de CFR, com intervalo de
+confiança de 95\% por \textit{bootstrap} percentil (2.000 reamostragens dos
+repositórios). Com o CFR (a), não há relação monotônica
+($\rho=0{,}01$, $p=0{,}86$), e o intervalo descarta uma relação mais que
+fraca em qualquer direção. Com o CFR (b), a correlação é positiva e forte
+($\rho=0{,}60$, $p<0{,}001$). A Figura~\ref{fig:rq05} mostra os dois casos:
+a mediana do CFR (a) por decil de frequência fica entre 4\% e 10\% em toda a
+faixa, enquanto a do CFR (b) vai de 0\% nos decis mais lentos a mais de 70\%
+no mais rápido.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Correlação de Spearman entre frequência de deploy e taxa de falha.}
+  \label{tab:rq05}
+  \small
+  \begin{tabular}{lrrlr}
+    \toprule
+    Taxa de falha & $n$ & $\rho$ & IC 95\% de $\rho$ & $p$ \\
+    \midrule
+    CFR (a), \textit{proxy} de CI & 300 & 0,010 & [$-$0,10; 0,12] & 0,857 \\
+    CFR (b), \textit{proxy} de entrega & 300 & 0,602 & [0,51; 0,68] & $<$0,001 \\
+    \textit{Rework rate} (controle do CFR (b)) & 300 & 0,195 & [0,07; 0,31] & $<$0,001 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{rq05_freq_vs_cfr.png}
+  \caption{Frequência de deploy (escala log) contra CFR (a), à esquerda, e
+  CFR (b), à direita. A linha liga a mediana do CFR em cada decil de
+  frequência.}
+  \label{fig:rq05}
+\end{figure}
+
+Duas verificações separam o comportamento dos projetos do efeito da
+definição. Restringir a análise aos 215 repositórios com pelo menos 10
+releases avaliadas, para evitar CFRs (b) discretos como 0\%, 50\% ou 100\%,
+mantém $\rho=0{,}55$ para o CFR (b) e $\rho=0{,}11$ ($p=0{,}10$) para o
+CFR (a). Já a \textit{rework rate}, que usa a mesma heurística de release
+corretiva mas não depende do prazo de sete dias, tem correlação bem menor com
+a frequência ($\rho=0{,}20$), e os intervalos das duas não se sobrepõem.
+Logo, a maior parte da associação do CFR (b) vem do prazo fixo: quem publica
+uma vez por mês raramente tem outra release em sete dias, e quem publica
+várias vezes por semana quase sempre tem.
+
+\subsection{RQ06: características associadas ao desempenho}
+
+Foram comparadas as quatro métricas da configuração C1 (frequência,
+\textit{lead time} (a), CFR (a) e recuperação) entre os grupos de quatro
+fatores: linguagem principal (seis linguagens com pelo menos 15
+repositórios e o grupo Outras, com 85) e quartis de estrelas, de
+contribuidores e de idade. O tipo do projeto não pôde ser usado: nenhum dos
+60 repositórios rotulados na amostra-ouro está na amostra final, pois o
+sorteio foi feito sobre uma seleção anterior. Todos os fatores têm mais de
+dois grupos, então os 16 testes são de Kruskal-Wallis, com os $p$-valores
+corrigidos juntos por Holm. A Tabela~\ref{tab:rq06} traz o tamanho de efeito
+$\varepsilon^2 = H/(n-1)$, interpretado pela escala de Tomczak e Tomczak
+\cite{tomczak2014}, e o \textit{Cliff's delta} ($\delta$) entre os grupos
+extremos, interpretado por Romano et al. \cite{romano2006}, ambos com
+intervalo de confiança de 95\% por \textit{bootstrap} percentil. Como
+$\varepsilon^2$ nunca é negativo, seu intervalo não inclui zero e não serve
+como teste; a significância é decidida pelo $p$ corrigido.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kruskal-Wallis por fator e métrica, com $p$ corrigido por Holm e
+  tamanhos de efeito com IC 95\%. Em negrito, os significativos após a
+  correção. Nos quartis, $\delta$ compara Q4 com Q1; na linguagem, o grupo de
+  maior mediana com o de menor.}
+  \label{tab:rq06}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{llrrrrll}
+    \toprule
+    Fator & Métrica & $n$ & $H$ & $p$ & $p$ (Holm) & $\varepsilon^2$ [IC 95\%] & $\delta$ [IC 95\%] \\
+    \midrule
+    Linguagem & Frequência & 300 & 6,31 & 0,390 & 1,000 & 0,021 [0,009; 0,086] & 0,19 [0,00; 0,38] (TypeScript $\times$ Outras) \\
+    Linguagem & \textit{Lead time} (a) & 299 & 22,95 & $<$0,001 & \textbf{0,011} & 0,077 [0,042; 0,166] & 0,38 [0,08; 0,66] (C++ $\times$ Python) \\
+    Linguagem & CFR (a) & 300 & 2,09 & 0,911 & 1,000 & 0,007 [0,006; 0,063] & 0,05 [$-$0,27; 0,39] (TypeScript $\times$ C\#) \\
+    Linguagem & Recuperação & 276 & 5,65 & 0,463 & 1,000 & 0,021 [0,011; 0,085] & 0,44 [0,08; 0,76] (C++ $\times$ Rust) \\
+    Estrelas & Frequência & 300 & 11,81 & 0,008 & 0,089 & 0,040 [0,012; 0,099] & 0,17 [$-$0,02; 0,35] \\
+    Estrelas & \textit{Lead time} (a) & 299 & 6,01 & 0,111 & 1,000 & 0,020 [0,004; 0,075] & 0,07 [$-$0,12; 0,25] \\
+    Estrelas & CFR (a) & 300 & 2,00 & 0,573 & 1,000 & 0,007 [0,001; 0,050] & 0,05 [$-$0,13; 0,24] \\
+    Estrelas & Recuperação & 276 & 1,72 & 0,632 & 1,000 & 0,006 [0,001; 0,050] & 0,02 [$-$0,16; 0,21] \\
+    Contribuidores & Frequência & 300 & 1,44 & 0,696 & 1,000 & 0,005 [0,001; 0,043] & $-$0,01 [$-$0,20; 0,18] \\
+    Contribuidores & \textit{Lead time} (a) & 299 & 35,54 & $<$0,001 & \textbf{$<$0,001} & 0,119 [0,065; 0,201] & 0,51 [0,35; 0,66] \\
+    Contribuidores & CFR (a) & 300 & 2,45 & 0,484 & 1,000 & 0,008 [0,001; 0,051] & 0,08 [$-$0,10; 0,27] \\
+    Contribuidores & Recuperação & 276 & 5,41 & 0,144 & 1,000 & 0,020 [0,004; 0,076] & 0,21 [0,03; 0,40] \\
+    Idade & Frequência & 300 & 29,89 & $<$0,001 & \textbf{$<$0,001} & 0,100 [0,048; 0,177] & $-$0,42 [$-$0,58; $-$0,25] \\
+    Idade & \textit{Lead time} (a) & 299 & 62,64 & $<$0,001 & \textbf{$<$0,001} & 0,210 [0,142; 0,301] & 0,68 [0,54; 0,81] \\
+    Idade & CFR (a) & 300 & 1,09 & 0,779 & 1,000 & 0,004 [0,001; 0,043] & $-$0,09 [$-$0,27; 0,10] \\
+    Idade & Recuperação & 276 & 12,11 & 0,007 & 0,084 & 0,044 [0,014; 0,110] & 0,33 [0,15; 0,51] \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+Quatro das 16 associações resistem à correção (Figuras~\ref{fig:rq06-efeito}
+e~\ref{fig:rq06-violino}). A idade tem os maiores efeitos: o quartil mais
+novo (até 963 dias) publica 0,73 release por semana, contra 0,25 a 0,33 nos
+demais, e tem \textit{lead time} (a) mediano de 2,3 dias, contra 28,7 dias no
+quartil mais antigo ($\delta=0{,}68$, grande). O número de contribuidores
+também se associa ao \textit{lead time}: 3,9 dias no quartil com até 31
+contribuidores e 25,7 dias no quartil com mais de 177 ($\delta=0{,}51$), sem
+diferença na frequência. Na linguagem, Python e TypeScript têm os menores
+\textit{lead times} (6,3 e 6,5 dias) e C++ e Outras, os maiores (cerca de 22
+dias). As estrelas não se associam a nenhuma métrica após a correção, e as
+métricas de estabilidade quase não variam: no CFR (a), todos os
+$\varepsilon^2$ ficam abaixo de 0,01.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{rq06_tamanho_efeito.png}
+  \caption{$\varepsilon^2$ de cada teste; o asterisco marca os significativos
+  após a correção de Holm.}
+  \label{fig:rq06-efeito}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{rq06_significativos.png}
+  \caption{Violinos das métricas por grupo nas quatro associações
+  significativas (escala log); a linha preta é a mediana e as cinzas, Q1 e
+  Q3. Entre parênteses, o número de repositórios; $\dagger$ marca grupos com
+  menos de 20.}
+  \label{fig:rq06-violino}
+\end{figure}
+
+Três ressalvas limitam essas conclusões. Os grupos C\# e C++ têm só 15
+repositórios cada; o $\delta$ de C++ contra Python no \textit{lead time}
+depende de um deles, e seu intervalo vai de 0,08 a 0,66. O grupo Outras
+reúne linguagens muito diferentes. E idade e contribuidores estão
+correlacionados ($\rho=0{,}45$), de modo que seus efeitos sobre o
+\textit{lead time} podem ser, em parte, o mesmo. As comparações são
+observacionais e não estabelecem causa.
 
 \subsection{RQ07: sensibilidade das definições}
 
@@ -327,14 +457,37 @@ dos 20\%--35\% esperados e próxima do CFR (b). Ainda assim, a diferença
 conceitual permanece importante. Métricas com distribuições semelhantes
 podem atribuir significado distinto aos mesmos eventos.
 
-\begin{center}
-\fbox{\begin{minipage}{0.91\linewidth}
-\textbf{Discussão de RQ05 e RQ06 a completar.} Confrontar os coeficientes de
-RQ05 com H5 e os testes, efeitos e intervalos de RQ06 com H6. Depois, revisar
-o resumo, o abstract e a conclusão para incorporar esses achados sem alterar
-o registro original das hipóteses.
-\end{minipage}}
-\end{center}
+H5 foi sustentada. Como previsto, o CFR (a) não se correlaciona com a
+frequência ($\rho=0{,}01$), e o CFR (b) se correlaciona positivamente
+($\rho=0{,}60$). Pelo \textit{proxy} de CI, os dados são compatíveis com a
+afirmação da DORA de que velocidade e estabilidade não são um
+\textit{trade-off}: quem publica mais não quebra mais o \textit{pipeline}.
+Eles não confirmam, porém, a versão mais forte da afirmação, de que as
+equipes mais rápidas também são as mais estáveis; observa-se independência,
+não associação positiva. Pelo \textit{proxy} de entrega, os dados parecem
+contradizer a DORA, mas as verificações da RQ05 indicam que a maior parte da
+correlação é um artefato do prazo de sete dias, que cai de 0,60 para 0,20
+sem ele. O resíduo admite uma leitura que não é de instabilidade: em
+projetos que publicam com frequência, uma correção vira sua própria release,
+enquanto em projetos lentos ela entra na próxima versão planejada. Em ambos
+os casos, correlação não implica causalidade: tamanho, idade e maturidade do
+processo podem influir nas duas medidas ao mesmo tempo.
+
+H6 foi sustentada em parte. A idade se comportou como esperado: repositórios
+mais antigos publicam menos e têm \textit{lead times} maiores, com os
+maiores efeitos da análise. O número de contribuidores, ao contrário do
+previsto, não se associa à frequência nem à recuperação, e sim a
+\textit{lead times} maiores. Na linguagem, TypeScript e Rust têm as maiores
+frequências medianas, na direção prevista, mas sem significância. A previsão
+de efeitos pequenos ($\varepsilon^2<0{,}06$) valeu para 12 dos 16 testes,
+mas três das quatro associações significativas têm efeito médio
+($\varepsilon^2$ de 0,10 a 0,21). O \textit{lead time} (a) concentra três
+desses quatro resultados; como ele parte do commit mais antigo da release,
+projetos antigos e grandes, com ramos de manutenção e séries paralelas de
+versões, tendem a inflá-lo, e parte do efeito pode ser da métrica, não do
+processo. Nenhuma característica se associa às métricas de estabilidade.
+Como só a configuração C1 foi testada, a robustez dessas associações às
+demais definições continua em aberto.
 
 Em conjunto, RQ01--RQ04, RQ07 e RQ08 mostram que as conclusões descritivas
 gerais se mantêm: há grande heterogeneidade entre projetos, distribuições
@@ -360,9 +513,13 @@ essas decisões auditáveis.
 A validade externa é limitada a repositórios populares, públicos e que usam
 GitHub Actions. Os resultados não devem ser generalizados diretamente para
 equipes privadas, outros provedores de CI/CD ou sistemas com telemetria real
-de produção. Para a validade de conclusão, a multiplicidade dos testes de
-RQ06 deverá ser controlada por Holm, com apresentação de tamanhos de efeito e
-intervalos de confiança, além dos valores de $p$.
+de produção. Para a validade de conclusão, a multiplicidade dos 16 testes de
+RQ06 foi controlada por Holm, com tamanhos de efeito e intervalos de
+confiança por \textit{bootstrap}, além dos valores de $p$. Ainda assim, os
+grupos C\# e C++ têm só 15 repositórios, o que reduz o poder dos testes e
+alarga os intervalos; idade e número de contribuidores estão
+correlacionados, o que confunde seus efeitos; e o tipo do projeto não pôde
+ser testado, pois a amostra-ouro não se sobrepõe à amostra final.
 
 \section{Replicação}
 
@@ -379,10 +536,13 @@ medidas resultantes são sensíveis aos proxies disponíveis. Entre 21,7\% e
 37,7\% dos repositórios mudaram de categoria sob definições plausíveis, e os
 dois CFRs apresentaram correlação praticamente nula. A taxa de retrabalho,
 com mediana de 14,3\%, complementa o CFR ao contar a ação corretiva em vez da
-release presumivelmente falha. Esses resultados recomendam explicitar as
-definições, publicar análises de sensibilidade e evitar interpretar
-categorias como atributos absolutos dos projetos. Esta conclusão é
-provisória até a incorporação de RQ05 e RQ06.
+release presumivelmente falha. Velocidade e estabilidade se mostraram
+independentes pelo CFR de CI; a aparente relação entre elas pelo CFR de
+entrega vem, em grande parte, da própria definição. A idade do repositório é
+a característica mais associada à velocidade de entrega, e nenhuma
+característica testada se associa à estabilidade. Esses resultados
+recomendam explicitar as definições, publicar análises de sensibilidade e
+evitar interpretar categorias como atributos absolutos dos projetos.
 
 \begin{thebibliography}{9}
 
@@ -395,6 +555,20 @@ Forsgren, N., Humble, J. e Kim, G. (2018).
 DORA (2024).
 \newblock DORA's software delivery metrics: the four keys.
 \newblock \url{https://dora.dev/guides/dora-metrics-four-keys/}.
+
+\bibitem{romano2006}
+Romano, J., Kromrey, J. D., Coraggio, J. e Skowronek, J. (2006).
+\newblock Appropriate statistics for ordinal level data: Should we really be
+using t-test and Cohen's d for evaluating group differences on the NSSE and
+other surveys?
+\newblock In \emph{Annual Meeting of the Florida Association of Institutional
+Research}.
+
+\bibitem{tomczak2014}
+Tomczak, M. e Tomczak, E. (2014).
+\newblock The need to report effect size estimates revisited. An overview of
+some recommended measures of effect size.
+\newblock \emph{Trends in Sport Sciences}, 1(21):19--25.
 
 \end{thebibliography}
 
