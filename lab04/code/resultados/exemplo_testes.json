@@ -1,0 +1,21 @@
+{
+  "situacao": "base",
+  "n": 30,
+  "efeito": 0.6123398108156322,
+  "semente": 42,
+  "alfa": 0.05,
+  "testes": {
+    "pearson": {
+      "coeficiente": 0.1497425711139129,
+      "p_valor": 0.42964945887665484,
+      "magnitude": "fraca",
+      "rejeita_h0": false
+    },
+    "spearman": {
+      "coeficiente": 0.5096712359281147,
+      "p_valor": 0.004015531579402282,
+      "magnitude": "forte",
+      "rejeita_h0": true
+    }
+  }
+}
