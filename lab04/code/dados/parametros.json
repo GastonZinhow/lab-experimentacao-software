@@ -1,0 +1,17 @@
+{
+  "fonte": "amostra_kc1.csv",
+  "loc": {
+    "distribuicao": "lognormal",
+    "mu": 5.23683179235624,
+    "sigma": 1.4611561865302423
+  },
+  "defeitos": {
+    "distribuicao": "binomial_negativa",
+    "media": 7.633333333333334,
+    "k": 0.11508352159392604
+  },
+  "associacao": {
+    "rho_spearman_amostra": 0.5146522302571241,
+    "efeito_calibrado": 0.6123398108156322
+  }
+}
