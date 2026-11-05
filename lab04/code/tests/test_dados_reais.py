@@ -34,13 +34,30 @@ def test_sorteio_da_amostra_e_reproduzivel_e_sem_repeticao():
     assert primeira["linha_arff"].is_unique
 
 
+def assert_parametros_iguais(novos, versionados):
+    """Compara os parâmetros tolerando só o ruído de ponto flutuante entre plataformas.
+
+    `k` vem de uma otimização numérica, e o último dígito pode mudar entre
+    sistemas operacionais ou versões do NumPy/SciPy.
+    """
+    assert novos.keys() == versionados.keys()
+    for chave, valor in versionados.items():
+        if isinstance(valor, dict):
+            assert_parametros_iguais(novos[chave], valor)
+        elif isinstance(valor, float):
+            assert novos[chave] == pytest.approx(valor, rel=1e-9), chave
+        else:
+            assert novos[chave] == valor, chave
+
+
 def test_arquivos_versionados_sao_regerados_igualmente(tmp_path):
     amostra_nova = tmp_path / "amostra.csv"
     parametros_novos = tmp_path / "parametros.json"
     preparar(arquivo_amostra=amostra_nova, arquivo_parametros=parametros_novos)
     pd.testing.assert_frame_equal(pd.read_csv(amostra_nova), pd.read_csv(ARQUIVO_AMOSTRA))
-    assert json.loads(parametros_novos.read_text(encoding="utf-8")) == json.loads(
-        ARQUIVO_PARAMETROS.read_text(encoding="utf-8")
+    assert_parametros_iguais(
+        json.loads(parametros_novos.read_text(encoding="utf-8")),
+        json.loads(ARQUIVO_PARAMETROS.read_text(encoding="utf-8")),
     )
 
 
