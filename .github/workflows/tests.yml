@@ -3,7 +3,8 @@ name: testes
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-lab03:
+    name: Testes do Lab03
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do Código
@@ -26,3 +27,31 @@ jobs:
           PYTHONPATH: .
         run: |
           pytest --cov=metrics --cov-fail-under=80 --cov-report=term-missing
+
+  test-lab04:
+    name: Testes e reprodutibilidade do Lab04
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Dependências
+        working-directory: lab04/code
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Executar Testes
+        working-directory: lab04/code
+        env:
+          PYTHONPATH: .
+        run: pytest
+
+      - name: Verificar Comando Único e Reprodutibilidade
+        working-directory: lab04/code
+        run: python run_all.py --verificar-reprodutibilidade
