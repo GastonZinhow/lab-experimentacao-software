@@ -6,6 +6,7 @@ import streamlit as st
 from plotly.subplots import make_subplots
 from scipy import stats
 
+import poder_interativo
 from exemplo import N, SITUACAO, rodar_exemplo
 from gerador import gerar
 from testes import ALFA, classificar_magnitude, estatistica_t
@@ -179,7 +180,8 @@ def texto_g2(resultados, rhos_h0, n=N):
     r, rho = resultados["pearson"]["coeficiente"], resultados["spearman"]["coeficiente"]
     return (
         "O Pearson mede a associação linear nos valores de LOC e de defeitos e a converte na estatística t; "
-        "o Spearman mede a associação nos postos e usa o próprio ρ. "
+        "o Spearman mede a associação monotônica nos postos, ou seja, se os módulos maiores tendem a ter mais "
+        "defeitos, sem importar quanto, e usa o próprio ρ. "
         "Com H₀ verdadeira, as duas estatísticas ficam perto de zero, então a região de rejeição (cinza) fica nas duas "
         f"caudas, onde estão os 5% de valores mais extremos: |t| ≥ {_br(pearson['critico'])} e |ρ| ≥ cerca de "
         f"{_br(spearman['critico'])}. "
@@ -194,7 +196,13 @@ def render():
     st.header("3. Como os testes funcionam")
     _, resultados = rodar_exemplo()
     rhos_h0 = simular_rho_h0()
+    st.caption(
+        f"Exemplo: um conjunto simulado de {N} módulos, com a associação calibrada na amostra real do KC1 "
+        "(semente 42). Como ler: a curva mostra os valores que a estatística assume quando não há associação; "
+        "a hachura cinza é a região de rejeição; a área colorida é o p-valor do exemplo."
+    )
     st.plotly_chart(figura_g2(resultados, rhos_h0), width="stretch")
     st.write(texto_g2(resultados, rhos_h0))
     with st.expander("Ver os valores do gráfico em tabela"):
         st.dataframe(tabela_g2(resultados, rhos_h0), hide_index=True)
+    poder_interativo.render()
