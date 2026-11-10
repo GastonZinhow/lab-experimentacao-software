@@ -77,17 +77,27 @@ def descrever(serie):
     }
 
 
+def normais_latentes(efeito, n, rng):
+    """Sorteia duas normais padrão com correlação `efeito` (independentes se `efeito = 0`)."""
+    z_loc = rng.standard_normal(n)
+    z_defeitos = efeito * z_loc + np.sqrt(1 - efeito**2) * rng.standard_normal(n)
+    return z_loc, z_defeitos
+
+
+def transformar_latentes(z_loc, z_defeitos, mu, sigma, media, k):
+    """Leva as normais latentes às margens calibradas: lognormal para LOC e binomial negativa para defeitos."""
+    loc = np.maximum(np.rint(np.exp(mu + sigma * z_loc)), 1).astype(int)
+    defeitos = stats.nbinom.ppf(stats.norm.cdf(z_defeitos), k, k / (k + media)).astype(int)
+    return loc, defeitos
+
+
 def amostrar_copula(mu, sigma, media, k, efeito, n, rng):
     """Sorteia LOC e defeitos com margens fixas e associação dada por `efeito`.
 
     `efeito` é a correlação das normais latentes da cópula gaussiana. Com
     `efeito = 0` as duas variáveis são independentes.
     """
-    z_loc = rng.standard_normal(n)
-    z_defeitos = efeito * z_loc + np.sqrt(1 - efeito**2) * rng.standard_normal(n)
-    loc = np.maximum(np.rint(np.exp(mu + sigma * z_loc)), 1).astype(int)
-    defeitos = stats.nbinom.ppf(stats.norm.cdf(z_defeitos), k, k / (k + media)).astype(int)
-    return loc, defeitos
+    return transformar_latentes(*normais_latentes(efeito, n, rng), mu, sigma, media, k)
 
 
 def calibrar_efeito(rho_alvo, mu, sigma, media, k, semente=SEMENTE, n=200_000):

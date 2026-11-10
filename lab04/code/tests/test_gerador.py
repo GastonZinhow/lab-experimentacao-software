@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from scipy import stats
 
+from dados_reais import amostrar_copula
 from gerador import SITUACOES, carregar_parametros, gerar
 
 N_GRANDE = 100_000
@@ -71,8 +72,67 @@ def test_efeito_calibrado_reproduz_o_rho_da_amostra():
     assert rho == pytest.approx(associacao["rho_spearman_amostra"], abs=0.01)
 
 
-def test_situacao_base_esta_disponivel():
-    assert "base" in SITUACOES
+def test_situacoes_da_q3_estao_disponiveis():
+    assert SITUACOES == ("base", "normal", "outliers")
+
+
+def test_base_continua_igual_a_copula_calibrada():
+    """Os resultados já publicados dependem da sequência de sorteios da `base`."""
+    parametros = carregar_parametros()
+    dados = gerar("base", 0.3, 500, np.random.default_rng(42))
+    loc, defeitos = amostrar_copula(
+        parametros["loc"]["mu"], parametros["loc"]["sigma"],
+        parametros["defeitos"]["media"], parametros["defeitos"]["k"],
+        0.3, 500, np.random.default_rng(42),
+    )
+    np.testing.assert_array_equal(dados["loc"], loc)
+    np.testing.assert_array_equal(dados["defeitos"], defeitos)
+
+
+@pytest.mark.parametrize("situacao", SITUACOES)
+def test_cada_situacao_e_reproduzivel_e_tem_n_modulos(situacao):
+    primeira = gerar(situacao, 0.3, 40, np.random.default_rng(5))
+    segunda = gerar(situacao, 0.3, 40, np.random.default_rng(5))
+    assert len(primeira["loc"]) == len(primeira["defeitos"]) == 40
+    np.testing.assert_array_equal(primeira["loc"], segunda["loc"])
+    np.testing.assert_array_equal(primeira["defeitos"], segunda["defeitos"])
+
+
+@pytest.mark.parametrize("situacao", SITUACOES)
+def test_efeito_zero_mantem_h0_verdadeira_em_cada_situacao(situacao):
+    dados = gerar(situacao, 0.0, N_GRANDE, np.random.default_rng(11))
+    assert abs(stats.spearmanr(dados["loc"], dados["defeitos"]).statistic) < 0.01
+    assert abs(stats.pearsonr(dados["loc"], dados["defeitos"]).statistic) < 0.01
+
+
+@pytest.mark.parametrize("situacao", SITUACOES)
+def test_associacao_cresce_com_o_efeito_em_cada_situacao(situacao):
+    rhos = [
+        stats.spearmanr(*gerar(situacao, efeito, N_GRANDE, np.random.default_rng(13)).values()).statistic
+        for efeito in (0.0, 0.3, 0.6)
+    ]
+    assert rhos[0] < rhos[1] < rhos[2]
+
+
+def test_normal_e_normal_bivariada_com_correlacao_igual_ao_efeito():
+    dados = gerar("normal", 0.4, N_GRANDE, np.random.default_rng(17))
+    for variavel in ("loc", "defeitos"):
+        assert dados[variavel].mean() == pytest.approx(0, abs=0.02)
+        assert dados[variavel].std() == pytest.approx(1, abs=0.02)
+        assert abs(stats.skew(dados[variavel])) < 0.05
+    assert stats.pearsonr(dados["loc"], dados["defeitos"]).statistic == pytest.approx(0.4, abs=0.01)
+
+
+def test_outliers_aumentam_a_cauda_das_duas_variaveis():
+    base = gerar("base", 0.0, N_GRANDE, np.random.default_rng(19))
+    outliers = gerar("outliers", 0.0, N_GRANDE, np.random.default_rng(19))
+    for variavel in ("loc", "defeitos"):
+        limite = np.percentile(base[variavel], 99)
+        assert np.mean(outliers[variavel] > limite) > 2 * np.mean(base[variavel] > limite)
+    for variavel in ("loc", "defeitos"):
+        alterados = outliers[variavel] != base[variavel]
+        assert np.all(outliers[variavel][alterados] >= base[variavel][alterados])
+    assert np.mean(outliers["loc"] != base["loc"]) == pytest.approx(0.05, abs=0.005)
 
 
 @pytest.mark.parametrize("situacao, efeito", [("inexistente", 0.0), ("base", 1.0), ("base", -1.0), ("base", 1.5)])

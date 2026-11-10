@@ -78,6 +78,18 @@ Registrado antes de qualquer simulação de erro tipo I ou de poder.
 - **Poder:** esperamos que o Spearman detecte a associação com mais frequência, porque a relação gerada é monotônica e não linear nos valores originais, e poucos pontos extremos aumentam a variabilidade do r.
 - **O que mudaria nossa opinião:** o Pearson manter o erro tipo I perto de 5% e ter poder igual ou maior. Isso é possível, porque os valores extremos de LOC e de defeitos também podem aparecer juntos e reforçar o r quando há associação.
 
-## Próximo passo (issue #82)
+## Situações simuladas (Q3)
 
-Como a situação `base` foi calibrada com dados reais, ela **já viola** a normalidade. Para a Q3 mostrar o efeito da violação, precisamos também de um ponto de comparação com dados bem-comportados, como uma normal bivariada, além de situações mais extremas.
+A situação `base` foi calibrada com dados reais e, por isso, **já viola** a normalidade que o p-valor do Pearson pressupõe. Para a Q3 mostrar o efeito da violação, o gerador tem três situações, em ordem crescente de problemas. Em todas, `efeito = 0` mantém LOC e defeitos independentes, ou seja, H₀ verdadeira.
+
+| Situação | Como é gerada | O que viola | Por que foi escolhida |
+|---|---|---|---|
+| `normal` | Normal bivariada padrão; o `efeito` é a própria correlação | Nada: é o caso em que o Pearson é exato | É o ponto de comparação. Os valores estão em unidades padronizadas, sem significado de LOC ou de defeitos |
+| `base` | Margens calibradas na amostra (lognormal e binomial negativa) ligadas pela cópula | Normalidade: forte assimetria, cauda longa e cerca de 60% de empates em zero defeito | É o cenário realista, com a forma dos dados do KC1 |
+| `outliers` | A `base` com 5% dos valores de LOC e 5% dos valores de defeitos, sorteados de forma independente, empurrados 2 desvios para a cauda na escala latente | Normalidade e presença de módulos atípicos | Na amostra, a maior classe tem 2.883 LOC, cerca de 13 vezes a mediana. O deslocamento de 2 desvios multiplica o LOC por cerca de 18, e um módulo típico contaminado fica com cerca de 3.500 LOC, perto desse máximo real |
+
+**Como os outliers afetam cada teste:** com `efeito = 0,6` e 200.000 módulos simulados, o r cai de 0,38 na `base` para 0,11 em `outliers`, e o ρ cai só de 0,50 para 0,44. Isso acontece porque os módulos atípicos não seguem a relação entre as variáveis: o Pearson usa os valores, e alguns pontos extremos dominam o r; o Spearman usa os postos, e um valor extremo conta apenas como o maior posto.
+
+**Amostra pequena:** não virou uma situação do gerador porque o tamanho da amostra é um parâmetro da simulação (`n` em `simulacao.py`, hoje 30). Para estudar amostras pequenas, basta rodar as simulações com um `n` menor, como 10.
+
+O erro tipo I de cada situação (Q1 e Q3) está em `lab04/code/resultados/erro_tipo1_<situacao>.csv`, e o poder (Q2 e Q3) fica com a issue #86.
