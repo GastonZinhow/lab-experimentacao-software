@@ -200,6 +200,10 @@ def render(pasta=PASTA_RESULTADOS):
     if tabela.empty:
         st.info("Ainda não há resultados de poder. Rode `python lab04/code/run_all.py` para gerá-los.")
         return
+    st.caption(
+        "Cada ponto resume 10.000 amostras simuladas de 30 módulos. No efeito zero não há associação e a altura "
+        "mede o erro tipo I; nos efeitos positivos, mede a frequência com que o teste detecta a associação existente."
+    )
     st.plotly_chart(figura_g4(tabela), width="stretch")
     st.write(texto_g4(tabela))
     with st.expander("Ver os valores do gráfico em tabela"):

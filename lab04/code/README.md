@@ -57,12 +57,17 @@ Abra o dashboard com:
 python -m streamlit run lab04/code/dashboard.py
 ```
 
+Esse único comando abre o dashboard local em `http://localhost:8501`. Antes da
+apresentação, rode também `python lab04/code/run_all.py` para regenerar todas as
+saídas com a semente fixa.
+
 Cada seção fica em `lab04/code/secoes/secao_<N>_<nome>.py` e expõe uma função
 `render()`. Se uma seção ainda não existir ou apresentar erro, as demais
 continuam disponíveis e o dashboard mostra um aviso no lugar dela.
 
-Os links exibidos no topo podem ser definidos sem alterar o código:
+O topo usa por padrão o dashboard local, o repositório e a página de Projects
+do repositório. Em um deploy, os endereços podem ser trocados sem alterar o código:
 
-- `DASHBOARD_URL`: endereço da versão publicada;
+- `DASHBOARD_URL`: endereço da versão publicada (substitui o link local);
 - `REPOSITORY_URL`: endereço do repositório (já possui um valor padrão);
-- `GITHUB_PROJECTS_URL`: endereço do GitHub Projects do grupo.
+- `GITHUB_PROJECTS_URL`: endereço do GitHub Projects (já possui um valor padrão).

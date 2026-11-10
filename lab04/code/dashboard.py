@@ -17,6 +17,8 @@ import streamlit as st
 
 PASTA_SECOES = Path(__file__).resolve().parent / "secoes"
 REPOSITORIO_PADRAO = "https://github.com/GastonZinhow/lab-experimentacao-software"
+DASHBOARD_LOCAL = "http://localhost:8501"
+PROJETOS_PADRAO = f"{REPOSITORIO_PADRAO}/projects"
 
 
 @dataclass(frozen=True)
@@ -93,13 +95,22 @@ def renderizar_cabecalho() -> None:
     st.caption("Pearson × Spearman · tamanho do módulo × número de defeitos")
 
     colunas = st.columns(3)
-    mostrar_link(colunas[0], "Dashboard publicado", os.getenv("DASHBOARD_URL", ""))
+    dashboard_publicado = os.getenv("DASHBOARD_URL", "")
+    mostrar_link(
+        colunas[0],
+        "Dashboard publicado" if dashboard_publicado else "Dashboard local",
+        dashboard_publicado or DASHBOARD_LOCAL,
+    )
     mostrar_link(
         colunas[1],
         "Repositório",
         os.getenv("REPOSITORY_URL", REPOSITORIO_PADRAO),
     )
-    mostrar_link(colunas[2], "GitHub Projects", os.getenv("GITHUB_PROJECTS_URL", ""))
+    mostrar_link(
+        colunas[2],
+        "GitHub Projects",
+        os.getenv("GITHUB_PROJECTS_URL", PROJETOS_PADRAO),
+    )
     st.divider()
 
 
