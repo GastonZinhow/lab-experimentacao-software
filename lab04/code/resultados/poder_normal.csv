@@ -1,0 +1,11 @@
+situacao,teste,n,alfa,repeticoes,proporcao_rejeicao,efeito
+normal,pearson,30,0.05,10000,0.0535,0.0
+normal,spearman,30,0.05,10000,0.0541,0.0
+normal,pearson,30,0.05,10000,0.0827,0.1
+normal,spearman,30,0.05,10000,0.0782,0.1
+normal,pearson,30,0.05,10000,0.1831,0.2
+normal,spearman,30,0.05,10000,0.1689,0.2
+normal,pearson,30,0.05,10000,0.3638,0.3
+normal,spearman,30,0.05,10000,0.3311,0.3
+normal,pearson,30,0.05,10000,0.8269,0.5
+normal,spearman,30,0.05,10000,0.7752,0.5

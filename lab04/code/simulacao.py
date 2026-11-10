@@ -11,7 +11,9 @@ PASTA_RESULTADOS = Path(__file__).resolve().parent / "resultados"
 N = 30  # mesmo tamanho da amostra real do KC1
 REPETICOES = 10_000
 SEMENTE = 42
+EFEITOS = (0.0, 0.1, 0.2, 0.3, 0.5)
 COLUNAS_ERRO_TIPO1 = ["situacao", "teste", "n", "alfa", "repeticoes", "proporcao_rejeicao"]
+COLUNAS_PODER = [*COLUNAS_ERRO_TIPO1, "efeito"]
 
 
 def gerar_conjuntos(situacao, efeito, n, repeticoes, rng, gerar=gerar):
@@ -50,6 +52,42 @@ def simular_erro_tipo1(situacao, n=N, repeticoes=REPETICOES, alfa=ALFA, semente=
     )
 
 
+def simular_poder(situacao, efeitos=EFEITOS, n=N, repeticoes=REPETICOES, alfa=ALFA, semente=SEMENTE,
+                  gerar=gerar, aplicar_testes_em_lote=aplicar_testes_em_lote):
+    """Estima o poder de Pearson e Spearman para cada tamanho de efeito.
+
+    Cada efeito recomeça na mesma semente. Assim, o resultado não depende da
+    ordem dos efeitos e os testes são comparados sobre os mesmos sorteios
+    básicos, o que reduz o ruído ao comparar os pontos da curva de poder.
+    """
+    linhas = []
+    for efeito in efeitos:
+        rng = np.random.default_rng(semente)
+        proporcoes = proporcao_rejeicao(
+            situacao,
+            efeito,
+            n,
+            repeticoes,
+            rng,
+            alfa,
+            gerar,
+            aplicar_testes_em_lote,
+        )
+        linhas.extend(
+            {
+                "situacao": situacao,
+                "teste": teste,
+                "n": n,
+                "alfa": alfa,
+                "repeticoes": repeticoes,
+                "proporcao_rejeicao": proporcoes[teste],
+                "efeito": efeito,
+            }
+            for teste in TESTES
+        )
+    return pd.DataFrame(linhas, columns=COLUNAS_PODER)
+
+
 def margem_monte_carlo(proporcao=ALFA, repeticoes=REPETICOES):
     """Meia largura do intervalo de 95% de uma proporção estimada com `repeticoes` conjuntos."""
     return 1.96 * np.sqrt(proporcao * (1 - proporcao) / repeticoes)
@@ -57,3 +95,7 @@ def margem_monte_carlo(proporcao=ALFA, repeticoes=REPETICOES):
 
 def arquivo_erro_tipo1(situacao, pasta=PASTA_RESULTADOS):
     return Path(pasta) / f"erro_tipo1_{situacao}.csv"
+
+
+def arquivo_poder(situacao, pasta=PASTA_RESULTADOS):
+    return Path(pasta) / f"poder_{situacao}.csv"
