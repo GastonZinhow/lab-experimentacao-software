@@ -55,3 +55,14 @@ def test_texto_tem_de_duas_a_quatro_frases_e_usa_os_valores_reais(dados):
     assert 2 <= texto.count(". ") + 1 <= 4
     assert "2883" in texto
     assert "63%" in texto
+
+
+def test_parametros_e_situacoes_aparecem_no_dashboard():
+    from gerador import SITUACOES, carregar_parametros
+    from secoes.secao_2_dados import tabela_parametros, tabela_situacoes
+
+    parametros = tabela_parametros(carregar_parametros())
+    assert list(parametros["Variável"]) == ["LOC", "Defeitos", "Associação"]
+    assert "5,237" in parametros["Parâmetros"].iloc[0]
+    assert "0,612" in parametros["Parâmetros"].iloc[2]
+    assert set(tabela_situacoes()["Situação"]) == set(SITUACOES)

@@ -102,3 +102,42 @@ def render():
     st.write(texto_g1(real, simulado))
     with st.expander("Ver os valores do gráfico em tabela"):
         st.dataframe(tabela_g1(real, simulado), hide_index=True)
+    with st.expander("Ver os parâmetros da simulação e as situações da Q3"):
+        st.dataframe(tabela_parametros(carregar_parametros()), hide_index=True)
+        st.dataframe(tabela_situacoes(), hide_index=True)
+
+
+def tabela_parametros(parametros):
+    """Parâmetros finais do gerador, estimados por máxima verossimilhança na amostra real."""
+    loc, defeitos, associacao = parametros["loc"], parametros["defeitos"], parametros["associacao"]
+    return pd.DataFrame({
+        "Variável": ["LOC", "Defeitos", "Associação"],
+        "Distribuição": ["Lognormal (arredondada, mínimo 1)", "Binomial negativa", "Cópula gaussiana"],
+        "Parâmetros": [
+            f"μ = {loc['mu']:.3f}; σ = {loc['sigma']:.3f} (mediana ≈ {np.exp(loc['mu']):.0f} LOC)".replace(".", ","),
+            f"média = {defeitos['media']:.2f}; k = {defeitos['k']:.3f}".replace(".", ","),
+            f"efeito = 0 (H₀) a 0,5 nas simulações; {associacao['efeito_calibrado']:.3f} reproduz o ρ = "
+            f"{associacao['rho_spearman_amostra']:.2f} da amostra".replace(".", ","),
+        ],
+        "Por quê": [
+            "LOC é positivo e muito assimétrico à direita",
+            "Contagem com variância muito maior que a média e muitos zeros",
+            "Controla a associação sem mudar a forma de cada variável",
+        ],
+    })
+
+
+def tabela_situacoes():
+    return pd.DataFrame({
+        "Situação": ["normal", "base", "outliers"],
+        "Como é gerada": [
+            "Normal bivariada padrão",
+            "Margens calibradas no KC1 ligadas pela cópula",
+            "A base com 5% dos valores de cada variável empurrados para a cauda, de forma independente",
+        ],
+        "O que viola": [
+            "Nada: o Pearson é exato",
+            "Normalidade: assimetria e cerca de 60% de empates em zero defeito",
+            "Normalidade e presença de módulos atípicos",
+        ],
+    })
