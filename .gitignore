@@ -1,2 +1,5 @@
 *.class
 /lab02/code/target
+
+# Ambiente virtual do Python
+.venv/

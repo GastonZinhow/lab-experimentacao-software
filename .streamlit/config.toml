@@ -1,0 +1,9 @@
+# Tema do dashboard do Lab04: claro, com letras pretas e fonte maior para o projetor.
+# O Streamlit lê este arquivo quando o comando é rodado na raiz do repositório:
+#   python -m streamlit run lab04/code/dashboard.py
+[theme]
+base = "light"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F2F2F2"
+textColor = "#000000"
+baseFontSize = 20
