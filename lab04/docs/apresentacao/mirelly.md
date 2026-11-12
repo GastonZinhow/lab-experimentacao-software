@@ -32,8 +32,14 @@ O p-valor **não** é a probabilidade de H₀ ser verdadeira, **não** mede a fo
 
 **Onde mostrar:** seção 4 (Erro tipo I), no G3.
 
-Sim. Na situação base, o **Pearson** rejeitou H₀ em **5,92%** dos 10.000 conjuntos sem associação, acima da faixa de 5% ± 0,43 ponto percentual, então ficou **liberal**: encontra associação que não existe com mais frequência que o prometido. O motivo é que o p-valor dele supõe dados aproximadamente normais, e LOC e defeitos são muito assimétricos, então um único módulo extremo pode produzir um r alto por acaso. O **Spearman** ficou em 5,58%, um pouco acima da faixa, mas bem mais perto, porque usa postos e o valor extremo vira só o último posto.
+Sim, o **Pearson**, e ele ficou **liberal**: encontra associação que não existe com mais frequência que os 5% prometidos. A faixa cinza do G3 é 5% ± 0,43 ponto percentual, a variação esperada com 10.000 conjuntos.
 
-**Se perguntarem se o desvio do Spearman é real:** repetimos com 200.000 conjuntos fora do pipeline, só como conferência. O Pearson ficou em 5,83% e o Spearman em 5,13%, com margem de ± 0,10 ponto percentual. Ou seja, o desvio do Pearson é real, e o do Spearman, com 10.000 conjuntos, é em boa parte variação da simulação.
+| Situação | Pearson | Spearman |
+|---|---|---|
+| `normal` | 5,35% (perto de 5%) | 5,41% (perto de 5%) |
+| `base` | **5,92% (liberal)** | 5,58% (um pouco acima) |
+| `outliers` | **6,00% (liberal)** | 5,18% (perto de 5%) |
 
-> **Atenção:** estes números são da situação `base`. Quando as situações da Q3 entrarem no gerador, rode `python lab04/code/run_all.py` de novo e atualize esta resposta com o que o G3 mostrar.
+Na situação **normal**, que é onde os pressupostos do Pearson valem, os dois ficam dentro da faixa. Quando os dados ficam **assimétricos** (base) ou ganham **módulos atípicos** (outliers), o Pearson passa do limite. O motivo é que o p-valor dele supõe dados aproximadamente normais, e um único módulo extremo pode produzir um r alto por acaso. O **Spearman** usa postos, então o valor extremo vira só o último posto, e ele fica perto de 5% nas três situações.
+
+**Se perguntarem do Spearman na situação base (5,58%):** repetimos com 200.000 conjuntos fora do pipeline, só como conferência. O Pearson ficou em 5,83% e o Spearman em 5,13%, com margem de ± 0,10 ponto percentual. Ou seja, o desvio do Pearson é real, e o do Spearman, com 10.000 conjuntos, é em boa parte variação da simulação.
