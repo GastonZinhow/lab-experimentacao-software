@@ -61,6 +61,15 @@ Esse único comando abre o dashboard local em `http://localhost:8501`. Antes da
 apresentação, rode também `python lab04/code/run_all.py` para regenerar todas as
 saídas com a semente fixa.
 
+### Versão em HTML
+
+Para abrir mais rápido, sem instalar nada, use `lab04/dashboard.html`: basta dar
+dois cliques no arquivo. Ele traz as mesmas 7 seções, gráficos, textos e tabelas,
+gerados pelas mesmas funções da versão em Streamlit, e é refeito pelo comando
+único (etapa `06_dashboard_html.py`). Os gráficos precisam de internet para
+carregar o Plotly. O gráfico interativo do bônus simula na hora, então só existe
+na versão em Streamlit.
+
 Cada seção fica em `lab04/code/secoes/secao_<N>_<nome>.py` e expõe uma função
 `render()`. Se uma seção ainda não existir ou apresentar erro, as demais
 continuam disponíveis e o dashboard mostra um aviso no lugar dela.

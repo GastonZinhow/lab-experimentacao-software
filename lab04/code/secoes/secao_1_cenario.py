@@ -7,6 +7,18 @@ from dados_reais import ARQUIVO_AMOSTRA, ler_arff
 
 URL_DATASET = "http://promise.site.uottawa.ca/SERepository/datasets/kc1-class-level-numericdefect.arff"
 
+PERGUNTA = "Módulos maiores têm mais defeitos registrados?"
+INTRODUCAO = (
+    "Comparamos as correlações de Pearson e de Spearman para investigar a associação entre o tamanho de uma "
+    "classe, medido em linhas de código (LOC), e seu número de defeitos registrados. O Pearson mede a "
+    "associação **linear** nos valores; o Spearman mede a associação **monotônica** nos postos."
+)
+H0 = "**H₀ — sem associação**\n\nO tamanho do módulo e o número de defeitos têm correlação igual a zero."
+H1 = "**H₁ — há associação**\n\nO tamanho do módulo e o número de defeitos têm correlação diferente de zero."
+BICAUDAL = (
+    "O teste é **bicaudal**, pois tanto uma associação positiva quanto uma "
+    "negativa seria relevante. Adotamos nível de significância **α = 0,05**."
+)
 EXPECTATIVA = (
     "Antes de simular, esperávamos que o **Spearman** se saísse melhor. Como LOC e defeitos são muito "
     "assimétricos, o p-valor do Pearson, que supõe dados aproximadamente normais, deveria se afastar mais de 5%, "
@@ -26,32 +38,23 @@ def texto_origem(n_amostra, n_populacao):
     )
 
 
+def texto_origem_atual():
+    return texto_origem(len(pd.read_csv(ARQUIVO_AMOSTRA)), len(ler_arff()))
+
+
 def render():
     st.header("1. Cenário")
-    st.subheader("Módulos maiores têm mais defeitos registrados?")
-    st.write(
-        "Comparamos as correlações de Pearson e de Spearman para investigar a associação entre o tamanho de uma "
-        "classe, medido em linhas de código (LOC), e seu número de defeitos registrados. O Pearson mede a "
-        "associação **linear** nos valores; o Spearman mede a associação **monotônica** nos postos."
-    )
+    st.subheader(PERGUNTA)
+    st.write(INTRODUCAO)
 
     h0, h1 = st.columns(2)
     with h0:
-        st.info(
-            "**H₀ — sem associação**\n\n"
-            "O tamanho do módulo e o número de defeitos têm correlação igual a zero."
-        )
+        st.info(H0)
     with h1:
-        st.info(
-            "**H₁ — há associação**\n\n"
-            "O tamanho do módulo e o número de defeitos têm correlação diferente de zero."
-        )
+        st.info(H1)
 
-    st.write(
-        "O teste é **bicaudal**, pois tanto uma associação positiva quanto uma "
-        "negativa seria relevante. Adotamos nível de significância **α = 0,05**."
-    )
-    st.markdown(texto_origem(len(pd.read_csv(ARQUIVO_AMOSTRA)), len(ler_arff())))
+    st.write(BICAUDAL)
+    st.markdown(texto_origem_atual())
 
     st.subheader("O que esperávamos antes de simular")
     st.markdown(EXPECTATIVA)
