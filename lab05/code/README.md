@@ -50,6 +50,30 @@ Enquanto os coletores não geram os dados reais, use
 `lab05/code/dados/processados/exemplo_incidentes.csv`. Os registros desse arquivo
 são fictícios e servem somente para permitir o trabalho paralelo.
 
+## Coleta
+
+Os coletores ficam em `coleta/` e só acessam a internet quando o arquivo ainda
+não está em `dados/brutos/<plataforma>/` (regras em `lab05/docs/plano_coleta.md`):
+
+```bash
+cd lab05/code
+python -m coleta.github --inicio 2026-10-01T00:00:00Z --fim 2026-10-31T23:59:59Z
+python -m coleta.github --inicio 2025-11-01T00:00:00Z --fim 2026-10-31T23:59:59Z --so-listar
+python -m coleta.gitlab --inicio 2026-10-01T00:00:00Z --fim 2026-10-31T23:59:59Z
+```
+
+O `all.ics` do GitLab está em um caminho bloqueado pelo robots.txt; ele foi salvo
+à mão pelo navegador em `dados/brutos/gitlab/all.ics` e o coletor só lê o arquivo.
+
 ## Dashboard
 
-*Em construção.*
+Na raiz do repositório (para usar o tema claro do grupo):
+
+```bash
+python -m streamlit run lab05/code/dashboard.py
+```
+
+Cada seção é um arquivo `secoes/secao_<N>_<nome>.py` com uma função `render()`;
+o `dashboard.py` não precisa ser editado. Seções ainda inexistentes aparecem como
+"em construção". Cores, janela e leitura dos dados ficam em `dashboard_comum.py`.
+O plano de análise está em `lab05/docs/plano_analise.md`.
