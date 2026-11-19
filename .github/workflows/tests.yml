@@ -55,3 +55,31 @@ jobs:
       - name: Verificar Comando Único e Reprodutibilidade
         working-directory: lab04/code
         run: python run_all.py --verificar-reprodutibilidade
+
+  test-lab05:
+    name: Testes e reprodutibilidade do Lab05
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Dependências
+        working-directory: lab05/code
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Executar Testes
+        working-directory: lab05/code
+        env:
+          PYTHONPATH: .
+        run: pytest
+
+      - name: Verificar Comando Único e Reprodutibilidade
+        working-directory: lab05/code
+        run: python run_all.py --verificar-reprodutibilidade

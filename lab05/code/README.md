@@ -34,7 +34,21 @@ python -m pip install -r lab05/code/requirements.txt
 
 ## Comando único
 
-*Em construção.*
+Execute todas as etapas disponíveis, em ordem numérica:
+
+```bash
+python lab05/code/run_all.py
+```
+
+Para executar o pipeline duas vezes e confirmar que as saídas são idênticas:
+
+```bash
+python lab05/code/run_all.py --verificar-reprodutibilidade
+```
+
+Enquanto os coletores não geram os dados reais, use
+`lab05/code/dados/processados/exemplo_incidentes.csv`. Os registros desse arquivo
+são fictícios e servem somente para permitir o trabalho paralelo.
 
 ## Dashboard
 

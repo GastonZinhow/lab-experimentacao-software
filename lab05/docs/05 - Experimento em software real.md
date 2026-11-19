@@ -108,7 +108,7 @@ O conteúdo de cada sprint é uma sugestão: o grupo pode reorganizar as ativida
 | Lab05S03 | 5 | Impacto para empresas ou usuários + 7 categorias revisadas e justificadas + conclusões e limitações + rascunho do documento e da apresentação |
 | Documento Final e Apresentação | 5 | Documento e apresentação de 10 minutos, ambos em formato livre (seção 8) |
 
-**Link do repositório/GitHub Projects:** <preencher>
+**Links:** [repositório](https://github.com/GastonZinhow/lab-experimentacao-software) · [GitHub Projects](https://github.com/users/GastonZinhow/projects)
 
 ### 8. Documento e apresentação: formato livre
 
