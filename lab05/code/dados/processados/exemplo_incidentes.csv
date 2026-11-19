@@ -1,0 +1,5 @@
+plataforma,id,titulo,componentes_originais,componente_equivalente,impacto,inicio_utc,fim_utc,duracao_min,fonte,url
+github,exemplo-gh-001,Incidente simulado na API,API Requests,api,minor,2026-01-15T10:00:00Z,2026-01-15T10:30:00Z,30,exemplo,https://www.githubstatus.com/
+github,exemplo-gh-002,Incidente simulado no Git Operations,Git Operations,git,major,2026-04-03T14:10:00Z,2026-04-03T15:40:00Z,90,exemplo,https://www.githubstatus.com/
+gitlab,exemplo-gl-001,Incidente simulado na API,API,api,minor,2026-02-20T08:00:00Z,2026-02-20T08:45:00Z,45,exemplo,https://status.gitlab.com/
+gitlab,exemplo-gl-002,Incidente simulado no Git,Git,git,major,2026-05-11T19:20:00Z,2026-05-11T20:20:00Z,60,exemplo,https://status.gitlab.com/
