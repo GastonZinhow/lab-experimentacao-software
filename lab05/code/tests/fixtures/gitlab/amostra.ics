@@ -1,0 +1,83 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//status.io//calendar//EN
+NAME:GitLab System Status
+X-WR-CALNAME:GitLab System Status
+TIMEZONE-ID:UTC
+X-WR-TIMEZONE:UTC
+BEGIN:VEVENT
+UID:000-wa5j9n@status.io
+SEQUENCE:0
+DTSTAMP:20261031T110000Z
+DTSTART:20261031T110000Z
+DTEND:20261031T120000Z
+SUMMARY:Upcoming maintenance for the Customers Portal
+DESCRIPTION:We’ll be performing database maintenance for the Customers Por
+ tal (customers.gitlab.com) on Saturday\, 31 October\, from 11:00 to 12:00 
+ UTC. We apologize for the short notice. This maintenance is needed to help
+  preserve stability.\n\nThe Customers Portal and its APIs will be temporar
+ ily unavailable during this window. We’ll update this notice when the main
+ tenance begins and when it’s complete.
+END:VEVENT
+BEGIN:VEVENT
+UID:000-mrwygx@status.io
+SEQUENCE:0
+DTSTAMP:20261007T165144Z
+DTSTART:20261007T165144Z
+DTEND:20261007T180425Z
+SUMMARY:Job delays on saas-linux-small-amd64 hosted runners
+DESCRIPTION:An incident affecting CI/CD jobs on GitLab.com instance runner
+ s has been resolved. Job pickup delays should no longer be occurring and w
+ e are continuing to monitor to confirm full recovery. Details in: https://
+ gitlab.com/gitlab-com/gl-infra/production/-/work_items/23117
+END:VEVENT
+BEGIN:VEVENT
+UID:000-svb5ts@status.io
+SEQUENCE:0
+DTSTAMP:20261016T113300Z
+DTSTART:20261016T113300Z
+DTEND:20261016T132123Z
+SUMMARY:GitLab.com CI/CD Incident
+DESCRIPTION:We’re investigating an issue affecting CI/CD on GitLab.com for
+  a limited number of customers.  Pipelines may fail with the following err
+ or\, and the UI may be slow:\n“CI configuration fetch from Gitaly timed ou
+ t. This may indicate Gitaly service slowness or an outage.” \nMore updates
+  to follow.
+END:VEVENT
+BEGIN:VEVENT
+UID:0000y86d10@status.io
+SEQUENCE:0
+DTSTAMP:20261014T143300Z
+DTSTART:20261014T143300Z
+DTEND:20261014T183021Z
+SUMMARY:GitLab.com CI/CD pipelines delayed or not starting
+DESCRIPTION:We are investigating an issue affecting GitLab.com merge train
+ s. Some merge train pipelines may remain in the created state for an exten
+ ded period or fail to start\, causing merge trains and related CI/CD workf
+ lows to stall. More details: https://gitlab.com/gitlab-com/gl-infra/produc
+ tion/-/work_items/23192
+END:VEVENT
+BEGIN:VEVENT
+UID:000-fgwh19@status.io
+SEQUENCE:0
+DTSTAMP:20261008T155948Z
+DTSTART:20261008T155948Z
+DTEND:20261008T183329Z
+SUMMARY:Delayed job completion
+DESCRIPTION:We are currently investigating delays in job completion: CI jo
+ bs remain running after success\, delaying pipeline progression. Details h
+ ttps://gitlab.com/gitlab-com/gl-infra/production/-/work_items/23133 
+END:VEVENT
+BEGIN:VEVENT
+UID:000-d1p19c@status.io
+SEQUENCE:0
+DTSTAMP:20250907T120000Z
+DTSTART:20250907T120000Z
+DTEND:20250907T150000Z
+SUMMARY:Gitaly Storage Node Upgrade
+DESCRIPTION:The gitaly storage nodes will be upgraded. There may be brief\
+ , short-lived disruptions during the upgrade\; however\, no action is requ
+ ired from customers before or after the upgrade. Retrying operations shoul
+ d be sufficient once the service is restored.
+END:VEVENT
+END:VCALENDAR

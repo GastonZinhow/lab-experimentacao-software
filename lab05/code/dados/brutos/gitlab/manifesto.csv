@@ -1,0 +1,3 @@
+url,data_hora_utc,status_http,arquivo,sha256
+https://status.gitlab.com/robots.txt,2026-11-19T19:56:43Z,200,,3d59b0e892c50b680b9c8701edb7237f7ca97c8f502c98b9d042572479e3abdc
+https://status.gitlab.com/pages/5b36dc6502d06804c08349f7/calendar/all.ics,2026-11-19T19:58:06Z,manual,all.ics,9e73b061ef8cfb4b38ce6b93e70b3a35b83a616416dd4b3527f29d6bc236a184
