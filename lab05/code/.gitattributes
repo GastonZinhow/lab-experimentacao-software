@@ -1,0 +1,4 @@
+# Dados brutos e respostas salvas são evidência: o git não pode alterar nenhum
+# byte (nem as quebras de linha), senão o sha256 do manifesto deixa de bater.
+dados/brutos/** -text
+tests/fixtures/** -text
