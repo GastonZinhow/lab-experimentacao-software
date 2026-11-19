@@ -1,0 +1,36 @@
+plataforma,componente_original,componente_equivalente
+github,Git Operations,git
+github,API Requests,api
+github,Issues,web
+github,Pull Requests,web
+github,Actions,ci_cd
+github,Packages,pacotes
+github,Pages,pages
+github,Webhooks,fora_do_escopo
+github,Codespaces,fora_do_escopo
+github,Copilot,fora_do_escopo
+github,Copilot AI Model Providers,fora_do_escopo
+github,Visit www.githubstatus.com for more information,fora_do_escopo
+gitlab,Git Operations,git
+gitlab,API,api
+gitlab,Website,web
+gitlab,CI/CD,ci_cd
+gitlab,CI/CD - Hosted runners on Linux,ci_cd
+gitlab,CI/CD - Hosted runners on Windows,ci_cd
+gitlab,CI/CD - Hosted runners on macOS,ci_cd
+gitlab,CI/CD - Self-managed runners,ci_cd
+gitlab,Package Registry,pacotes
+gitlab,Container Registry,pacotes
+gitlab,GitLab Pages,pages
+gitlab,CI/CD - Hosted runners for GitLab community contributions,fora_do_escopo
+gitlab,Background Processing,fora_do_escopo
+gitlab,SAML SSO - GitLab SaaS,fora_do_escopo
+gitlab,GitLab Duo,fora_do_escopo
+gitlab,GitLab agent server for Kubernetes,fora_do_escopo
+gitlab,Canary,fora_do_escopo
+gitlab,GitLab Customers Portal,fora_do_escopo
+gitlab,Support Services,fora_do_escopo
+gitlab,packages.gitlab.com,fora_do_escopo
+gitlab,version.gitlab.com,fora_do_escopo
+gitlab,forum.gitlab.com,fora_do_escopo
+gitlab,docs.gitlab.com,fora_do_escopo
