@@ -1,0 +1,192 @@
+metrica,plataforma,mes,componente_equivalente,impacto,n,valor,proporcao,mediana,q1,q3,iqr,minimo,maximo,media,p90,variancia,dispersao,unidade,observacao
+frequencia_mensal,github,2025-11,,,6,6,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2025-11,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-11,ci_cd,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-11,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-11,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-11,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-11,web,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2025-12,,,7,7,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2025-12,api,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-12,ci_cd,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-12,git,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-12,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-12,pages,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2025-12,web,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-01,,,11,11,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-01,api,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-01,ci_cd,,9,9,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-01,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-01,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-01,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-01,web,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-02,,,15,15,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-02,api,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-02,ci_cd,,9,9,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-02,git,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-02,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-02,pages,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-02,web,,7,7,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-03,,,13,13,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-03,api,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-03,ci_cd,,7,7,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-03,git,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-03,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-03,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-03,web,,7,7,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-04,,,10,10,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-04,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-04,ci_cd,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-04,git,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-04,pacotes,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-04,pages,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-04,web,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-05,,,13,13,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-05,api,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-05,ci_cd,,7,7,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-05,git,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-05,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-05,pages,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-05,web,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-06,,,7,7,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-06,api,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-06,ci_cd,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-06,git,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-06,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-06,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-06,web,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-07,,,16,16,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-07,api,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-07,ci_cd,,10,10,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-07,git,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-07,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-07,pages,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-07,web,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-08,,,13,13,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-08,api,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-08,ci_cd,,7,7,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-08,git,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-08,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-08,pages,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-08,web,,5,5,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-09,,,6,6,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-09,api,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-09,ci_cd,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-09,git,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-09,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-09,pages,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-09,web,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,github,2026-10,,,17,17,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,github,2026-10,api,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-10,ci_cd,,14,14,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-10,git,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-10,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-10,pages,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,github,2026-10,web,,8,8,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_resumo,github,,,,12,134,,12.0,7.0,13.5,6.5,6.0,17.0,11.166666666666666,15.9,15.606060606060607,1.3975576662143827,incidentes/mês,Valor é o total; dispersão é variância amostral dividida pela média.
+frequencia_mensal,gitlab,2025-11,,,5,5,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2025-11,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-11,ci_cd,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-11,git,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-11,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-11,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-11,web,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2025-12,,,5,5,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2025-12,api,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-12,ci_cd,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-12,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-12,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-12,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2025-12,web,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-01,,,4,4,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-01,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-01,ci_cd,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-01,git,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-01,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-01,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-01,web,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-02,,,5,5,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-02,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-02,ci_cd,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-02,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-02,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-02,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-02,web,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-03,,,13,13,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-03,api,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-03,ci_cd,,6,6,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-03,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-03,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-03,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-03,web,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-04,,,8,8,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-04,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-04,ci_cd,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-04,git,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-04,pacotes,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-04,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-04,web,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-05,,,8,8,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-05,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-05,ci_cd,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-05,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-05,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-05,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-05,web,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-06,,,5,5,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-06,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-06,ci_cd,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-06,git,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-06,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-06,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-06,web,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-07,,,4,4,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-07,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-07,ci_cd,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-07,git,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-07,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-07,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-07,web,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-08,,,8,8,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-08,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-08,ci_cd,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-08,git,,2,2,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-08,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-08,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-08,web,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-09,,,8,8,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-09,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-09,ci_cd,,3,3,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-09,git,,1,1,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-09,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-09,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-09,web,,4,4,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal,gitlab,2026-10,,,13,13,,,,,,,,,,,,incidentes,Incidente conta uma vez no total da plataforma.
+frequencia_mensal_componente,gitlab,2026-10,api,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-10,ci_cd,,7,7,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-10,git,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-10,pacotes,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-10,pages,,0,0,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_mensal_componente,gitlab,2026-10,web,,6,6,,,,,,,,,,,,incidentes,Multicomponente conta uma vez em cada categoria.
+frequencia_resumo,gitlab,,,,12,86,,6.5,5.0,8.0,3.0,4.0,13.0,7.166666666666667,12.500000000000002,9.969696969696969,1.391120507399577,incidentes/mês,Valor é o total; dispersão é variância amostral dividida pela média.
+duracao,github,,,,126,,,78.775,39.9825,174.7975,134.815,8.37,3717.58,161.33190476190478,324.845,,,minutos,Média é apoio; mediana e IQR são o resumo principal.
+duracao,gitlab,,,,86,,,189.99,98.11500000000001,593.01,494.895,5.47,7043.97,552.5425581395349,1118.1599999999999,,,minutos,Média é apoio; mediana e IQR são o resumo principal.
+mtbf_proxy,github,,todos,,125,3842.679066666667,,2283.85,763.4333333333333,5740.1,4976.666666666667,0.0,29703.95,3842.679066666667,8489.17666666667,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,github,,api,,19,23861.81666666667,,13203.616666666667,5875.741666666667,33788.75833333333,27913.016666666663,782.6333333333333,110707.76666666666,23861.81666666667,50717.12,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,github,,ci_cd,,76,6633.575657894737,,3947.925,920.7041666666667,8872.8875,7952.183333333334,0.0,34634.65,6633.575657894737,16554.666666666664,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,github,,git,,22,19421.52878787879,,9607.191666666666,3144.0333333333338,26583.133333333335,23439.100000000002,51.85,79034.83333333333,19421.52878787879,60830.15000000007,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,github,,pacotes,,9,56366.37777777777,,54507.03333333333,45783.26666666667,86468.18333333333,40684.916666666664,5832.433333333333,100791.48333333334,56366.37777777777,98380.61666666667,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,github,,pages,,21,21980.621428571427,,15333.65,9220.1,25394.683333333334,16174.583333333334,0.0,90706.53333333334,21980.621428571427,53495.36666666667,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,github,,web,,51,8557.731699346406,,5643.483333333334,1171.3666666666668,12848.725,11677.358333333334,46.833333333333336,33504.333333333336,8557.731699346406,21746.233333333334,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,todos,,85,5297.96705882353,,4140.183333333333,1053.9833333333333,8371.666666666666,7317.6833333333325,0.0,25384.916666666668,5297.96705882353,10900.046666666667,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,api,,1,140856.6,,140856.6,140856.6,140856.6,0.0,140856.6,140856.6,140856.6,140856.6,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,ci_cd,,36,13011.699074074075,,9702.783333333333,1313.45,17700.11666666667,16386.666666666668,77.48333333333333,50889.0,13011.699074074075,29898.408333333333,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,git,,13,30408.130769230775,,26315.516666666666,15354.65,43393.38333333333,28038.73333333333,780.8166666666667,67014.3,30408.130769230775,58265.943333333336,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,pacotes,,1,48111.15,,48111.15,48111.15,48111.15,0.0,48111.15,48111.15,48111.15,48111.15,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,pages,,0,,,,,,,,,,,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+mtbf_proxy,gitlab,,web,,35,13449.03952380952,,7636.016666666666,1900.2333333333333,20463.75,18563.516666666666,0.0,45963.21666666667,13449.03952380952,36756.04666666667,,,minutos,Tempo operacional entre fim e próximo início; sobreposição vira zero.
+distribuicao_impacto,github,,,critical,25,25,0.1865671641791045,,,,,,,,,,,incidentes,Classes preservadas como publicadas.
+distribuicao_impacto,github,,,major,24,24,0.1791044776119403,,,,,,,,,,,incidentes,Classes preservadas como publicadas.
+distribuicao_impacto,github,,,minor,80,80,0.5970149253731343,,,,,,,,,,,incidentes,Classes preservadas como publicadas.
+distribuicao_impacto,github,,,none,5,5,0.03731343283582089,,,,,,,,,,,incidentes,Classes preservadas como publicadas.
+distribuicao_impacto,gitlab,,,nao_informado,86,86,1.0,,,,,,,,,,,incidentes,Classes preservadas como publicadas.

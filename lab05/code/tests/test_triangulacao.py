@@ -7,7 +7,7 @@ import importlib.util
 from pathlib import Path
 
 
-CAMINHO = Path(__file__).resolve().parents[1] / "etapas" / "03_triangulacao.py"
+CAMINHO = Path(__file__).resolve().parents[1] / "etapas" / "04_triangulacao.py"
 SPEC = importlib.util.spec_from_file_location("etapa_triangulacao", CAMINHO)
 assert SPEC and SPEC.loader
 MODULO = importlib.util.module_from_spec(SPEC)

@@ -1,4 +1,4 @@
-"""Etapa 03: triangula a página de status com fontes oficiais secundárias."""
+"""Etapa 04: triangula a página de status com fontes oficiais secundárias."""
 
 from __future__ import annotations
 
