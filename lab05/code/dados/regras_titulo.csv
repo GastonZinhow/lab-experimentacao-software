@@ -1,0 +1,13 @@
+plataforma,tipo,padrao,componente_equivalente
+ambas,exclusiva,\bduo\b|\bcopilot\b|\bcc[ar]\b|\bclaude\b|\bcodex\b|anthropic|\binference\b|ai gateway|\bagents?\b|code suggestions|next edit suggestions|\bcredits\b|\bmodels?\b,fora_do_escopo
+gitlab,exclusiva,\bflows?\b,fora_do_escopo
+ambas,exclusiva,background (job|processing)|background jobs,fora_do_escopo
+ambas,exclusiva,codespaces|kubernetes|\bkas\b|gitlab next|canary|packages\.gitlab\.com|email delivery,fora_do_escopo
+ambas,especifica,webhooks?|customers\.gitlab\.com|customers portal,fora_do_escopo
+ambas,especifica,\bgit\b|gitaly|repositor|\brepo\b|\bssh\b|commits|\bclone|\bpush(es)?\b,git
+ambas,especifica,(?<!docker )\bapi\b|graphql|\brest\b,api
+ambas,especifica,\bci\b|ci/cd|pipelines?|runners?|\bjobs?\b|artifact|\bactions\b,ci_cd
+ambas,especifica,packages?\b|registry|container images?|nuget|\bnpm\b|ghcr,pacotes
+ambas,especifica,(github|gitlab) pages|pages (sites?|builds?|deploy),pages
+ambas,especifica,merge requests?|\bmrs?\b|pull requests?|\bprs?\b|sign ?in|sign ?up|signing|log ?in|logging in|\b2fa\b|web (service|ui)|page loads?|security reports|vulnerability reports|\bincident with issues\b,web
+ambas,generica,(?<![\w.])git(hub|lab)\.com,web
