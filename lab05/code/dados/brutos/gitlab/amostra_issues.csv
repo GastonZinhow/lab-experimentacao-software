@@ -1,0 +1,2 @@
+id_status,incidente,inicio_utc,fim_utc,causa,link
+000-vl51v5,A MacOS Runner is failing jobs,2025-11-21T03:20:00Z,2025-11-21T17:51:00Z,Overlapping subnet IP ranges in recently added Kubernetes clusters caused network conflicts and prevented SSH connectivity to the runner hosts.,https://gitlab.com/gitlab-com/gl-infra/production/-/work_items/20878
