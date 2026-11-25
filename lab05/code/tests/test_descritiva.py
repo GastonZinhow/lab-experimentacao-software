@@ -64,6 +64,11 @@ def test_graficos_sao_gerados_com_ids_estaveis(tmp_path: Path) -> None:
         MODULO.carregar_incidentes(), categorias
     )
     MODULO.gerar_figuras(tabela, unicos, explodida, categorias, tmp_path)
+    figuras = MODULO.construir_figuras(tabela, unicos, explodida, categorias)
+
+    assert figuras[0][3].layout.yaxis.rangemode == "tozero"
+    menu_componentes = figuras[2][3].layout.updatemenus[0]
+    assert menu_componentes.y < 0 and menu_componentes.xanchor == "center"
 
     esperados = {
         "serie_mensal.html": "serie-mensal",

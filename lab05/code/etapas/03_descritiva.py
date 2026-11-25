@@ -288,6 +288,7 @@ def construir_figuras(
         }],
     )
     _estilo_comum(serie)
+    serie.update_yaxes(rangemode="tozero")
 
     violino = go.Figure()
     for plataforma in PLATAFORMAS:
@@ -352,7 +353,8 @@ def construir_figuras(
         xaxis_title="Componente equivalente", yaxis_title="Número de incidentes",
         barmode="group",
         updatemenus=[{
-            "type": "buttons", "direction": "right", "x": 0, "y": 1.19,
+            "type": "buttons", "direction": "right", "x": 0.5, "y": -0.24,
+            "xanchor": "center", "yanchor": "top",
             "showactive": True, "active": 0,
             "buttons": [
                 {"label": "Quantidade", "method": "update", "args": [
@@ -367,6 +369,7 @@ def construir_figuras(
         }],
     )
     _estilo_comum(barras)
+    barras.update_layout(margin={"l": 70, "r": 35, "t": 105, "b": 115})
     return [
         ("Frequência mensal", "Como os incidentes se distribuíram ao longo dos 12 meses.", "serie-mensal", serie),
         ("Tempo de recuperação", "Distribuição completa, quartis, média e casos extremos.", "duracao-violino", violino),
