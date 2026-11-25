@@ -52,7 +52,7 @@ Etapas atuais:
 |---|---|---|
 | `etapas/01_coletar.py` | Chama os dois coletores para a janela, **só com o cache** (não acessa a internet) | `dados/brutos/resumo_coleta.json` (data da coleta e incidentes por mês) |
 | `etapas/02_normalizar.py` | Converte os dados brutos no formato comum, aplica o mapa de componentes e as regras pelo título, valida | `dados/processados/incidentes.csv`, `resultados/tabelas/validacao.md` |
-| `etapas/03_descritiva.py` | Resume frequência, duração, MTBF e impacto e gera três gráficos interativos | `resultados/tabelas/descritiva.csv` e `resultados/figuras/*.html` |
+| `etapas/03_descritiva.py` | Resume frequência, duração, MTBF e impacto e gera um painel navegável mais três gráficos individuais | `resultados/tabelas/descritiva.csv` e `resultados/figuras/*.html` |
 | `etapas/04_triangulacao.py` | Extrai os 12 relatórios mensais locais e cruza com a normalização | `dados/brutos/github/relatorios_mensais.csv` e `resultados/tabelas/triangulacao.csv` |
 
 Para baixar o que falta no cache (a única etapa que usa a internet, 1 req/s):

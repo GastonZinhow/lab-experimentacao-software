@@ -69,8 +69,16 @@ def test_graficos_sao_gerados_com_ids_estaveis(tmp_path: Path) -> None:
         "serie_mensal.html": "serie-mensal",
         "duracao_violino.html": "duracao-violino",
         "incidentes_componente.html": "incidentes-componente",
+        "painel_descritiva.html": "painel-serie-mensal",
     }
     for nome, identificador in esperados.items():
         conteudo = (tmp_path / nome).read_text(encoding="utf-8")
         assert identificador in conteudo
         assert "cdn.plot.ly" in conteudo
+
+    painel = (tmp_path / "painel_descritiva.html").read_text(encoding="utf-8")
+    assert "ArrowLeft" in painel and "ArrowRight" in painel
+    assert "touchstart" in painel
+    assert "Acumulado" in painel
+    assert "Escala linear" in painel
+    assert "% da plataforma" in painel
