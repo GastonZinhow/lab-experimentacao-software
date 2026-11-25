@@ -98,7 +98,7 @@ Regra: o processamento (normalização, análise, dashboard) **nunca acessa a in
 
 1. Ativar o ambiente e instalar as dependências: `python -m pip install -r lab05/code/requirements.txt`.
 2. Conferir se o robots.txt das fontes mudou desde 2026-11-19 (seção 2). Se mudou, parar e avisar o grupo.
-3. Rodar a etapa de coleta (`lab05/code/etapas/01_coletar.py`, criada na issue de coleta completa). Sem apagar nada, ela só reaproveita o cache.
+3. Rodar a etapa de coleta com permissão para baixar: `python lab05/code/etapas/01_coletar.py --baixar`. Sem apagar nada, ela só reaproveita o cache. Sem `--baixar` (é assim que o comando único e o CI a chamam), a etapa **nunca** acessa a internet e para com erro se faltar algum arquivo.
 4. Conferir o `manifesto.csv`: nenhuma linha com erro sem explicação.
 5. Rodar o comando único para gerar `incidentes.csv` e os resultados.
 
@@ -186,3 +186,44 @@ O iCal foi escolhido por ser a fonte mais completa no tempo. Seguindo a **opçã
 | Componentes e impacto na fonte | Sim (36% sem componente) | **Não** |
 
 *Números brutos, só para planejar a coleta: ainda não há filtro de componentes equivalentes nem validação, então não servem como resultado.*
+
+### 6.4 Coleta completa dos 12 meses (issue #104), coletado em 2026-11-25 (UTC)
+
+**Como:** `python lab05/code/etapas/01_coletar.py --baixar`, que chama os dois coletores para `2025-11-01T00:00:00Z` a `2026-10-31T23:59:59Z`.
+
+- **GitHub:** as 5 páginas do `history.json` do piloto (baixadas em 2026-11-19, no mesmo mês, portanto contíguas) foram reaproveitadas do cache; foram baixados os **265 JSONs de incidentes** que faltavam, mais 1 leitura do robots.txt (266 requisições, ≥ 1,1 s entre elas, entre 2026-11-25T02:25Z e 02:31Z). O manifesto tem agora 296 respostas salvas.
+- **GitLab:** nenhuma requisição. O `all.ics` salvo à mão em 2026-11-19 (opção C) já cobre a janela inteira.
+- **Data da coleta** registrada em `code/dados/brutos/resumo_coleta.json` (primeira e última resposta de cada manifesto), junto com o total por mês. Esse arquivo é **regenerado sem internet** pelo comando único e precisa sair idêntico; o teste `tests/test_coletar.py` confere isso.
+
+**Incidentes por plataforma e mês de início** (todos os componentes, sem manutenções, antes de qualquer filtro de componente equivalente):
+
+| Plataforma | 2025-11 | 2025-12 | 2026-01 | 2026-02 | 2026-03 | 2026-04 | 2026-05 | 2026-06 | 2026-07 | 2026-08 | 2026-09 | 2026-10 | Total |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GitHub | 17 | 15 | 25 | 37 | 32 | 27 | 22 | 23 | 26 | 27 | 14 | 25 | **290** |
+| GitLab | 7 | 7 | 7 | 11 | 20 | 10 | 13 | 11 | 7 | 13 | 11 | 16 | **133** |
+
+O total do GitHub é igual ao do histórico (6.1), mas abril e maio trocam um incidente (26/23 no histórico × 27/22 aqui): o histórico agrupa pela data exibida e a coleta usa o `inicio_utc` (`min(created_at, started_at)`).
+
+### 6.5 Normalização e validação (issue #105)
+
+`lab05/code/etapas/02_normalizar.py` lê só `dados/brutos/` e gera `dados/processados/incidentes.csv` (11 colunas do formato comum + `origem_componente`, `retroativo`, `termina_apos_janela`) e `resultados/tabelas/validacao.md`, com tudo o que foi encontrado. Regras adotadas:
+
+| Caso | Tratamento | Na coleta de 2026-11-25 |
+|---|---|---|
+| Começou antes de 2025-11-01 e terminou dentro | Fora da amostra principal (o critério é o início); só contado no relatório, para a sensibilidade 4 | 0 |
+| Começou na janela e terminou depois de 2026-10-31T23:59:59Z | Entra com a **duração inteira**, sem corte na borda; marcado em `termina_apos_janela` | 0 |
+| Sem horário de fim (retroativo, não resolvido) | Entra na frequência, `fim_utc` e `duracao_min` vazios; **nenhuma duração imputada** | 17 no GitHub (todos retroativos), 0 no GitLab |
+| `fim_utc <= inicio_utc` | Fim descartado (fica sem duração), incidente mantido | 0 |
+| Id repetido na plataforma | Fica o primeiro | 0 |
+| Componente publicado sem linha no mapa | Listado no relatório, não gera categoria; o mapa ganha a linha | 0 |
+| Sem componente publicado | Categoria pelas regras de `dados/regras_titulo.csv`; se nenhuma casar, `sem_componente` | GitHub: 54 pelo título, 60 `sem_componente`; GitLab: 127 pelo título, 6 `sem_componente` |
+
+**Componente pelo título (decisão (b) da seção 6.2).** O iCal do GitLab não tem componente, e 114 dos 290 incidentes do GitHub vêm sem. Sem uma regra, nenhum incidente do GitLab entraria na comparação. As regras ficam em `dados/regras_titulo.csv` (expressões regulares, sem diferenciar maiúsculas), aplicadas **só** quando não há componente publicado:
+
+1. `exclusiva`: casou, o incidente é `fora_do_escopo` e acabou (IA/Duo/Copilot, background jobs, Codespaces, KAS, GitLab Next, packages.gitlab.com, entrega de e-mail);
+2. `especifica`: junta as categorias de todas as que casarem (ex.: "Intermittent Git and CI/CD pipeline failures" → `ci_cd;git`);
+3. `generica`: só se nenhuma específica deu categoria comparável; hoje é uma só, que manda para `web` o título que fala do site inteiro ("Elevated 5xx Errors on GitLab.com", "[Retroactive] Incident with GitHub.com").
+
+Os incidentes classificados assim ficam com `origem_componente = titulo`, para a sensibilidade 2 do plano de análise (com e sem eles). O título genérico do GitHub "Disruption with some GitHub services" (33 dos 60 `sem_componente` do GitHub) **não** casa com nenhuma regra e fica `sem_componente`: não dá para saber o serviço pelo título. **Pendente:** outra pessoa do grupo conferir a classificação pelo título no `incidentes.csv` (filtrar `origem_componente = titulo`); correção é feita nas regras, nunca à mão no CSV. Se o grupo salvar à mão as páginas do histórico do GitLab (opção (a) da seção 6.2), o componente publicado passa a ter prioridade sobre o título.
+
+**Impacto:** o GitLab continua com `impacto` vazio nos 133 incidentes (o iCal não traz). No GitHub: `minor` 191, `major` 50, `critical` 36, `none` 13.

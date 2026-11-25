@@ -46,9 +46,21 @@ Para executar o pipeline duas vezes e confirmar que as saídas são idênticas:
 python lab05/code/run_all.py --verificar-reprodutibilidade
 ```
 
-Enquanto os coletores não geram os dados reais, use
-`lab05/code/dados/processados/exemplo_incidentes.csv`. Os registros desse arquivo
-são fictícios e servem somente para permitir o trabalho paralelo.
+Etapas atuais:
+
+| Etapa | O que faz | Saída |
+|---|---|---|
+| `etapas/01_coletar.py` | Chama os dois coletores para a janela, **só com o cache** (não acessa a internet) | `dados/brutos/resumo_coleta.json` (data da coleta e incidentes por mês) |
+| `etapas/02_normalizar.py` | Converte os dados brutos no formato comum, aplica o mapa de componentes e as regras pelo título, valida | `dados/processados/incidentes.csv`, `resultados/tabelas/validacao.md` |
+
+Para baixar o que falta no cache (a única etapa que usa a internet, 1 req/s):
+
+```bash
+python lab05/code/etapas/01_coletar.py --baixar
+```
+
+`dados/processados/exemplo_incidentes.csv` tem registros fictícios e só é usado
+pelo dashboard quando `incidentes.csv` não existe.
 
 ## Coleta
 
