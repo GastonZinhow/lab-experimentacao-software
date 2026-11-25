@@ -2,3 +2,7 @@
 # byte (nem as quebras de linha), senão o sha256 do manifesto deixa de bater.
 dados/brutos/** -text
 tests/fixtures/** -text
+# Saídas do comando único são gravadas com LF; o checkout precisa manter LF para
+# que rodar o pipeline de novo não mude nenhum byte (inclusive no Windows).
+dados/processados/** text eol=lf
+resultados/** text eol=lf
